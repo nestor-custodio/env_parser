@@ -1,3 +1,3 @@
-module EnvLoader
-  VERSION = "0.1.0"
+class EnvLoader
+  VERSION = "0.0.0"
 end
