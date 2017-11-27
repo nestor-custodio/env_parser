@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; Documentation by YARD 0.9.11
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  pathId = "README";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'>
+<h1 id="label-EnvLoader">EnvLoader</h1>
+
+<p>If your code uses environment variables, you know that <code>ENV</code>
+will always surface these as strings. Interpreting these strings as the
+value you <em>actually</em> want to see/use takes some additional effort,
+however.</p>
+
+<p>If you want a number, you need to cast:
+<code>#to_i</code>/<code>#to_f</code>. If you want a boolean, you need to
+check for a specific value: <code>ENV['SOME_VAR'] == &#39;true&#39;</code>.
+Maybe you want to set non-trivial defaults (something other than
+<code>0</code> or <code>&#39;&#39;</code>)? Maybe you only want to allow
+values from a limited set.</p>
+
+<p>Things can get out of control pretty fast, especially as the number of
+environment variables in play grows. EnvLoader aims to help keep things
+simple.</p>
+
+<h2 id="label-Installation">Installation</h2>
+
+<p>Add this line to your application&#39;s Gemfile:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>env_loader</span><span class='tstring_end'>&#39;</span></span>
+</code></pre>
+
+<p>And then execute:</p>
+
+<pre class="code ruby"><code class="ruby">$ bundle</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre class="code ruby"><code class="ruby">$ gem install env_loader</code></pre>
+
+<h2 id="label-Usage">Usage</h2>
+
+<p>Basic EnvLoader usage: “`ruby</p>
+
+<h2 id="label-Returns+ENV+as+an+Integer.">Returns <a href="'TIMEOUT_MS'">ENV</a> as an Integer.</h2>
+
+<h2 id="label-Yields+0+if+ENV+is+unset+or+nil.">Yields 0 if <a href="'TIMEOUT_MS'">ENV</a> is unset or nil.</h2>
+
+<p>## timeout_ms = EnvLoader.parse <a href="'TIMEOUT_MS'">ENV</a>, as:
+:integer</p>
+
+<h2 id="label-LESS+TYPING-2C+PLZ-21+-3A-28">LESS TYPING, PLZ! :(</h2>
+
+<h2 id="label-If+you+pass+in+a+Symbol+instead+of+a+String-2C+EnvLoader">If you pass in a Symbol instead of a String, EnvLoader</h2>
+
+<h2 id="label-will+use+the+value+behind+the+matching+String+key+in+ENV.">will use the value behind the matching String key in ENV.</h2>
+
+<h2 id="label-28i.e.+passing+in+ENV-5B-27X-27-5D+is+equivalent+to+passing+in+-3AX-29">(i.e. passing in <code>ENV['X']</code> is equivalent to passing in <code>:X</code>)</h2>
+
+<p>## timeout_ms = EnvLoader.parse :TIMEOUT_MS, as: :integer “`</p>
+<hr>
+
+<p>The named <code>:as</code> value is required. Allowed values are:</p>
+
+<p>| <code>:as</code> value | type returned | |—————————–|———————————| |
+:string | String | | :symbol | Symbol | | :boolean | TrueValue / FalseValue
+| | :int / :integer | Integer | | :float / :decimal / :number | Float | |
+:json | &lt; depends on JSON given &gt; | | :array | Array | | :hash | Hash
+|</p>
+
+<p>Note JSON is parsed using <em>quirks-mode</em> (meaning &#39;true&#39;,
+&#39;25&#39;, and &#39;null&#39; are all considered valid, parseable JSON).</p>
+<hr>
+
+<p><a
+href="https://github.com/nestor-custodio/env_loader/blob/master/docs/index.html">Consult
+the repo docs</a> for the full EnvLoader documentation.</p>
+
+<h2 id="label-Feature+Roadmap+-2F+Future+Development">Feature Roadmap / Future Development</h2>
+
+<p>Additional features/options coming in the future: - An
+<code>:if_unset</code> option to more easily set default values. - A
+<code>:from_set</code> option to restrict acceptable values to those on a
+given list. - An <code>EnvLoader.load</code> method that will not only
+parse the given value, but will set a constant, easily converting
+environment variables into constants in your code. - An
+<code>EnvLoader.load_all</code> method to shortcut multiple
+<code>.load</code> calls. - A means to <strong>optionally</strong> bind
+<code>#parse</code>, <code>#load</code>, and <code>#load_all</code> methods
+onto <code>ENV</code> itself (not all hashes!). Because <code>ENV.parse
+...</code> reads better than <code>EnvLoader.parse ...</code>. - … ?</p>
+
+<h2 id="label-Contribution+-2F+Development">Contribution / Development</h2>
+
+<p>Bug reports and pull requests are welcome on GitHub at <a
+href="https://github.com/nestor-custodio/env_loader">github.com/nestor-custodio/env_loader</a>.</p>
+
+<p>After checking out the repo, run <code>bin/setup</code> to install
+dependencies. Then, run <code>rake spec</code> to run the tests. You can
+also run <code>bin/console</code> for an interactive prompt that will allow
+you to experiment.</p>
+
+<p>Linting is courtesy of <a
+href="https://github.com/bbatsov/rubocop">Rubocop</a> and documentation is
+built using <a href="https://yardoc.org/">Yard</a>. Neither is included in
+the Gemspec; you&#39;ll need to install these locally to take advantage.</p>
+
+<p>To install this gem onto your local machine, run <code>bundle exec rake
+install</code>. To release a new version, update the version number in
+<code>version.rb</code>, and then run <code>bundle exec rake
+release</code>, which will create a git tag for the version, push git
+commits and tags, and push the <code>.gem</code> file to <a
+href="https://rubygems.org">rubygems.org</a>.</p>
+
+<h2 id="label-License">License</h2>
+
+<p>The gem is available as open source under the terms of the <a
+href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
+</div></div>
+
+      <div id="footer">
+  Generated on Mon Nov 27 01:32:21 2017 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.11 (ruby-2.4.2).
+</div>
+
+    </div>
+  </body>
+</html>

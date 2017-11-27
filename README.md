@@ -23,9 +23,56 @@ Or install it yourself as:
 
     $ gem install env_loader
 
+
 ## Usage
 
-TODO: Write usage instructions here
+Basic EnvLoader usage:
+```ruby
+## Returns ENV['TIMEOUT_MS'] as an Integer.
+## Yields 0 if ENV['TIMEOUT_MS'] is unset or nil.
+##
+timeout_ms = EnvLoader.parse ENV['TIMEOUT_MS'], as: :integer
+
+## LESS TYPING, PLZ!  :(
+## If you pass in a Symbol instead of a String, EnvLoader
+## will use the value behind the matching String key in ENV.
+## (i.e. passing in `ENV['X']` is equivalent to passing in `:X`)
+##
+timeout_ms = EnvLoader.parse :TIMEOUT_MS, as: :integer
+```
+
+---
+
+The named `:as` value is required. Allowed values are:
+
+| `:as` value                 | type returned                   |
+|-----------------------------|---------------------------------|
+| :string                     | String                          |
+| :symbol                     | Symbol                          |
+| :boolean                    | TrueValue / FalseValue          |
+| :int / :integer             | Integer                         |
+| :float / :decimal / :number | Float                           |
+| :json                       | &lt; depends on JSON given &gt; |
+| :array                      | Array                           |
+| :hash                       | Hash                            |
+
+Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered valid, parseable JSON).
+
+---
+
+[Consult the repo docs](https://github.com/nestor-custodio/env_loader/blob/master/docs/index.html) for the full EnvLoader documentation.
+
+
+## Feature Roadmap / Future Development
+
+Additional features/options coming in the future:
+- An `:if_unset` option to more easily set default values.
+- A `:from_set` option to restrict acceptable values to those on a given list.
+- An `EnvLoader.load` method that will not only parse the given value, but will set a constant, easily converting environment variables into constants in your code.
+- An `EnvLoader.load_all` method to shortcut multiple `.load` calls.
+- A means to **optionally** bind `#parse`, `#load`, and `#load_all` methods onto `ENV` itself (not all hashes!). Because `ENV.parse ...` reads better than `EnvLoader.parse ...`.
+- ... ?
+
 
 ## Contribution / Development
 
