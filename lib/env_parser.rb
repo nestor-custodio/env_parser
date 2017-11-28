@@ -1,8 +1,8 @@
-require 'env_loader/version'
+require 'env_parser/version'
 
-## The EnvLoader class simplifies parsing of environment variables as different data types.
+## The EnvParser class simplifies parsing of environment variables as different data types.
 ##
-class EnvLoader
+class EnvParser
   class << self
     ## Interprets the given value as the specified type.
     ##

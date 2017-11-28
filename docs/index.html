@@ -58,7 +58,7 @@
       </div>
 
       <div id="content"><div id='filecontents'>
-<h1 id="label-EnvLoader">EnvLoader</h1>
+<h1 id="label-EnvParser">EnvParser</h1>
 
 <p>If your code uses environment variables, you know that <code>ENV</code>
 will always surface these as strings. Interpreting these strings as the
@@ -73,14 +73,14 @@ Maybe you want to set non-trivial defaults (something other than
 values from a limited set.</p>
 
 <p>Things can get out of control pretty fast, especially as the number of
-environment variables in play grows. EnvLoader aims to help keep things
+environment variables in play grows. EnvParser aims to help keep things
 simple.</p>
 
 <h2 id="label-Installation">Installation</h2>
 
 <p>Add this line to your application&#39;s Gemfile:</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>env_loader</span><span class='tstring_end'>&#39;</span></span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>env_parser</span><span class='tstring_end'>&#39;</span></span>
 </code></pre>
 
 <p>And then execute:</p>
@@ -89,28 +89,28 @@ simple.</p>
 
 <p>Or install it yourself as:</p>
 
-<pre class="code ruby"><code class="ruby">$ gem install env_loader</code></pre>
+<pre class="code ruby"><code class="ruby">$ gem install env_parser</code></pre>
 
 <h2 id="label-Usage">Usage</h2>
 
-<p>Basic EnvLoader usage: “`ruby</p>
+<p>Basic EnvParser usage: “`ruby</p>
 
 <h2 id="label-Returns+ENV+as+an+Integer.">Returns <a href="'TIMEOUT_MS'">ENV</a> as an Integer.</h2>
 
 <h2 id="label-Yields+0+if+ENV+is+unset+or+nil.">Yields 0 if <a href="'TIMEOUT_MS'">ENV</a> is unset or nil.</h2>
 
-<p>## timeout_ms = EnvLoader.parse <a href="'TIMEOUT_MS'">ENV</a>, as:
+<p>## timeout_ms = EnvParser.parse <a href="'TIMEOUT_MS'">ENV</a>, as:
 :integer</p>
 
 <h2 id="label-LESS+TYPING-2C+PLZ-21+-3A-28">LESS TYPING, PLZ! :(</h2>
 
-<h2 id="label-If+you+pass+in+a+Symbol+instead+of+a+String-2C+EnvLoader">If you pass in a Symbol instead of a String, EnvLoader</h2>
+<h2 id="label-If+you+pass+in+a+Symbol+instead+of+a+String-2C+EnvParser">If you pass in a Symbol instead of a String, EnvParser</h2>
 
 <h2 id="label-will+use+the+value+behind+the+matching+String+key+in+ENV.">will use the value behind the matching String key in ENV.</h2>
 
 <h2 id="label-28i.e.+passing+in+ENV-5B-27X-27-5D+is+equivalent+to+passing+in+-3AX-29">(i.e. passing in <code>ENV['X']</code> is equivalent to passing in <code>:X</code>)</h2>
 
-<p>## timeout_ms = EnvLoader.parse :TIMEOUT_MS, as: :integer “`</p>
+<p>## timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer “`</p>
 <hr>
 
 <p>The named <code>:as</code> value is required. Allowed values are:</p>
@@ -126,27 +126,27 @@ simple.</p>
 <hr>
 
 <p><a
-href="https://github.com/nestor-custodio/env_loader/blob/master/docs/index.html">Consult
-the repo docs</a> for the full EnvLoader documentation.</p>
+href="https://github.com/nestor-custodio/env_parser/blob/master/docs/index.html">Consult
+the repo docs</a> for the full EnvParser documentation.</p>
 
 <h2 id="label-Feature+Roadmap+-2F+Future+Development">Feature Roadmap / Future Development</h2>
 
 <p>Additional features/options coming in the future: - An
 <code>:if_unset</code> option to more easily set default values. - A
 <code>:from_set</code> option to restrict acceptable values to those on a
-given list. - An <code>EnvLoader.load</code> method that will not only
+given list. - An <code>EnvParser.load</code> method that will not only
 parse the given value, but will set a constant, easily converting
 environment variables into constants in your code. - An
-<code>EnvLoader.load_all</code> method to shortcut multiple
+<code>EnvParser.load_all</code> method to shortcut multiple
 <code>.load</code> calls. - A means to <strong>optionally</strong> bind
 <code>#parse</code>, <code>#load</code>, and <code>#load_all</code> methods
 onto <code>ENV</code> itself (not all hashes!). Because <code>ENV.parse
-...</code> reads better than <code>EnvLoader.parse ...</code>. - … ?</p>
+...</code> reads better than <code>EnvParser.parse ...</code>. - … ?</p>
 
 <h2 id="label-Contribution+-2F+Development">Contribution / Development</h2>
 
 <p>Bug reports and pull requests are welcome on GitHub at <a
-href="https://github.com/nestor-custodio/env_loader">github.com/nestor-custodio/env_loader</a>.</p>
+href="https://github.com/nestor-custodio/env_parser">github.com/nestor-custodio/env_parser</a>.</p>
 
 <p>After checking out the repo, run <code>bin/setup</code> to install
 dependencies. Then, run <code>rake spec</code> to run the tests. You can
@@ -172,7 +172,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Mon Nov 27 01:32:21 2017 by
+  Generated on Mon Nov 27 21:58:11 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

@@ -1,16 +1,16 @@
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'env_loader/version'
+require 'env_parser/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'env_loader'
-  spec.version       = EnvLoader::VERSION
+  spec.name          = 'env_parser'
+  spec.version       = EnvParser::VERSION
   spec.authors       = ['Nestor Custodio']
   spec.email         = ['sakimorix@gmail.com']
 
   spec.summary       = 'A tool for painless parsing and validation of environment variables.'
-  spec.homepage      = 'https://github.com/nestor-custodio/env_loader'
+  spec.homepage      = 'https://github.com/nestor-custodio/env_parser'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
