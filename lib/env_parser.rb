@@ -1,4 +1,5 @@
 require 'env_parser/version'
+require 'active_support/all'
 
 ## The EnvParser class simplifies parsing of environment variables as different data types.
 ##
@@ -10,7 +11,7 @@ class EnvParser
     ##   The value to parse/interpret. If a String is given, the value will be used as-is. If a
     ##   Symbol is given, the ENV value for the matching string key will be used.
     ##
-    ## @param :as [Symbol]
+    ## @option options as [Symbol]
     ##   The expected return type. A best-effort attempt is made to convert the source String to the
     ##   requested type. Valid "as" types are:
     ##
@@ -23,14 +24,22 @@ class EnvParser
     ##   - `:array`
     ##   - `:hash`
     ##
-    def parse(value, as: nil)
+    ## @option options if_unset
+    ##   Specifies the default value to return if the given "value" is either nil or an empty String
+    ##   (''). Any "if_unset" value given will be returned as-is, with no type conversion or other
+    ##   change having been made.  If unspecified, the "default" value for nil/'' input will depend
+    ##   on the "as" type.
+    ##
+    def parse(value, options = {})
       value = if value.is_a? Symbol
                 ENV[value.to_s]
               else
                 value.to_s
               end
 
-      case as.to_sym
+      return options[:if_unset] if value.blank? && options.key?(:if_unset)
+
+      case options[:as].to_sym
       when :string then parse_string(value)
       when :symbol then parse_symbol(value)
       when :boolean then parse_boolean(value)
@@ -39,7 +48,7 @@ class EnvParser
       when :json then parse_json(value)
       when :array then parse_array(value)
       when :hash then parse_hash(value)
-      else raise ArgumentError, "invalid `as` parameter: #{as.inspect}"
+      else raise ArgumentError, "invalid `as` parameter: #{options[:as].inspect}"
       end
     end
 
@@ -70,16 +79,15 @@ class EnvParser
 
     def parse_json(value)
       require 'json'
-      require 'active_support/all'
 
-      return nil if value.nil? || (value == '')
+      return nil if value.blank?
 
       decoded_json = JSON.parse(value, quirks_mode: true)
       { decoded_json: decoded_json }.with_indifferent_access[:decoded_json]
     end
 
     def parse_array(value)
-      return [] if value.nil? || (value == '')
+      return [] if value.blank?
 
       decoded_json = parse_json(value)
       raise(ArgumentError, 'non-array value') unless decoded_json.is_a? Array
@@ -88,7 +96,7 @@ class EnvParser
     end
 
     def parse_hash(value)
-      return {} if value.nil? || (value == '')
+      return {} if value.blank?
 
       decoded_json = parse_json(value)
       raise(ArgumentError, 'non-hash value') unless decoded_json.is_a? Hash
