@@ -106,5 +106,12 @@ RSpec.describe EnvParser do
 
       expect(EnvParser.parse('{ "one": 1, "two": 2, "three": "three" }', as: :hash)).to eq('one' => 1, 'two' => 2, 'three' => 'three')
     end
+
+    it 'returns the requested default when necessary' do
+      expect(EnvParser.parse(nil, as: :integer, if_unset: 25)).to eq(25)
+      expect(EnvParser.parse('', as: :integer, if_unset: 25)).to eq(25)
+
+      expect(EnvParser.parse('99', as: :float, if_unset: 25.0)).to eq(99.0)
+    end
   end
 end
