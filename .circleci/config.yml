@@ -27,6 +27,11 @@ jobs:
           - v1-dependencies-
 
       - run:
+          name: update bundler
+          command: |
+            gem install bundler --version $(tail -n 1 ~/repo/Gemfile.lock | tr -d ' ')
+
+      - run:
           name: install dependencies
           command: |
             bundle install --jobs=4 --retry=3 --path vendor/bundle
