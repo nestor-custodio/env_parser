@@ -39,6 +39,17 @@ timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
 ## (i.e. passing in `ENV['X']` is equivalent to passing in `:X`)
 ##
 timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer
+
+## If the ENV variable you want is unset (`nil`) or blank (`''`),
+## the return value is a sensible default for the given "as" type.
+## Sometimes you want a non-trivial default (not just 0, '', etc), however.
+##
+EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer ## => 0
+EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250 ## => 250
+
+## Note that "if_unset" values are used as-is, with no type conversion.
+##
+EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 'oof!' ## => 'oof!'
 ```
 
 ---

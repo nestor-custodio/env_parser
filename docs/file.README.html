@@ -110,7 +110,22 @@ simple.</p>
 
 <h2 id="label-28i.e.+passing+in+ENV-5B-27X-27-5D+is+equivalent+to+passing+in+-3AX-29">(i.e. passing in <code>ENV['X']</code> is equivalent to passing in <code>:X</code>)</h2>
 
-<p>## timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer “`</p>
+<p>## timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer</p>
+
+<h2 id="label-If+the+ENV+variable+you+want+is+unset+-28nil-29+or+blank+-28-27-27-29-2C">If the ENV variable you want is unset (<code>nil</code>) or blank (<code>&#39;&#39;</code>),</h2>
+
+<h2 id="label-the+return+value+is+a+sensible+default+for+the+given+-22as-22+type.">the return value is a sensible default for the given “as” type.</h2>
+
+<h2 id="label-Sometimes+you+want+a+non-trivial+default+-28not+just+0-2C+-27-27-2C+etc-29-2C+however.">Sometimes you want a non-trivial default (not just 0, &#39;&#39;, etc), however.</h2>
+
+<p>## EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer ## =&gt; 0
+EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250 ## =&gt;
+250</p>
+
+<h2 id="label-Note+that+-22if_unset-22+values+are+used+as-is-2C+with+no+type+conversion.">Note that “if_unset” values are used as-is, with no type conversion.</h2>
+
+<p>## EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset:
+&#39;oof!&#39; ## =&gt; &#39;oof!&#39; “`</p>
 <hr>
 
 <p>The named <code>:as</code> value is required. Allowed values are:</p>
@@ -131,8 +146,7 @@ the repo docs</a> for the full EnvParser documentation.</p>
 
 <h2 id="label-Feature+Roadmap+-2F+Future+Development">Feature Roadmap / Future Development</h2>
 
-<p>Additional features/options coming in the future: - An
-<code>:if_unset</code> option to more easily set default values. - A
+<p>Additional features/options coming in the future: - A
 <code>:from_set</code> option to restrict acceptable values to those on a
 given list. - An <code>EnvParser.load</code> method that will not only
 parse the given value, but will set a constant, easily converting
@@ -172,7 +186,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov 29 06:44:05 2017 by
+  Generated on Wed Nov 29 17:00:46 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>
