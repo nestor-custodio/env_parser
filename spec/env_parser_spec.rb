@@ -113,5 +113,12 @@ RSpec.describe EnvParser do
 
       expect(EnvParser.parse('99', as: :float, if_unset: 25.0)).to eq(99.0)
     end
+
+    it 'only allows values from a limited set' do
+      expect(EnvParser.parse('25', as: :integer, from_set: [20, 25, 30])).to eq(25)
+      expect { EnvParser.parse('25', as: :integer, from_set: [1, 2, 3]) }.to raise_exception(EnvParser::ValueNotAllowed)
+
+      expect(EnvParser.parse(nil, as: :integer, if_unset: 9, from_set: [1, 2, 3])).to eq(9)
+    end
   end
 end
