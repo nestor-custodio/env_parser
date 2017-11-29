@@ -66,7 +66,6 @@ Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are al
 ## Feature Roadmap / Future Development
 
 Additional features/options coming in the future:
-- An `:if_unset` option to more easily set default values.
 - A `:from_set` option to restrict acceptable values to those on a given list.
 - An `EnvParser.load` method that will not only parse the given value, but will set a constant, easily converting environment variables into constants in your code.
 - An `EnvParser.load_all` method to shortcut multiple `.load` calls.
