@@ -4,6 +4,11 @@ require 'active_support/all'
 ## The EnvParser class simplifies parsing of environment variables as different data types.
 ##
 class EnvParser
+  ## Exception class used to indicate parsed values not allowed per a "from_set" option.
+  ##
+  class ValueNotAllowed < StandardError
+  end
+
   class << self
     ## Interprets the given value as the specified type.
     ##
@@ -24,32 +29,49 @@ class EnvParser
     ##   - `:array`
     ##   - `:hash`
     ##
+    ##   If no "as" option is given (or the "as" value given is not on the above list), an
+    ##   ArgumentError exception is raised.
+    ##
     ## @option options if_unset
-    ##   Specifies the default value to return if the given "value" is either nil or an empty String
-    ##   (''). Any "if_unset" value given will be returned as-is, with no type conversion or other
-    ##   change having been made.  If unspecified, the "default" value for nil/'' input will depend
-    ##   on the "as" type.
+    ##   Specifies the default value to return if the given "value" is either unset (`nil`) or blank
+    ##   (`''`). Any "if_unset" value given will be returned as-is, with no type conversion or other
+    ##   change having been made.  If unspecified, the "default" value for `nil`/`''` input will
+    ##   depend on the "as" type.
+    ##
+    ## @option options from_set [Array, Range]
+    ##   Gives a limited set of allowed values (after type conversion). If, after parsing, the final
+    ##   value is not included in the "from_set" list/range, an EnvParser::ValueNotAllowed exception
+    ##   is raised.
+    ##
+    ##   Note that if the "if_unset" option is given and the value to parse is `nil`/`''`, the
+    ##   "if_unset" value will be returned, even if it is not part of the "from_set" list/range.
+    ##
+    ##   Also note that, due to the nature of the lookup, the "from_set" option is only available
+    ##   for scalar values (i.e. not arrays, hashes, or other enumerables). An attempt to use the
+    ##   "from_set" option with a non-scalar value will raise an ArgumentError exception.
+    ##
+    ## @raise [ArgumentError, EnvParser::ValueNotAllowed]
     ##
     def parse(value, options = {})
-      value = if value.is_a? Symbol
-                ENV[value.to_s]
-              else
-                value.to_s
-              end
+      value = ENV[value.to_s] if value.is_a? Symbol
+      value = value.to_s
 
       return options[:if_unset] if value.blank? && options.key?(:if_unset)
 
-      case options[:as].to_sym
-      when :string then parse_string(value)
-      when :symbol then parse_symbol(value)
-      when :boolean then parse_boolean(value)
-      when :int, :integer then parse_integer(value)
-      when :float, :decimal, :number then parse_float(value)
-      when :json then parse_json(value)
-      when :array then parse_array(value)
-      when :hash then parse_hash(value)
-      else raise ArgumentError, "invalid `as` parameter: #{options[:as].inspect}"
-      end
+      value = case options[:as].to_sym
+              when :string then parse_string(value)
+              when :symbol then parse_symbol(value)
+              when :boolean then parse_boolean(value)
+              when :int, :integer then parse_integer(value)
+              when :float, :decimal, :number then parse_float(value)
+              when :json then parse_json(value)
+              when :array then parse_array(value)
+              when :hash then parse_hash(value)
+              else raise ArgumentError, "invalid `as` parameter: #{options[:as].inspect}"
+              end
+
+      check_for_set_inclusion(value, set: options[:from_set]) if options.key?(:from_set)
+      value
     end
 
     private
@@ -102,6 +124,18 @@ class EnvParser
       raise(ArgumentError, 'non-hash value') unless decoded_json.is_a? Hash
 
       decoded_json
+    end
+
+    def check_for_set_inclusion(value, set: nil)
+      if value.respond_to?(:each)
+        raise ArgumentError, "`from_set` option is not compatible with #{value.class} values"
+      end
+
+      unless set.is_a?(Array) || set.is_a?(Range)
+        raise ArgumentError, "invalid `from_set` parameter type: #{set.class}"
+      end
+
+      raise ValueNotAllowed, 'parsed value not in allowed list/range' unless set.include?(value)
     end
   end
 end
