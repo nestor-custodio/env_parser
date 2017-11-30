@@ -113,14 +113,24 @@ different data types.</p>
 <div class="tags">
   
 
-</div>
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="EnvParser/ValueNotAllowed.html" title="EnvParser::ValueNotAllowed (class)">ValueNotAllowed</a></span>
+    
+  
+</p>
+
   <h2>Constant Summary</h2>
   <dl class="constants">
     
       <dt id="VERSION-constant" class="">VERSION =
         
       </dt>
-      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.1.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.3.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
     
   </dl>
 
@@ -265,6 +275,9 @@ source String to the requested type. Valid “as” types are:</p>
 </li><li>
 <p><code>:hash</code></p>
 </li></ul>
+
+<p>If no “as” option is given (or the “as” value given is not on the above
+list), an ArgumentError exception is raised.</p>
 </div>
           
         </li>
@@ -277,11 +290,36 @@ source String to the requested type. Valid “as” types are:</p>
           </span>
           
             &mdash; <div class='inline'>
-<p>Specifies the default value to return if the given “value” is either nil or
-an empty String (&#39;&#39;). Any “if_unset” value given will be returned
-as-is, with no type conversion or other change having been made. If
-unspecified, the “default” value for nil/&#39;&#39; input will depend on
-the “as” type.</p>
+<p>Specifies the default value to return if the given “value” is either unset
+(<code>nil</code>) or blank (<code>&#39;&#39;</code>). Any “if_unset” value
+given will be returned as-is, with no type conversion or other change
+having been made. If unspecified, the “default” value for
+<code>nil</code>/<code>&#39;&#39;</code> input will depend on the “as”
+type.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">from_set</span>
+          <span class="type">(<tt>Array</tt>, <tt>Range</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'>
+<p>Gives a limited set of allowed values (after type conversion). If, after
+parsing, the final value is not included in the “from_set” list/range, an
+EnvParser::ValueNotAllowed exception is raised.</p>
+
+<p>Note that if the “if_unset” option is given and the value to parse is
+<code>nil</code>/<code>&#39;&#39;</code>, the “if_unset” value will be
+returned, even if it is not part of the “from_set” list/range.</p>
+
+<p>Also note that, due to the nature of the lookup, the “from_set” option is
+only available for scalar values (i.e. not arrays, hashes, or other
+enumerables). An attempt to use the “from_set” option with a non-scalar
+value will raise an ArgumentError exception.</p>
 </div>
           
         </li>
@@ -289,6 +327,19 @@ the “as” type.</p>
     </ul>
   
 
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>, <tt><span class='object_link'><a href="EnvParser/ValueNotAllowed.html" title="EnvParser::ValueNotAllowed (class)">EnvParser::ValueNotAllowed</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -296,51 +347,51 @@ the “as” type.</p>
       <pre class="lines">
 
 
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53</pre>
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Symbol</span>
-            <span class='const'>ENV</span><span class='lbracket'>[</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span>
-          <span class='kw'>else</span>
-            <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
-          <span class='kw'>end</span>
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Symbol</span>
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
 
   <span class='kw'>return</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:if_unset</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:if_unset</span><span class='rparen'>)</span>
 
-  <span class='kw'>case</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
-  <span class='kw'>when</span> <span class='symbol'>:string</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_string'>parse_string</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:symbol</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_symbol'>parse_symbol</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:boolean</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_boolean'>parse_boolean</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:int</span><span class='comma'>,</span> <span class='symbol'>:integer</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_integer'>parse_integer</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:float</span><span class='comma'>,</span> <span class='symbol'>:decimal</span><span class='comma'>,</span> <span class='symbol'>:number</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_float'>parse_float</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:json</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_json'>parse_json</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:array</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_array'>parse_array</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>when</span> <span class='symbol'>:hash</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_hash'>parse_hash</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>else</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `as` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
+          <span class='kw'>when</span> <span class='symbol'>:string</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_string'>parse_string</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='symbol'>:symbol</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_symbol'>parse_symbol</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='symbol'>:boolean</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_boolean'>parse_boolean</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='symbol'>:int</span><span class='comma'>,</span> <span class='symbol'>:integer</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_integer'>parse_integer</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='symbol'>:float</span><span class='comma'>,</span> <span class='symbol'>:decimal</span><span class='comma'>,</span> <span class='symbol'>:number</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_float'>parse_float</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='symbol'>:json</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_json'>parse_json</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='symbol'>:array</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_array'>parse_array</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='symbol'>:hash</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_hash'>parse_hash</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+          <span class='kw'>else</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `as` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+          <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_check_for_set_inclusion'>check_for_set_inclusion</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='label'>set:</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:from_set</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:from_set</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -352,7 +403,7 @@ the “as” type.</p>
 </div>
 
       <div id="footer">
-  Generated on Wed Nov 29 06:44:05 2017 by
+  Generated on Wed Nov 29 18:34:06 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>
