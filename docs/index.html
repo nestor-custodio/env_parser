@@ -125,7 +125,20 @@ EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250 ## =&gt;
 <h2 id="label-Note+that+-22if_unset-22+values+are+used+as-is-2C+with+no+type+conversion.">Note that “if_unset” values are used as-is, with no type conversion.</h2>
 
 <p>## EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset:
-&#39;oof!&#39; ## =&gt; &#39;oof!&#39; “`</p>
+&#39;oof!&#39; ## =&gt; &#39;oof!&#39;</p>
+
+<h2 id="label-You+can+also+restrict+the+set+of+allowed+values.">You can also restrict the set of allowed values.</h2>
+
+<h2 id="label-28Sometimes+setting+the+type+alone+is+a+bit+too+open-ended.-29">(Sometimes setting the type alone is a bit too open-ended.)</h2>
+
+<p>## EnvParser.parse :API_TO_USE, as: :symbol, from_set: %i[internal
+external] EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer,
+from_set: (1..65535), if_unset: 80</p>
+
+<h2 id="label-And+if+the+value+is+not+allowed...">And if the value is not allowed…</h2>
+
+<p>## EnvParser.parse :SOME_NEGATIVE_NUMBER, as: :integer, from_set: (1..5) ##
+=&gt; raises EnvParser::ValueNotAllowed “`</p>
 <hr>
 
 <p>The named <code>:as</code> value is required. Allowed values are:</p>
@@ -146,16 +159,15 @@ the repo docs</a> for the full EnvParser documentation.</p>
 
 <h2 id="label-Feature+Roadmap+-2F+Future+Development">Feature Roadmap / Future Development</h2>
 
-<p>Additional features/options coming in the future: - A
-<code>:from_set</code> option to restrict acceptable values to those on a
-given list. - An <code>EnvParser.load</code> method that will not only
-parse the given value, but will set a constant, easily converting
-environment variables into constants in your code. - An
-<code>EnvParser.load_all</code> method to shortcut multiple
-<code>.load</code> calls. - A means to <strong>optionally</strong> bind
-<code>#parse</code>, <code>#load</code>, and <code>#load_all</code> methods
-onto <code>ENV</code> itself (not all hashes!). Because <code>ENV.parse
-...</code> reads better than <code>EnvParser.parse ...</code>. - … ?</p>
+<p>Additional features/options coming in the future: - An
+<code>EnvParser.load</code> method that will not only parse the given
+value, but will set a constant, easily converting environment variables
+into constants in your code. - An <code>EnvParser.load_all</code> method to
+shortcut multiple <code>.load</code> calls. - A means to
+<strong>optionally</strong> bind <code>#parse</code>, <code>#load</code>,
+and <code>#load_all</code> methods onto <code>ENV</code> itself (not all
+hashes!). Because <code>ENV.parse ...</code> reads better than
+<code>EnvParser.parse ...</code>. - … ?</p>
 
 <h2 id="label-Contribution+-2F+Development">Contribution / Development</h2>
 
@@ -186,7 +198,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Wed Nov 29 17:00:45 2017 by
+  Generated on Wed Nov 29 18:34:06 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

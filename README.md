@@ -50,6 +50,16 @@ EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250 ## => 250
 ## Note that "if_unset" values are used as-is, with no type conversion.
 ##
 EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 'oof!' ## => 'oof!'
+
+## You can also restrict the set of allowed values.
+## (Sometimes setting the type alone is a bit too open-ended.)
+##
+EnvParser.parse :API_TO_USE, as: :symbol, from_set: %i[internal external]
+EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), if_unset: 80
+
+## And if the value is not allowed...
+##
+EnvParser.parse :SOME_NEGATIVE_NUMBER, as: :integer, from_set: (1..5) ## => raises EnvParser::ValueNotAllowed
 ```
 
 ---
@@ -77,7 +87,6 @@ Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are al
 ## Feature Roadmap / Future Development
 
 Additional features/options coming in the future:
-- A `:from_set` option to restrict acceptable values to those on a given list.
 - An `EnvParser.load` method that will not only parse the given value, but will set a constant, easily converting environment variables into constants in your code.
 - An `EnvParser.load_all` method to shortcut multiple `.load` calls.
 - A means to **optionally** bind `#parse`, `#load`, and `#load_all` methods onto `ENV` itself (not all hashes!). Because `ENV.parse ...` reads better than `EnvParser.parse ...`.
