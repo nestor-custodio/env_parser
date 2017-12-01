@@ -58,7 +58,7 @@ class EnvParser
 
       return options[:if_unset] if value.blank? && options.key?(:if_unset)
 
-      value = case options[:as].to_sym
+      value = case options[:as]
               when :string then parse_string(value)
               when :symbol then parse_symbol(value)
               when :boolean then parse_boolean(value)
