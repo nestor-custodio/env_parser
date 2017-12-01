@@ -130,7 +130,7 @@ different data types.</p>
       <dt id="VERSION-constant" class="">VERSION =
         
       </dt>
-      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.3.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.4.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
     
   </dl>
 
@@ -167,6 +167,31 @@ different data types.</p>
   
     <span class="summary_desc"><div class='inline'>
 <p>Interprets the given value as the specified type.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#register-class_method" title="register (class method)">.<strong>register</strong>(name, options = {})  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Parses the referenced value and creates a matching constant in the
+requested context.</p>
 </div></span>
   
 </li>
@@ -398,12 +423,230 @@ value will raise an ArgumentError exception.</p>
 </table>
 </div>
     
+      <div class="method_details ">
+  <h3 class="signature " id="register-class_method">
+  
+    .<strong>register</strong>(name, options = {})  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Parses the referenced value and creates a matching constant in the
+requested context.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>The name of the value to parse/interpret from the “from” Hash. If the
+“from” value is ENV, you may give a Symbol and the corresponding String key
+will be used instead.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>a customizable set of options</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+  
+    
+    
+    
+    
+    <p class="tag_title">Options Hash (<tt>options</tt>):</p>
+    <ul class="option">
+      
+        <li>
+          <span class="name">from</span>
+          <span class="type">(<tt>Hash</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'>
+<p>The source Hash from which to pull the value referenced by the “name” key.
+Defaults to ENV.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">within</span>
+          <span class="type">(<tt>Module</tt>, <tt>Class</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'>
+<p>The module or class in which the constant should be created. Defaults to
+Kernel (making it a global constant).</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">as</span>
+          <span class="type">(<tt>Symbol</tt>)</span>
+          <span class="default">
+            
+              &mdash; default:
+              <tt>See `.parse`</tt>
+            
+          </span>
+          
+        </li>
+      
+        <li>
+          <span class="name">if_unset</span>
+          <span class="type">(<tt>Object</tt>)</span>
+          <span class="default">
+            
+              &mdash; default:
+              <tt>See `.parse`</tt>
+            
+          </span>
+          
+        </li>
+      
+        <li>
+          <span class="name">from_set</span>
+          <span class="type">(<tt>Array</tt>, <tt>Range</tt>)</span>
+          <span class="default">
+            
+              &mdash; default:
+              <tt>See `.parse`</tt>
+            
+          </span>
+          
+        </li>
+      
+    </ul>
+  
+
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 101</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_from'>from</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:from</span><span class='comma'>,</span> <span class='const'>ENV</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_within'>within</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:within</span><span class='comma'>,</span> <span class='const'>Kernel</span><span class='rparen'>)</span>
+
+  <span class='comment'>## ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
+</span>  <span class='comment'>## bite you in some cases. Making sure we&#39;re working with a straight-up Hash saves a lot of
+</span>  <span class='comment'>## sanity checks later on. This is also a good place to make sure we&#39;re working with a String
+</span>  <span class='comment'>## key.
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_from'>from</span> <span class='op'>==</span> <span class='const'>ENV</span>
+    <span class='id identifier rubyid_from'>from</span> <span class='op'>=</span> <span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span>
+    <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>unless</span> <span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `from` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>unless</span> <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Module</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `within` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_from'>from</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_const_set'>const_set</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_value'>value</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Wed Nov 29 18:34:06 2017 by
+  Generated on Thu Nov 30 22:44:16 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

@@ -121,4 +121,25 @@ RSpec.describe EnvParser do
       expect(EnvParser.parse(nil, as: :integer, if_unset: 9, from_set: [1, 2, 3])).to eq(9)
     end
   end
+
+  it 'responds to `.register`' do
+    expect(EnvParser).to respond_to(:register)
+  end
+
+  describe 'EnvParse.register' do
+    it 'ceates global constants' do
+      source_hash = { ABC: 123 }
+      EnvParser.register(:ABC, from: source_hash, as: :integer)
+      expect(ABC).to eq(123)
+    end
+
+    it 'creates module constants' do
+      module Sample
+      end
+
+      source_hash = { XYZ: 456 }
+      EnvParser.register(:XYZ, from: source_hash, as: :integer, within: Sample)
+      expect(Sample::XYZ).to eq(456)
+    end
+  end
 end

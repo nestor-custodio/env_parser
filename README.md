@@ -49,17 +49,32 @@ EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250 ## => 250
 
 ## Note that "if_unset" values are used as-is, with no type conversion.
 ##
-EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 'oof!' ## => 'oof!'
+EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 'Whoops!' ## => 'Whoops!'
 
-## You can also restrict the set of allowed values.
-## (Sometimes setting the type alone is a bit too open-ended.)
+## Sometimes setting the type alone is a bit too open-ended.
+## The "from_set" option lets you restrict the set of allowed values.
 ##
 EnvParser.parse :API_TO_USE, as: :symbol, from_set: %i[internal external]
 EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), if_unset: 80
 
 ## And if the value is not allowed...
 ##
-EnvParser.parse :SOME_NEGATIVE_NUMBER, as: :integer, from_set: (1..5) ## => raises EnvParser::ValueNotAllowed
+EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5) ## => raises EnvParser::ValueNotAllowed
+
+## You can also SET CONSTANTS DIRECTLY FROM YOUR ENV VARIABLES.
+
+## Global constants...
+##
+ENV['API_KEY'] = 'unbreakable p4$$w0rd'
+EnvParser.register :API_KEY, as: :string
+API_KEY ## => 'unbreakable p4$$w0rd' (registered within the Kernel module, so it's available everywhere)
+
+## ... and class/module constants!
+##
+ENV['ULTIMATE_LINK'] = 'https://youtu.be/L_jWHffIx5E'
+EnvParser.register :ULTIMATE_LINK, as: :string, within: URI
+URI::ULTIMATE_LINK ## => That sweet, sweet link we just set.
+ULTIMATE_LINK ## => raises NameError (the un-namespaced constant is only in scope within the URI module)
 ```
 
 ---
@@ -87,9 +102,10 @@ Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are al
 ## Feature Roadmap / Future Development
 
 Additional features/options coming in the future:
-- An `EnvParser.load` method that will not only parse the given value, but will set a constant, easily converting environment variables into constants in your code.
-- An `EnvParser.load_all` method to shortcut multiple `.load` calls.
-- A means to **optionally** bind `#parse`, `#load`, and `#load_all` methods onto `ENV` itself (not all hashes!). Because `ENV.parse ...` reads better than `EnvParser.parse ...`.
+- An `EnvParser.register_all` method to shortcut multiple `.register` calls.
+- A means to **optionally** bind `#parse`, `#regiter`, and `#register_all` methods onto `ENV`. Because `ENV.parse ...` reads better than `EnvParser.parse ...`.
+- A `validator` option that lets you pass in a validator lambda/block for things more complex than what a simple `from_set` can enforce.
+- A means to register validation blocks as new "as" types. This will allow for custom "as" types like `:url`, `:email`, etc.
 - ... ?
 
 

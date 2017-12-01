@@ -74,6 +74,58 @@ class EnvParser
       value
     end
 
+    ## Parses the referenced value and creates a matching constant in the requested context.
+    ##
+    ## @param name
+    ##   The name of the value to parse/interpret from the "from" Hash. If the "from" value is ENV,
+    ##   you may give a Symbol and the corresponding String key will be used instead.
+    ##
+    ## @option options from [Hash]
+    ##   The source Hash from which to pull the value referenced by the "name" key. Defaults to ENV.
+    ##
+    ## @option options within [Module, Class]
+    ##   The module or class in which the constant should be created. Defaults to Kernel (making it
+    ##   a global constant).
+    ##
+    ## @option options as [Symbol]
+    ##   (See `.parse`)
+    ##
+    ## @option options if_unset
+    ##   (See `.parse`)
+    ##
+    ## @option options from_set [Array, Range]
+    ##   (See `.parse`)
+    ##
+    ## @raise [ArgumentError]
+    ##
+    def register(name, options = {})
+      from = options.fetch(:from, ENV)
+      within = options.fetch(:within, Kernel)
+
+      ## ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
+      ## bite you in some cases. Making sure we're working with a straight-up Hash saves a lot of
+      ## sanity checks later on. This is also a good place to make sure we're working with a String
+      ## key.
+      if from == ENV
+        from = from.to_h
+        name = name.to_s
+      end
+
+      unless from.is_a?(Hash)
+        raise ArgumentError, "invalid `from` parameter: #{from.class}"
+      end
+
+      unless within.is_a?(Module) || within.is_a?(Class)
+        raise ArgumentError, "invalid `within` parameter: #{within.inspect}"
+      end
+
+      value = from[name]
+      value = parse(value, options)
+      within.const_set(name.upcase.to_sym, value.dup.freeze)
+
+      value
+    end
+
     private
 
     def parse_string(value)
