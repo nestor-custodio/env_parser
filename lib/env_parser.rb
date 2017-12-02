@@ -76,6 +76,24 @@ class EnvParser
 
     ## Parses the referenced value and creates a matching constant in the requested context.
     ##
+    ## Multiple calls to "register" may be shortcutted by passing in a Hash with the same keys as
+    ## those in the "from" Hash and each value being the "register" options set for each variable's
+    ## "register" call.
+    ##
+    ## <pre>
+    ##   ## Example shortcut usage:
+    ##
+    ##   EnvParser.register :A, from: one_hash, as: :integer
+    ##   EnvParser.register :B, from: another_hash, as: :string, if_unset: 'none'
+    ##
+    ##   ## ... is equivalent to ...
+    ##
+    ##   EnvParser.register(
+    ##     A: { from: ENV, as: :integer }
+    ##     B: { from: other_hash, as: :string, if_unset: 'none' }
+    ##   )
+    ## </pre>
+    ##
     ## @param name
     ##   The name of the value to parse/interpret from the "from" Hash. If the "from" value is ENV,
     ##   you may give a Symbol and the corresponding String key will be used instead.
@@ -99,6 +117,10 @@ class EnvParser
     ## @raise [ArgumentError]
     ##
     def register(name, options = {})
+      ## We want to allow for registering multiple variables simultaneously via a single `.register`
+      ## method call.
+      return register_all(name) if name.is_a? Hash
+
       from = options.fetch(:from, ENV)
       within = options.fetch(:within, Kernel)
 
@@ -178,6 +200,14 @@ class EnvParser
       decoded_json
     end
 
+    ## Verifies that the given "value" is included in the "set".
+    ##
+    ## @param value
+    ##
+    ## @param set [Array, Range]
+    ##
+    ## @raise [ArgumentError, EnvParser::ValueNotAllowed]
+    ##
     def check_for_set_inclusion(value, set: nil)
       if value.respond_to?(:each)
         raise ArgumentError, "`from_set` option is not compatible with #{value.class} values"
@@ -188,6 +218,23 @@ class EnvParser
       end
 
       raise ValueNotAllowed, 'parsed value not in allowed list/range' unless set.include?(value)
+    end
+
+    ## Receives a list of "register" calls to make, as a Hash keyed with variable names and the
+    ## values being each "register" call's option set.
+    ##
+    ## @param list [Hash]
+    ##
+    ## @regurn [Hash]
+    ##
+    ## @raise [ArgumentError]
+    ##
+    def register_all(list)
+      raise ArgumentError, "invalid 'list' parameter type: #{list.class}" unless list.is_a?(Hash)
+
+      list.to_a.each_with_object({}) do |tuple, output|
+        output[tuple.first] = register(tuple.first, tuple.second)
+      end
     end
   end
 end
