@@ -146,7 +146,7 @@ RSpec.describe EnvParser do
       source_hash = { FIRST: 'first', SECOND: '99', THIRD: 'third' }
       EnvParser.register(
         FIRST: { from: source_hash, as: :string, if_unset: 'no first' },
-        SECOND: { from: source_hash, as: :integer, if_unste: 'no second' },
+        SECOND: { from: source_hash, as: :integer, if_unset: 'no second' },
         THIRD: { from: source_hash, as: :string, if_unset: 'no third' },
         FOURTH: { from: source_hash, as: :boolean, if_unset: 'no fourth' }
       )
@@ -155,6 +155,65 @@ RSpec.describe EnvParser do
       expect(SECOND).to eq(99)
       expect(THIRD).to eq('third')
       expect(FOURTH).to eq('no fourth')
+    end
+  end
+
+  it 'responds to `.add_env_bindings`' do
+    expect(EnvParser).to respond_to(:add_env_bindings)
+  end
+
+  describe 'EnvParser.add_env_bindings' do
+    before(:context) { EnvParser.add_env_bindings }
+
+    it 'lets ENV respond to `.parse`' do
+      expect(ENV).to respond_to(:parse)
+    end
+
+    describe 'ENV.parse' do
+      it 'interprets input values as ENV keys' do
+        ENV['ABC'] = '123'
+        expect(ENV.parse('ABC', as: :integer)).to eq(123)
+        expect(ENV.parse(:ABC, as: :integer)).to eq(123)
+      end
+    end
+
+    it 'lets ENV respond to `.register`' do
+      expect(ENV).to respond_to(:register)
+    end
+
+    describe 'ENV.register' do
+      it 'ceates global constants' do
+        ENV['ABCD'] = '1234'
+        ENV.register(:ABCD, as: :integer)
+        expect(ABCD).to eq(1234)
+      end
+
+      it 'creates module constants' do
+        module Sample
+        end
+
+        ENV['WXYZ'] = '5678'
+        ENV.register(:WXYZ, as: :integer, within: Sample)
+        expect(Sample::WXYZ).to eq(5678)
+      end
+
+      it 'will accept a hash keyed by variable names' do
+        ENV['FIFTH'] = 'fifth'
+        ENV['SIXTH'] = '99'
+        ENV['SEVENTH'] = 'seventh'
+
+        ENV.register(
+          FIFTH: { as: :string, if_unset: 'no fifth' },
+          SIXTH: { as: :integer, if_unset: 'no sixth' },
+          SEVENTH: { as: :string, if_unset: 'no seventh' },
+          EIGHTH: { as: :boolean, if_unset: 'no eighth' }
+        )
+
+        expect(FIFTH).to eq('fifth')
+        expect(SIXTH).to eq(99)
+        expect(SEVENTH).to eq('seventh')
+        expect(EIGHTH).to eq('no eighth')
+      end
     end
   end
 end

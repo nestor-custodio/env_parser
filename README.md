@@ -24,9 +24,9 @@ Or install it yourself as:
     $ gem install env_parser
 
 
-## Usage
+## Using EnvParser
 
-#### Basic EnvParser usage:
+#### Basic Usage
 
 ```ruby
 ## Returns ENV['TIMEOUT_MS'] as an Integer.
@@ -93,7 +93,7 @@ The named `:as` parameter is required. Allowed values are:
 Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered valid, parseable JSON).
 
 
-#### Setting non-trivial defaults:
+#### Setting Non-Trivial Defaults
 
 ```ruby
 ## If the ENV variable you want is unset (nil) or blank (''),
@@ -110,7 +110,7 @@ EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 'Whoops!' ## => '
 ```
 
 
-#### Validation of parsed ENV values:
+#### Validating Parsed ENV Values
 
 ```ruby
 ## Sometimes setting the type alone is a bit too open-ended.
@@ -124,7 +124,8 @@ EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), i
 EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5) ## => raises EnvParser::ValueNotAllowed
 ```
 
-#### Turning ENV values into constants:
+
+#### Setting Constants From ENV Values
 
 ```ruby
 ## Global constants...
@@ -139,17 +140,14 @@ ENV['ULTIMATE_LINK'] ## => 'https://youtu.be/L_jWHffIx5E' (Set elsewhere, like a
 EnvParser.register :ULTIMATE_LINK, as: :string, within: URI
 URI::ULTIMATE_LINK ## => 'https://youtu.be/L_jWHffIx5E' (You know you want to check it out!)
 ULTIMATE_LINK ## => raises NameError (the un-namespaced constant is only in scope within the URI module)
-```
 
-#### Quickly registering multiple ENV-derived constants:
 
-```ruby
 ## You can also set multiple constants in one call, which is considerably cleaner to read:
 ##
 EnvParser.register :A, as: :string
 EnvParser.register :B, as: :integer, if_unset: 25
 EnvParser.register :C, as: :boolean, if_unset: true
-##
+
 ## ... is equivalent to ...
 ##
 EnvParser.register(
@@ -157,6 +155,23 @@ EnvParser.register(
   B: { as: :integer, if_unset: 25 },
   C: { as: :boolean, if_unset: true }
 )
+```
+
+
+#### Binding EnvParser Proxies Onto ENV
+
+```ruby
+## To allow for even cleaner usage, you can bind proxy "parse" and "register" methods onto ENV.
+## This is done cleanly and without polluting the method space for any other objects.
+##
+EnvParser.add_env_bindings ## Sets up the proxy methods.
+
+## Now you can call "parse" and "register" on ENV itself. Note that ENV's proxy "parse" method will
+## attempt to interpret any value given as an ENV key (converting to a String, if necessary).
+##
+ENV['SHORT_PI'] ## => '3.1415926'
+ENV.parse :SHORT_PI, as: :float ## => 3.1415926
+ENV.register :SHORT_PI, as: :float ## Your constant is set, my man!
 ```
 
 ---
@@ -167,7 +182,6 @@ EnvParser.register(
 ## Feature Roadmap / Future Development
 
 Additional features/options coming in the future:
-- A means to **optionally** bind `#parse`, `#regiter`, and `#register_all` methods onto `ENV`. Because `ENV.parse ...` reads better than `EnvParser.parse ...`.
 - A `validator` option that lets you pass in a validator lambda/block for things more complex than what a simple `from_set` can enforce.
 - A means to register validation blocks as new "as" types. This will allow for custom "as" types like `:url`, `:email`, etc.
 - ... ?

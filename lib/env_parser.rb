@@ -89,8 +89,8 @@ class EnvParser
     ##   ## ... is equivalent to ...
     ##
     ##   EnvParser.register(
-    ##     A: { from: ENV, as: :integer }
-    ##     B: { from: other_hash, as: :string, if_unset: 'none' }
+    ##     A: { from: one_hash, as: :integer }
+    ##     B: { from: another_hash, as: :string, if_unset: 'none' }
     ##   )
     ## </pre>
     ##
@@ -146,6 +146,29 @@ class EnvParser
       within.const_set(name.upcase.to_sym, value.dup.freeze)
 
       value
+    end
+
+    ## Creates ENV bindings for EnvParser.parse and EnvParser.register proxy methods.
+    ##
+    ## The sole difference between these proxy methods and their EnvParser counterparts is that
+    ## ENV.parse will interpret any value given as an ENV key (as a String), not the given value
+    ## itself.  i.e. ENV.parse('XYZ', ...) is equivalent to EnvParser.parse(ENV['XYZ'], ...)
+    ##
+    ## @return [ENV]
+    ##   This generates no usable value, so we may as well return ENV for chaining?
+    ##
+    def add_env_bindings
+      ENV.instance_eval do
+        def parse(name, options = {})
+          EnvParser.parse(self[name.to_s], options)
+        end
+
+        def register(*args)
+          EnvParser.register(*args)
+        end
+      end
+
+      ENV
     end
 
     private
@@ -206,6 +229,9 @@ class EnvParser
     ##
     ## @param set [Array, Range]
     ##
+    ## @return [nil]
+    ##   This generates no usable value.
+    ##
     ## @raise [ArgumentError, EnvParser::ValueNotAllowed]
     ##
     def check_for_set_inclusion(value, set: nil)
@@ -218,6 +244,8 @@ class EnvParser
       end
 
       raise ValueNotAllowed, 'parsed value not in allowed list/range' unless set.include?(value)
+
+      nil
     end
 
     ## Receives a list of "register" calls to make, as a Hash keyed with variable names and the
