@@ -89,8 +89,8 @@ class EnvParser
     ##   ## ... is equivalent to ...
     ##
     ##   EnvParser.register(
-    ##     A: { from: ENV, as: :integer }
-    ##     B: { from: other_hash, as: :string, if_unset: 'none' }
+    ##     A: { from: one_hash, as: :integer }
+    ##     B: { from: another_hash, as: :string, if_unset: 'none' }
     ##   )
     ## </pre>
     ##

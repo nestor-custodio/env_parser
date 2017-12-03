@@ -130,7 +130,7 @@ different data types.</p>
       <dt id="VERSION-constant" class="">VERSION =
         
       </dt>
-      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.5.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.6.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
     
   </dl>
 
@@ -147,6 +147,31 @@ different data types.</p>
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_env_bindings-class_method" title="add_env_bindings (class method)">.<strong>add_env_bindings</strong>  &#x21d2; ENV </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Creates ENV bindings for EnvParser.parse and EnvParser.register proxy
+methods.</p>
+</div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -207,7 +232,92 @@ requested context.</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="parse-class_method">
+  <h3 class="signature first" id="add_env_bindings-class_method">
+  
+    .<strong>add_env_bindings</strong>  &#x21d2; <tt>ENV</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Creates ENV bindings for EnvParser.parse and EnvParser.register proxy
+methods.</p>
+
+<p>The sole difference between these proxy methods and their EnvParser
+counterparts is that ENV.parse will interpret any value given as an ENV key
+(as a String), not the given value itself. i.e. ENV.parse(&#39;XYZ&#39;, …)
+is equivalent to <a href="'XYZ'">EnvParser.parse(ENV</a>, …)</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ENV</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>This generates no usable value, so we may as well return ENV for chaining?</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 160</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_env_bindings'>add_env_bindings</span>
+  <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_instance_eval'>instance_eval</span> <span class='kw'>do</span>
+    <span class='kw'>def</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+      <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+
+    <span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+      <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='const'>ENV</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="parse-class_method">
   
     .<strong>parse</strong>(value, options = {})  &#x21d2; <tt>Object</tt> 
   
@@ -450,8 +560,8 @@ the same keys as those in the “from” Hash and each value being the
   ## ... is equivalent to ...
 
   EnvParser.register(
-    A: { from: ENV, as: :integer }
-    B: { from: other_hash, as: :string, if_unset: &#39;none&#39; }
+    A: { from: one_hash, as: :integer }
+    B: { from: another_hash, as: :string, if_unset: &#39;none&#39; }
   )
 </code></pre>
 
@@ -670,7 +780,7 @@ Kernel (making it a global constant).</p>
 </div>
 
       <div id="footer">
-  Generated on Sun Dec  3 14:43:03 2017 by
+  Generated on Sun Dec  3 16:33:44 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

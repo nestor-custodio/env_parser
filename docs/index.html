@@ -91,9 +91,9 @@ simple.</p>
 
 <pre class="code ruby"><code class="ruby">$ gem install env_parser</code></pre>
 
-<h2 id="label-Usage">Usage</h2>
+<h2 id="label-Using+EnvParser">Using EnvParser</h2>
 
-<h4 id="label-Basic+EnvParser+usage-3A">Basic EnvParser usage:</h4>
+<h4 id="label-Basic+Usage">Basic Usage</h4>
 
 <pre class="code ruby"><code class="ruby"><span class='comment'>## Returns ENV[&#39;TIMEOUT_MS&#39;] as an Integer.
 </span><span class='comment'>## Yields 0 if ENV[&#39;TIMEOUT_MS&#39;] is unset or nil.
@@ -155,7 +155,7 @@ simple.</p>
 <p>Note JSON is parsed using <em>quirks-mode</em> (meaning &#39;true&#39;,
 &#39;25&#39;, and &#39;null&#39; are all considered valid, parseable JSON).</p>
 
-<h4 id="label-Setting+non-trivial+defaults-3A">Setting non-trivial defaults:</h4>
+<h4 id="label-Setting+Non-Trivial+Defaults">Setting Non-Trivial Defaults</h4>
 
 <pre class="code ruby"><code class="ruby"><span class='comment'>## If the ENV variable you want is unset (nil) or blank (&#39;&#39;),
 </span><span class='comment'>## the return value is a sensible default for the given &quot;as&quot; type
@@ -170,7 +170,7 @@ simple.</p>
 </span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MISSING_ENV_VARIABLE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Whoops!</span><span class='tstring_end'>&#39;</span></span> <span class='comment'>## =&gt; &#39;Whoops!&#39;
 </span></code></pre>
 
-<h4 id="label-Validation+of+parsed+ENV+values-3A">Validation of parsed ENV values:</h4>
+<h4 id="label-Validating+Parsed+ENV+Values">Validating Parsed ENV Values</h4>
 
 <pre class="code ruby"><code class="ruby"><span class='comment'>## Sometimes setting the type alone is a bit too open-ended.
 </span><span class='comment'>## The &quot;from_set&quot; option lets you restrict the set of allowed values.
@@ -183,7 +183,7 @@ simple.</p>
 </span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:NEGATIVE_NUMBER</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='lparen'>(</span><span class='int'>1</span><span class='op'>..</span><span class='int'>5</span><span class='rparen'>)</span> <span class='comment'>## =&gt; raises EnvParser::ValueNotAllowed
 </span></code></pre>
 
-<h4 id="label-Turning+ENV+values+into+constants-3A">Turning ENV values into constants:</h4>
+<h4 id="label-Setting+Constants+From+ENV+Values">Setting Constants From ENV Values</h4>
 
 <pre class="code ruby"><code class="ruby"><span class='comment'>## Global constants...
 </span><span class='comment'>##
@@ -197,17 +197,15 @@ simple.</p>
 </span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:ULTIMATE_LINK</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>within:</span> <span class='const'>URI</span>
 <span class='const'>URI</span><span class='op'>::</span><span class='const'>ULTIMATE_LINK</span> <span class='comment'>## =&gt; &#39;https://youtu.be/L_jWHffIx5E&#39; (You know you want to check it out!)
 </span><span class='const'>ULTIMATE_LINK</span> <span class='comment'>## =&gt; raises NameError (the un-namespaced constant is only in scope within the URI module)
-</span></code></pre>
+</span>
 
-<h4 id="label-Quickly+registering+multiple+ENV-derived+constants-3A">Quickly registering multiple ENV-derived constants:</h4>
-
-<pre class="code ruby"><code class="ruby"><span class='comment'>## You can also set multiple constants in one call, which is considerably cleaner to read:
+<span class='comment'>## You can also set multiple constants in one call, which is considerably cleaner to read:
 </span><span class='comment'>##
 </span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span>
 <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:B</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='int'>25</span>
 <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:C</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:boolean</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>true</span>
-<span class='comment'>##
-</span><span class='comment'>## ... is equivalent to ...
+
+<span class='comment'>## ... is equivalent to ...
 </span><span class='comment'>##
 </span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span><span class='lparen'>(</span>
   <span class='label'>A:</span> <span class='lbrace'>{</span> <span class='label'>as:</span> <span class='symbol'>:string</span> <span class='rbrace'>}</span><span class='comma'>,</span>
@@ -215,6 +213,21 @@ simple.</p>
   <span class='label'>C:</span> <span class='lbrace'>{</span> <span class='label'>as:</span> <span class='symbol'>:boolean</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
 <span class='rparen'>)</span>
 </code></pre>
+
+<h4 id="label-Binding+EnvParser+Proxies+Onto+ENV">Binding EnvParser Proxies Onto ENV</h4>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>## To allow for even cleaner usage, you can bind proxy &quot;parse&quot; and &quot;register&quot; methods onto ENV.
+</span><span class='comment'>## This is done cleanly and without polluting the method space for any other objects.
+</span><span class='comment'>##
+</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_add_env_bindings'><span class='object_link'><a href="EnvParser.html#add_env_bindings-class_method" title="EnvParser.add_env_bindings (method)">add_env_bindings</a></span></span> <span class='comment'>## Sets up the proxy methods.
+</span>
+<span class='comment'>## Now you can call &quot;parse&quot; and &quot;register&quot; on ENV itself. Note that ENV&#39;s proxy &quot;parse&quot; method will
+</span><span class='comment'>## attempt to interpret any value given as an ENV key (converting to a String, if necessary).
+</span><span class='comment'>##
+</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SHORT_PI</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='comment'>## =&gt; &#39;3.1415926&#39;
+</span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span> <span class='comment'>## =&gt; 3.1415926
+</span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span> <span class='comment'>## Your constant is set, my man!
+</span></code></pre>
 <hr>
 
 <p><a href="http://nestor-custodio.github.io/env_parser">Consult the repo
@@ -222,15 +235,12 @@ docs</a> for the full EnvParser documentation.</p>
 
 <h2 id="label-Feature+Roadmap+-2F+Future+Development">Feature Roadmap / Future Development</h2>
 
-<p>Additional features/options coming in the future: - A means to
-<strong>optionally</strong> bind <code>#parse</code>,
-<code>#regiter</code>, and <code>#register_all</code> methods onto
-<code>ENV</code>. Because <code>ENV.parse ...</code> reads better than
-<code>EnvParser.parse ...</code>. - A <code>validator</code> option that
-lets you pass in a validator lambda/block for things more complex than what
-a simple <code>from_set</code> can enforce. - A means to register
-validation blocks as new “as” types. This will allow for custom “as” types
-like <code>:url</code>, <code>:email</code>, etc. - … ?</p>
+<p>Additional features/options coming in the future: - A
+<code>validator</code> option that lets you pass in a validator
+lambda/block for things more complex than what a simple
+<code>from_set</code> can enforce. - A means to register validation blocks
+as new “as” types. This will allow for custom “as” types like
+<code>:url</code>, <code>:email</code>, etc. - … ?</p>
 
 <h2 id="label-Contribution+-2F+Development">Contribution / Development</h2>
 
@@ -261,7 +271,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Sun Dec  3 14:43:03 2017 by
+  Generated on Sun Dec  3 16:33:43 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>
