@@ -26,7 +26,8 @@ Or install it yourself as:
 
 ## Usage
 
-Basic EnvParser usage:
+#### Basic EnvParser usage:
+
 ```ruby
 ## Returns ENV['TIMEOUT_MS'] as an Integer.
 ## Yields 0 if ENV['TIMEOUT_MS'] is unset or nil.
@@ -36,13 +37,69 @@ timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
 ## LESS TYPING, PLZ!  :(
 ## If you pass in a Symbol instead of a String, EnvParser
 ## will use the value behind the matching String key in ENV.
-## (i.e. passing in `ENV['X']` is equivalent to passing in `:X`)
+## (i.e. passing in ENV['X'] is equivalent to passing in :X)
 ##
 timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer
+```
 
-## If the ENV variable you want is unset (`nil`) or blank (`''`),
-## the return value is a sensible default for the given "as" type.
-## Sometimes you want a non-trivial default (not just 0, '', etc), however.
+---
+
+The named `:as` parameter is required. Allowed values are:
+
+<table>
+  <tbody>
+    <tr>
+      <th><code>:as</code> value</th>
+      <th>type returned</th>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>:string</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>:symbol</td>
+      <td>Symbol</td>
+    </tr>
+    <tr>
+      <td>:boolean</td>
+      <td>TrueValue / FalseValue</td>
+    </tr>
+    <tr>
+      <td>:int / :integer</td>
+      <td>Integer</td>
+    </tr>
+    <tr>
+      <td>:float / :decimal / :number</td>
+      <td>Float</td>
+    </tr>
+    <tr>
+      <td>:json</td>
+      <td>&lt; depends on JSON given &gt;</td>
+    </tr>
+    <tr>
+      <td>:array</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td>:hash</td>
+      <td>Hash</td>
+    </tr>
+  </tbody>
+</table>
+
+
+Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered valid, parseable JSON).
+
+
+#### Setting non-trivial defaults:
+
+```ruby
+## If the ENV variable you want is unset (nil) or blank (''),
+## the return value is a sensible default for the given "as" type
+## (0 or 0.0 for numbers, an empty tring, an empty Array or Hash, etc).
+## Sometimes you want a non-trivial default, however.
 ##
 EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer ## => 0
 EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250 ## => 250
@@ -50,7 +107,12 @@ EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250 ## => 250
 ## Note that "if_unset" values are used as-is, with no type conversion.
 ##
 EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 'Whoops!' ## => 'Whoops!'
+```
 
+
+#### Validation of parsed ENV values:
+
+```ruby
 ## Sometimes setting the type alone is a bit too open-ended.
 ## The "from_set" option lets you restrict the set of allowed values.
 ##
@@ -60,49 +122,51 @@ EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), i
 ## And if the value is not allowed...
 ##
 EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5) ## => raises EnvParser::ValueNotAllowed
+```
 
-## You can also SET CONSTANTS DIRECTLY FROM YOUR ENV VARIABLES.
+#### Turning ENV values into constants:
 
+```ruby
 ## Global constants...
 ##
-ENV['API_KEY'] = 'unbreakable p4$$w0rd'
+ENV['API_KEY'] ## => 'unbreakable p4$$w0rd' (Set elsewhere, like a ".env" file.)
 EnvParser.register :API_KEY, as: :string
 API_KEY ## => 'unbreakable p4$$w0rd' (registered within the Kernel module, so it's available everywhere)
 
 ## ... and class/module constants!
 ##
-ENV['ULTIMATE_LINK'] = 'https://youtu.be/L_jWHffIx5E'
+ENV['ULTIMATE_LINK'] ## => 'https://youtu.be/L_jWHffIx5E' (Set elsewhere, like a ".env" file.)
 EnvParser.register :ULTIMATE_LINK, as: :string, within: URI
-URI::ULTIMATE_LINK ## => That sweet, sweet link we just set.
+URI::ULTIMATE_LINK ## => 'https://youtu.be/L_jWHffIx5E' (You know you want to check it out!)
 ULTIMATE_LINK ## => raises NameError (the un-namespaced constant is only in scope within the URI module)
+```
+
+#### Quickly registering multiple ENV-derived constants:
+
+```ruby
+## You can also set multiple constants in one call, which is considerably cleaner to read:
+##
+EnvParser.register :A, as: :string
+EnvParser.register :B, as: :integer, if_unset: 25
+EnvParser.register :C, as: :boolean, if_unset: true
+##
+## ... is equivalent to ...
+##
+EnvParser.register(
+  A: { as: :string },
+  B: { as: :integer, if_unset: 25 },
+  C: { as: :boolean, if_unset: true }
+)
 ```
 
 ---
 
-The named `:as` value is required. Allowed values are:
-
-| `:as` value                 | type returned                   |
-|-----------------------------|---------------------------------|
-| :string                     | String                          |
-| :symbol                     | Symbol                          |
-| :boolean                    | TrueValue / FalseValue          |
-| :int / :integer             | Integer                         |
-| :float / :decimal / :number | Float                           |
-| :json                       | &lt; depends on JSON given &gt; |
-| :array                      | Array                           |
-| :hash                       | Hash                            |
-
-Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered valid, parseable JSON).
-
----
-
-[Consult the repo docs](https://github.com/nestor-custodio/env_parser/blob/master/docs/index.html) for the full EnvParser documentation.
+[Consult the repo docs](http://nestor-custodio.github.io/env_parser) for the full EnvParser documentation.
 
 
 ## Feature Roadmap / Future Development
 
 Additional features/options coming in the future:
-- An `EnvParser.register_all` method to shortcut multiple `.register` calls.
 - A means to **optionally** bind `#parse`, `#regiter`, and `#register_all` methods onto `ENV`. Because `ENV.parse ...` reads better than `EnvParser.parse ...`.
 - A `validator` option that lets you pass in a validator lambda/block for things more complex than what a simple `from_set` can enforce.
 - A means to register validation blocks as new "as" types. This will allow for custom "as" types like `:url`, `:email`, etc.

@@ -225,7 +225,7 @@ class EnvParser
     ##
     ## @param list [Hash]
     ##
-    ## @regurn [Hash]
+    ## @return [Hash]
     ##
     ## @raise [ArgumentError]
     ##
