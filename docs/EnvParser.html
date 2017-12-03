@@ -130,7 +130,7 @@ different data types.</p>
       <dt id="VERSION-constant" class="">VERSION =
         
       </dt>
-      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.4.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.5.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
     
   </dl>
 
@@ -403,7 +403,7 @@ value will raise an ArgumentError exception.</p>
 
   <span class='kw'>return</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:if_unset</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_blank?'>blank?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:if_unset</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span>
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span>
           <span class='kw'>when</span> <span class='symbol'>:string</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_string'>parse_string</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
           <span class='kw'>when</span> <span class='symbol'>:symbol</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_symbol'>parse_symbol</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
           <span class='kw'>when</span> <span class='symbol'>:boolean</span> <span class='kw'>then</span> <span class='id identifier rubyid_parse_boolean'>parse_boolean</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
@@ -438,6 +438,22 @@ value will raise an ArgumentError exception.</p>
 <p>Parses the referenced value and creates a matching constant in the
 requested context.</p>
 
+<p>Multiple calls to “register” may be shortcutted by passing in a Hash with
+the same keys as those in the “from” Hash and each value being the
+“register” options set for each variable&#39;s “register” call.</p>
+<pre class="code ruby"><code class="ruby">
+  ## Example shortcut usage:
+
+  EnvParser.register :A, from: one_hash, as: :integer
+  EnvParser.register :B, from: another_hash, as: :string, if_unset: &#39;none&#39;
+
+  ## ... is equivalent to ...
+
+  EnvParser.register(
+    A: { from: ENV, as: :integer }
+    B: { from: other_hash, as: :string, if_unset: &#39;none&#39; }
+  )
+</code></pre>
 
   </div>
 </div>
@@ -578,24 +594,6 @@ Kernel (making it a global constant).</p>
       <pre class="lines">
 
 
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
 119
 120
 121
@@ -604,12 +602,38 @@ Kernel (making it a global constant).</p>
 124
 125
 126
-127</pre>
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 101</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='comment'>## We want to allow for registering multiple variables simultaneously via a single `.register`
+</span>  <span class='comment'>## method call.
+</span>  <span class='kw'>return</span> <span class='id identifier rubyid_register_all'>register_all</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
+
   <span class='id identifier rubyid_from'>from</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:from</span><span class='comma'>,</span> <span class='const'>ENV</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_within'>within</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:within</span><span class='comma'>,</span> <span class='const'>Kernel</span><span class='rparen'>)</span>
 
@@ -646,7 +670,7 @@ Kernel (making it a global constant).</p>
 </div>
 
       <div id="footer">
-  Generated on Thu Nov 30 22:44:16 2017 by
+  Generated on Sun Dec  3 14:43:03 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

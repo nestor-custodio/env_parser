@@ -128,7 +128,7 @@ RSpec.describe EnvParser do
 
   describe 'EnvParse.register' do
     it 'ceates global constants' do
-      source_hash = { ABC: 123 }
+      source_hash = { ABC: '123' }
       EnvParser.register(:ABC, from: source_hash, as: :integer)
       expect(ABC).to eq(123)
     end
@@ -137,9 +137,24 @@ RSpec.describe EnvParser do
       module Sample
       end
 
-      source_hash = { XYZ: 456 }
+      source_hash = { XYZ: '456' }
       EnvParser.register(:XYZ, from: source_hash, as: :integer, within: Sample)
       expect(Sample::XYZ).to eq(456)
+    end
+
+    it 'will accept a hash keyed by variable names' do
+      source_hash = { FIRST: 'first', SECOND: '99', THIRD: 'third' }
+      EnvParser.register(
+        FIRST: { from: source_hash, as: :string, if_unset: 'no first' },
+        SECOND: { from: source_hash, as: :integer, if_unste: 'no second' },
+        THIRD: { from: source_hash, as: :string, if_unset: 'no third' },
+        FOURTH: { from: source_hash, as: :boolean, if_unset: 'no fourth' }
+      )
+
+      expect(FIRST).to eq('first')
+      expect(SECOND).to eq(99)
+      expect(THIRD).to eq('third')
+      expect(FOURTH).to eq('no fourth')
     end
   end
 end
