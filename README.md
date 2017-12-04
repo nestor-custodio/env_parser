@@ -1,4 +1,4 @@
-# EnvParser
+# EnvParser  [![Gem Version](https://badge.fury.io/rb/env_parser.svg)](https://badge.fury.io/rb/env_parser)
 
 If your code uses environment variables, you know that `ENV` will always surface these as strings. Interpreting these strings as the value you *actually* want to see/use takes some additional effort, however.
 
@@ -182,6 +182,7 @@ ENV.register :SHORT_PI, as: :float ## Your constant is set, my man!
 ## Feature Roadmap / Future Development
 
 Additional features/options coming in the future:
+
 - A `validator` option that lets you pass in a validator lambda/block for things more complex than what a simple `from_set` can enforce.
 - A means to register validation blocks as new "as" types. This will allow for custom "as" types like `:url`, `:email`, etc.
 - ... ?
