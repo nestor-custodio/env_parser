@@ -120,6 +120,16 @@ RSpec.describe EnvParser do
 
       expect(EnvParser.parse(nil, as: :integer, if_unset: 9, from_set: [1, 2, 3])).to eq(9)
     end
+
+    it 'only allows values that pass user-defined validation' do
+      expect(EnvParser.parse('abc', as: :string)).to eq('abc')
+      expect(EnvParser.parse('abc', as: :string) { |_| true }).to eq('abc')
+      expect { EnvParser.parse('abc', as: :string) { |_| false } }.to raise_exception(EnvParser::ValueNotAllowed)
+
+      expect(EnvParser.parse('abc', as: :string)).to eq('abc')
+      expect(EnvParser.parse('abc', as: :string, validated_by: ->(_) { true })).to eq('abc')
+      expect { EnvParser.parse('abc', as: :string, validated_by: ->(_) { false }) }.to raise_exception(EnvParser::ValueNotAllowed)
+    end
   end
 
   it 'responds to `.register`' do

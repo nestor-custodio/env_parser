@@ -130,7 +130,7 @@ different data types.</p>
       <dt id="VERSION-constant" class="">VERSION =
         
       </dt>
-      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.6.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>0.7.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
     
   </dl>
 
@@ -176,7 +176,7 @@ methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#parse-class_method" title="parse (class method)">.<strong>parse</strong>(value, options = {})  &#x21d2; Object </a>
+      <a href="#parse-class_method" title="parse (class method)">.<strong>parse</strong>(value, options = {}) {|value| ... } &#x21d2; Object </a>
     
 
     
@@ -200,7 +200,7 @@ methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#register-class_method" title="register (class method)">.<strong>register</strong>(name, options = {})  &#x21d2; Object </a>
+      <a href="#register-class_method" title="register (class method)">.<strong>register</strong>(name, options = {}) {|value| ... } &#x21d2; Object </a>
     
 
     
@@ -281,27 +281,27 @@ is equivalent to <a href="'XYZ'">EnvParser.parse(ENV</a>, …)</p>
       <pre class="lines">
 
 
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172</pre>
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 160</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 190</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_env_bindings'>add_env_bindings</span>
   <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_instance_eval'>instance_eval</span> <span class='kw'>do</span>
-    <span class='kw'>def</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-      <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+    <span class='kw'>def</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
+      <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
     <span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -319,7 +319,7 @@ is equivalent to <a href="'XYZ'">EnvParser.parse(ENV</a>, …)</p>
       <div class="method_details ">
   <h3 class="signature " id="parse-class_method">
   
-    .<strong>parse</strong>(value, options = {})  &#x21d2; <tt>Object</tt> 
+    .<strong>parse</strong>(value, options = {}) {|value| ... } &#x21d2; <tt>Object</tt> 
   
 
   
@@ -459,9 +459,55 @@ value will raise an ArgumentError exception.</p>
           
         </li>
       
+        <li>
+          <span class="name">validated_by</span>
+          <span class="type">(<tt>Proc</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'>
+<p>If given, the “validated_by” proc is called with the parsed value (after
+type conversion) as its sole argument. This allows for user-defined
+validation of the parsed value beyond what can be enforced by use of the
+“from_set” option alone. If the proc&#39;s return value is
+<code>#blank?</code>, an EnvParser::ValueNotAllowed exception is raised. To
+accomodate your syntax of choice, this validation proc may be given as a
+yield block instead.</p>
+
+<p>Note that this option is intended to provide an inspection mechanism only –
+no mutation of the parsed value should occur within the given proc. To that
+end, the argument passed is a <em>frozen</em> duplicate of the parsed
+value.</p>
+</div>
+          
+        </li>
+      
     </ul>
   
 
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>value</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>A block (if given) is treated exactly as the “validated_by” Proc would.
+Although there is no compelling reason to provide both a “validated_by”
+proc <em>and</em> a validation block, there is no technical limitation
+preventing this. <strong>If both are given, both validation checks must
+pass.</strong></p>
+</div>
+      
+    </li>
+  
+</ul>
 <p class="tag_title">Raises:</p>
 <ul class="raise">
   
@@ -482,32 +528,34 @@ value will raise an ArgumentError exception.</p>
       <pre class="lines">
 
 
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71
 72
 73
 74
-75</pre>
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 72</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Symbol</span>
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
 
@@ -526,6 +574,8 @@ value will raise an ArgumentError exception.</p>
           <span class='kw'>end</span>
 
   <span class='id identifier rubyid_check_for_set_inclusion'>check_for_set_inclusion</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='label'>set:</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:from_set</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:from_set</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_check_user_defined_validations'>check_user_defined_validations</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='label'>proc:</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:validated_by</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>block:</span> <span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
+
   <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -536,7 +586,7 @@ value will raise an ArgumentError exception.</p>
       <div class="method_details ">
   <h3 class="signature " id="register-class_method">
   
-    .<strong>register</strong>(name, options = {})  &#x21d2; <tt>Object</tt> 
+    .<strong>register</strong>(name, options = {}) {|value| ... } &#x21d2; <tt>Object</tt> 
   
 
   
@@ -650,10 +700,11 @@ Kernel (making it a global constant).</p>
           <span class="type">(<tt>Symbol</tt>)</span>
           <span class="default">
             
-              &mdash; default:
-              <tt>See `.parse`</tt>
-            
           </span>
+          
+            &mdash; <div class='inline'>
+<p>See <code>.parse</code>.</p>
+</div>
           
         </li>
       
@@ -662,10 +713,11 @@ Kernel (making it a global constant).</p>
           <span class="type">(<tt>Object</tt>)</span>
           <span class="default">
             
-              &mdash; default:
-              <tt>See `.parse`</tt>
-            
           </span>
+          
+            &mdash; <div class='inline'>
+<p>See <code>.parse</code>.</p>
+</div>
           
         </li>
       
@@ -674,16 +726,51 @@ Kernel (making it a global constant).</p>
           <span class="type">(<tt>Array</tt>, <tt>Range</tt>)</span>
           <span class="default">
             
-              &mdash; default:
-              <tt>See `.parse`</tt>
+          </span>
+          
+            &mdash; <div class='inline'>
+<p>See <code>.parse</code>.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">validated_by</span>
+          <span class="type">(<tt>Proc</tt>)</span>
+          <span class="default">
             
           </span>
+          
+            &mdash; <div class='inline'>
+<p>See <code>.parse</code>.</p>
+</div>
           
         </li>
       
     </ul>
   
 
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>value</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>A block (if given) is treated exactly as in <code>.parse</code>. Note,
+however, that a single yield block cannot be used to register multiple
+constants simultaneously – each value needing validation must give its own
+“validated_by” proc.</p>
+</div>
+      
+    </li>
+  
+</ul>
 <p class="tag_title">Raises:</p>
 <ul class="raise">
   
@@ -704,45 +791,51 @@ Kernel (making it a global constant).</p>
       <pre class="lines">
 
 
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
 146
 147
 148
-149</pre>
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 146</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
   <span class='comment'>## We want to allow for registering multiple variables simultaneously via a single `.register`
 </span>  <span class='comment'>## method call.
-</span>  <span class='kw'>return</span> <span class='id identifier rubyid_register_all'>register_all</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot register multiple values with one yield block</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_register_all'>register_all</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
   <span class='id identifier rubyid_from'>from</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:from</span><span class='comma'>,</span> <span class='const'>ENV</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_within'>within</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:within</span><span class='comma'>,</span> <span class='const'>Kernel</span><span class='rparen'>)</span>
@@ -765,7 +858,7 @@ Kernel (making it a global constant).</p>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_from'>from</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_const_set'>const_set</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_value'>value</span>
@@ -780,7 +873,7 @@ Kernel (making it a global constant).</p>
 </div>
 
       <div id="footer">
-  Generated on Sun Dec  3 19:38:06 2017 by
+  Generated on Mon Dec 11 23:37:25 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

@@ -50,9 +50,26 @@ class EnvParser
     ##   for scalar values (i.e. not arrays, hashes, or other enumerables). An attempt to use the
     ##   "from_set" option with a non-scalar value will raise an ArgumentError exception.
     ##
+    ## @option options validated_by [Proc]
+    ##   If given, the "validated_by" proc is called with the parsed value (after type conversion)
+    ##   as its sole argument. This allows for user-defined validation of the parsed value beyond
+    ##   what can be enforced by use of the "from_set" option alone. If the proc's return value is
+    ##   `#blank?`, an EnvParser::ValueNotAllowed exception is raised. To accomodate your syntax of
+    ##   choice, this validation proc may be given as a yield block instead.
+    ##
+    ##   Note that this option is intended to provide an inspection mechanism only -- no mutation
+    ##   of the parsed value should occur within the given proc. To that end, the argument passed is
+    ##   a *frozen* duplicate of the parsed value.
+    ##
+    ## @yield [value]
+    ##   A block (if given) is treated exactly as the "validated_by" Proc would. Although there is
+    ##   no compelling reason to provide both a "validated_by" proc *and* a validation block, there
+    ##   is no technical limitation preventing this. **If both are given, both validation checks
+    ##   must pass.**
+    ##
     ## @raise [ArgumentError, EnvParser::ValueNotAllowed]
     ##
-    def parse(value, options = {})
+    def parse(value, options = {}, &validation_block)
       value = ENV[value.to_s] if value.is_a? Symbol
       value = value.to_s
 
@@ -71,6 +88,8 @@ class EnvParser
               end
 
       check_for_set_inclusion(value, set: options[:from_set]) if options.key?(:from_set)
+      check_user_defined_validations(value, proc: options[:validated_by], block: validation_block)
+
       value
     end
 
@@ -106,20 +125,31 @@ class EnvParser
     ##   a global constant).
     ##
     ## @option options as [Symbol]
-    ##   (See `.parse`)
+    ##   See `.parse`.
     ##
     ## @option options if_unset
-    ##   (See `.parse`)
+    ##   See `.parse`.
     ##
     ## @option options from_set [Array, Range]
-    ##   (See `.parse`)
+    ##   See `.parse`.
+    ##
+    ## @option options validated_by [Proc]
+    ##   See `.parse`.
+    ##
+    ## @yield [value]
+    ##   A block (if given) is treated exactly as in `.parse`. Note, however, that a single yield
+    ##   block cannot be used to register multiple constants simultaneously -- each value needing
+    ##   validation must give its own "validated_by" proc.
     ##
     ## @raise [ArgumentError]
     ##
-    def register(name, options = {})
+    def register(name, options = {}, &validation_block)
       ## We want to allow for registering multiple variables simultaneously via a single `.register`
       ## method call.
-      return register_all(name) if name.is_a? Hash
+      if name.is_a? Hash
+        raise ArgumentError, 'cannot register multiple values with one yield block' if block_given?
+        return register_all(name)
+      end
 
       from = options.fetch(:from, ENV)
       within = options.fetch(:within, Kernel)
@@ -142,7 +172,7 @@ class EnvParser
       end
 
       value = from[name]
-      value = parse(value, options)
+      value = parse(value, options, &validation_block)
       within.const_set(name.upcase.to_sym, value.dup.freeze)
 
       value
@@ -159,8 +189,8 @@ class EnvParser
     ##
     def add_env_bindings
       ENV.instance_eval do
-        def parse(name, options = {})
-          EnvParser.parse(self[name.to_s], options)
+        def parse(name, options = {}, &validation_block)
+          EnvParser.parse(self[name.to_s], options, &validation_block)
         end
 
         def register(*args)
@@ -226,7 +256,6 @@ class EnvParser
     ## Verifies that the given "value" is included in the "set".
     ##
     ## @param value
-    ##
     ## @param set [Array, Range]
     ##
     ## @return [nil]
@@ -244,6 +273,25 @@ class EnvParser
       end
 
       raise ValueNotAllowed, 'parsed value not in allowed list/range' unless set.include?(value)
+
+      nil
+    end
+
+    ## Verifies that the given "value" passes both the "proc" and "block" validations.
+    ##
+    ## @param value
+    ## @param proc [Proc, nil]
+    ## @param block [Proc, nil]
+    ##
+    ## @return [nil]
+    ##   This generates no usable value.
+    ##
+    ## @raise [EnvParser::ValueNotAllowed]
+    ##
+    def check_user_defined_validations(value, proc: nil, block: nil)
+      immutable_value = value.dup.freeze
+      error = 'parsed value failed user validation'
+      raise ValueNotAllowed, error unless [proc, block].compact.all? { |i| i.call(immutable_value) }
 
       nil
     end
