@@ -1,10 +1,8 @@
 # EnvParser  [![Gem Version](https://badge.fury.io/rb/env_parser.svg)](https://badge.fury.io/rb/env_parser)
 
-If your code uses environment variables, you know that `ENV` will always surface these as strings. Interpreting these strings as the value you *actually* want to see/use takes some additional effort, however.
+If your code uses environment variables, you know that `ENV` will always surface these as strings. Interpreting these strings as the value you *actually* want to see/use takes some work, however: for numbers you need to cast with `#to_i`/`#to_f`, for booleans you need to check for a specific value (`ENV['SOME_VAR'] == 'true'`), etc. Maybe you want to set non-trivial defaults (something other than `0` or `''`)? Maybe you only want to allow values from a limited set? ...
 
-If you want a number, you need to cast: `#to_i`/`#to_f`. If you want a boolean, you need to check for a specific value: `ENV['SOME_VAR'] == 'true'`. Maybe you want to set non-trivial defaults (something other than `0` or `''`)? Maybe you only want to allow values from a limited set.
-
-Things can get out of control pretty fast, especially as the number of environment variables in play grows. EnvParser aims to help keep things simple.
+Things can get out of control pretty fast, especially as the number of environment variables in play grows. Tools like [dotenv](https://github.com/bkeepers/dotenv) help to make sure you're loading the correct set of *variables*, but EnvParser makes *the values themselves* usable with a minimum of effort.
 
 
 ## Installation
@@ -122,6 +120,15 @@ EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), i
 ## And if the value is not allowed...
 ##
 EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5) ## => raises EnvParser::ValueNotAllowed
+
+
+## The "validated_by" option allows for more complex validation.
+##
+EnvParser.parse :MUST_BE_LOWERCASE, as: :string, validated_by: ->(value) { value == value.downcase }
+
+## ... but a block will also do the trick!
+EnvParser.parse(:MUST_BE_LOWERCASE, as: :string) { |value| value == value.downcase }
+EnvParser.parse(:CONNECTION_RETRIES, as: :integer, &:nonzero?)
 ```
 
 
@@ -183,7 +190,6 @@ ENV.register :SHORT_PI, as: :float ## Your constant is set, my man!
 
 Additional features/options coming in the future:
 
-- A `validator` option that lets you pass in a validator lambda/block for things more complex than what a simple `from_set` can enforce.
 - A means to register validation blocks as new "as" types. This will allow for custom "as" types like `:url`, `:email`, etc.
 - ... ?
 

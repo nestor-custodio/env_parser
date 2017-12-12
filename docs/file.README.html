@@ -62,19 +62,18 @@
 
 <p>If your code uses environment variables, you know that <code>ENV</code>
 will always surface these as strings. Interpreting these strings as the
-value you <em>actually</em> want to see/use takes some additional effort,
-however.</p>
-
-<p>If you want a number, you need to cast:
-<code>#to_i</code>/<code>#to_f</code>. If you want a boolean, you need to
-check for a specific value: <code>ENV['SOME_VAR'] == &#39;true&#39;</code>.
-Maybe you want to set non-trivial defaults (something other than
-<code>0</code> or <code>&#39;&#39;</code>)? Maybe you only want to allow
-values from a limited set.</p>
+value you <em>actually</em> want to see/use takes some work, however: for
+numbers you need to cast with <code>#to_i</code>/<code>#to_f</code>, for
+booleans you need to check for a specific value (<code>ENV['SOME_VAR'] ==
+&#39;true&#39;</code>), etc. Maybe you want to set non-trivial defaults
+(something other than <code>0</code> or <code>&#39;&#39;</code>)? Maybe you
+only want to allow values from a limited set? …</p>
 
 <p>Things can get out of control pretty fast, especially as the number of
-environment variables in play grows. EnvParser aims to help keep things
-simple.</p>
+environment variables in play grows. Tools like <a
+href="https://github.com/bkeepers/dotenv">dotenv</a> help to make sure
+you&#39;re loading the correct set of <em>variables</em>, but EnvParser
+makes <em>the values themselves</em> usable with a minimum of effort.</p>
 
 <h2 id="label-Installation">Installation</h2>
 
@@ -181,7 +180,16 @@ simple.</p>
 <span class='comment'>## And if the value is not allowed...
 </span><span class='comment'>##
 </span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:NEGATIVE_NUMBER</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='lparen'>(</span><span class='int'>1</span><span class='op'>..</span><span class='int'>5</span><span class='rparen'>)</span> <span class='comment'>## =&gt; raises EnvParser::ValueNotAllowed
-</span></code></pre>
+</span>
+
+<span class='comment'>## The &quot;validated_by&quot; option allows for more complex validation.
+</span><span class='comment'>##
+</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MUST_BE_LOWERCASE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>validated_by:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='rbrace'>}</span>
+
+<span class='comment'>## ... but a block will also do the trick!
+</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:MUST_BE_LOWERCASE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='rbrace'>}</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:CONNECTION_RETRIES</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='symbol'>:nonzero?</span><span class='rparen'>)</span>
+</code></pre>
 
 <h4 id="label-Setting+Constants+From+ENV+Values">Setting Constants From ENV Values</h4>
 
@@ -237,10 +245,6 @@ docs</a> for the full EnvParser documentation.</p>
 
 <p>Additional features/options coming in the future:</p>
 <ul><li>
-<p>A <code>validator</code> option that lets you pass in a validator
-lambda/block for things more complex than what a simple
-<code>from_set</code> can enforce.</p>
-</li><li>
 <p>A means to register validation blocks as new “as” types. This will allow
 for custom “as” types like <code>:url</code>, <code>:email</code>, etc.</p>
 </li><li>
@@ -276,7 +280,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Sun Dec  3 19:38:06 2017 by
+  Generated on Mon Dec 11 23:37:25 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>
