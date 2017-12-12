@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    env_parser (0.6.0)
+    env_parser (0.7.0)
       activesupport (>= 5.0.0)
 
 GEM
