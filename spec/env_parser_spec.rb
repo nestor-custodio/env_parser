@@ -5,6 +5,17 @@ RSpec.describe EnvParser do
     expect(EnvParser::VERSION).not_to be nil
   end
 
+  it 'responds to `.define_type`' do
+    expect(EnvParser).to respond_to(:define_type)
+  end
+
+  describe 'EnvParser.define_type' do
+    it 'can register new types' do
+      EnvParser.define_type(:thirty) { |_| 30 }
+      expect(EnvParser.parse('dummy value', as: :thirty)).to eq(30)
+    end
+  end
+
   it 'responds to `.parse`' do
     expect(EnvParser).to respond_to(:parse)
   end
