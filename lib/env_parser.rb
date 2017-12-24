@@ -53,13 +53,11 @@ class EnvParser
     def define_type(name, options = {}, &parser)
       raise(ArgumentError, 'no parsing block given') unless block_given?
 
-      @@known_types ||= {}
-
       given_types = (Array(name) + Array(options[:aliases])).map(&:to_s).map(&:to_sym)
       given_types.each do |type|
-        raise(TypeAlreadyDefined, "cannot redefine #{type.inspect}") if @@known_types.key?(type)
+        raise(TypeAlreadyDefined, "cannot redefine #{type.inspect}") if known_types.key?(type)
 
-        @@known_types[type] = {
+        known_types[type] = {
           parser: parser,
           if_unset: options[:if_unset]
         }
@@ -122,7 +120,7 @@ class EnvParser
       value = ENV[value.to_s] if value.is_a? Symbol
       value = value.to_s
 
-      type = @@known_types[options[:as]]
+      type = known_types[options[:as]]
       raise(ArgumentError, "invalid `as` parameter: #{options[:as].inspect}") unless type
 
       return (options.key?(:if_unset) ? options[:if_unset] : type[:if_unset]) if value.blank?
@@ -243,6 +241,12 @@ class EnvParser
     end
 
     private
+
+    ## Class instance variable for storing known type data.
+    ##
+    def known_types
+      @known_types ||= {}
+    end
 
     ## Verifies that the given "value" is included in the "set".
     ##
