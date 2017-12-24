@@ -4,9 +4,19 @@ require 'active_support/all'
 ## The EnvParser class simplifies parsing of environment variables as different data types.
 ##
 class EnvParser
+  ## Base exception class for EnvParser.
+  ##
+  class Error < ::StandardError
+  end
+
   ## Exception class used to indicate parsed values not allowed per a "from_set" option.
   ##
-  class ValueNotAllowed < StandardError
+  class ValueNotAllowed < Error
+  end
+
+  ## Exception class used to indicate a type has already been defined.
+  ##
+  class TypeAlreadyDefined < Error
   end
 
   class << self
@@ -38,7 +48,7 @@ class EnvParser
     ## @return [nil]
     ##   This generates no usable value.
     ##
-    ## @raise [ArgumentError]
+    ## @raise [ArgumentError, EnvParser::TypeAlreadyDefined]
     ##
     def define_type(name, options = {}, &parser)
       raise(ArgumentError, 'no parsing block given') unless block_given?
@@ -47,6 +57,8 @@ class EnvParser
 
       given_types = (Array(name) + Array(options[:aliases])).map(&:to_s).map(&:to_sym)
       given_types.each do |type|
+        raise(TypeAlreadyDefined, "cannot redefine #{type.inspect}") if @@known_types.key?(type)
+
         @@known_types[type] = {
           parser: parser,
           if_unset: options[:if_unset]
