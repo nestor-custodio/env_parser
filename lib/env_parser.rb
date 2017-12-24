@@ -10,6 +10,52 @@ class EnvParser
   end
 
   class << self
+    ## Defines a new type for use as the "as" option on a subsequent `.parse` or `.register` call.
+    ##
+    ## @param name [Symbol]
+    ##   The name to assign to the type.
+    ##
+    ## @option options aliases [Array<Symbol>]
+    ##   An array of additional names you'd like to see refer to this same type.
+    ##
+    ## @option options if_unset
+    ##   Specifies a "sensible default" to return for this type if the value being parsed (via
+    ##   `.parse` or `.register`) is either unset (`nil`) or blank (`''`). Note this may be
+    ##   overridden by the user via the `.parse`/`.register` "if_unset" option.
+    ##
+    ## @yield
+    ##   A block to act as the parser for the this type. If no block is given, an ArgumentError is
+    ##   raised.
+    ##
+    ##   When the type defined is used via a `.parse`/`.register` call, this block is invoked with
+    ##   the value to be parsed. Said value is guaranteed to be a non-empty String (the "if_unset"
+    ##   check will have already run), but no other assurances as to content are given. The block
+    ##   should return the final output of parsing the given String value as the type being defined.
+    ##
+    ##   If the value given cannot be sensibly parsed into the type defined, the block should raise
+    ##   an EnvParser::ValueNotAllowed exception.
+    ##
+    ## @return [nil]
+    ##   This generates no usable value.
+    ##
+    ## @raise [ArgumentError]
+    ##
+    def define_type(name, options = {}, &parser)
+      raise(ArgumentError, 'no parsing block given') unless block_given?
+
+      @@known_types ||= {}
+
+      given_types = (Array(name) + Array(options[:aliases])).map(&:to_s).map(&:to_sym)
+      given_types.each do |type|
+        @@known_types[type] = {
+          parser: parser,
+          if_unset: options[:if_unset]
+        }
+      end
+
+      nil
+    end
+
     ## Interprets the given value as the specified type.
     ##
     ## @param value [String, Symbol]
@@ -18,19 +64,10 @@ class EnvParser
     ##
     ## @option options as [Symbol]
     ##   The expected return type. A best-effort attempt is made to convert the source String to the
-    ##   requested type. Valid "as" types are:
+    ##   requested type.
     ##
-    ##   - `:string`
-    ##   - `:symbol`
-    ##   - `:boolean`
-    ##   - `:int` / `:integer`
-    ##   - `:float` / `:decimal` / `:number`
-    ##   - `:json`
-    ##   - `:array`
-    ##   - `:hash`
-    ##
-    ##   If no "as" option is given (or the "as" value given is not on the above list), an
-    ##   ArgumentError exception is raised.
+    ##   If no "as" option is given (or the "as" value given has not been defined), an ArgumentError
+    ##   exception is raised.
     ##
     ## @option options if_unset
     ##   Specifies the default value to return if the given "value" is either unset (`nil`) or blank
@@ -73,20 +110,12 @@ class EnvParser
       value = ENV[value.to_s] if value.is_a? Symbol
       value = value.to_s
 
-      return options[:if_unset] if value.blank? && options.key?(:if_unset)
+      type = @@known_types[options[:as]]
+      raise(ArgumentError, "invalid `as` parameter: #{options[:as].inspect}") unless type
 
-      value = case options[:as]
-              when :string then parse_string(value)
-              when :symbol then parse_symbol(value)
-              when :boolean then parse_boolean(value)
-              when :int, :integer then parse_integer(value)
-              when :float, :decimal, :number then parse_float(value)
-              when :json then parse_json(value)
-              when :array then parse_array(value)
-              when :hash then parse_hash(value)
-              else raise ArgumentError, "invalid `as` parameter: #{options[:as].inspect}"
-              end
+      return (options.key?(:if_unset) ? options[:if_unset] : type[:if_unset]) if value.blank?
 
+      value = type[:parser].call(value)
       check_for_set_inclusion(value, set: options[:from_set]) if options.key?(:from_set)
       check_user_defined_validations(value, proc: options[:validated_by], block: validation_block)
 
@@ -203,56 +232,6 @@ class EnvParser
 
     private
 
-    def parse_string(value)
-      value
-    end
-
-    def parse_symbol(value)
-      value.to_sym
-    end
-
-    def parse_boolean(value)
-      case value
-      when '', '0', 'f', 'false' then false
-      else true
-      end
-    end
-
-    def parse_integer(value)
-      value.to_i
-    end
-
-    def parse_float(value)
-      value.to_f
-    end
-
-    def parse_json(value)
-      require 'json'
-
-      return nil if value.blank?
-
-      decoded_json = JSON.parse(value, quirks_mode: true)
-      { decoded_json: decoded_json }.with_indifferent_access[:decoded_json]
-    end
-
-    def parse_array(value)
-      return [] if value.blank?
-
-      decoded_json = parse_json(value)
-      raise(ArgumentError, 'non-array value') unless decoded_json.is_a? Array
-
-      decoded_json
-    end
-
-    def parse_hash(value)
-      return {} if value.blank?
-
-      decoded_json = parse_json(value)
-      raise(ArgumentError, 'non-hash value') unless decoded_json.is_a? Hash
-
-      decoded_json
-    end
-
     ## Verifies that the given "value" is included in the "set".
     ##
     ## @param value
@@ -314,3 +293,7 @@ class EnvParser
     end
   end
 end
+
+## Load all files listed in "/lib/env_parser/types".
+##
+Dir.glob(File.join(__dir__, %w[env_parser types *.rb])).each { |filename| require_relative filename }
