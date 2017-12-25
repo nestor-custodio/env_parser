@@ -103,7 +103,7 @@ RSpec.describe EnvParser do
       expect(EnvParser.parse('', as: :array)).to eq([])
 
       expect { EnvParser.parse('non-json-parseable string', as: :array) }.to raise_exception(JSON::ParserError)
-      expect { EnvParser.parse('"parseable json, but not an array"', as: :array) }.to raise_exception(ArgumentError)
+      expect { EnvParser.parse('"parseable json, but not an array"', as: :array) }.to raise_exception(EnvParser::ValueNotConvertible)
 
       expect(EnvParser.parse('["one", 2, "three"]', as: :array)).to eq(['one', 2, 'three'])
     end
@@ -113,7 +113,7 @@ RSpec.describe EnvParser do
       expect(EnvParser.parse('', as: :hash)).to eq({})
 
       expect { EnvParser.parse('non-json-parseable string', as: :hash) }.to raise_exception(JSON::ParserError)
-      expect { EnvParser.parse('"parseable json, but not a hash"', as: :hash) }.to raise_exception(ArgumentError)
+      expect { EnvParser.parse('"parseable json, but not a hash"', as: :hash) }.to raise_exception(EnvParser::ValueNotConvertible)
 
       expect(EnvParser.parse('{ "one": 1, "two": 2, "three": "three" }', as: :hash)).to eq('one' => 1, 'two' => 2, 'three' => 'three')
     end

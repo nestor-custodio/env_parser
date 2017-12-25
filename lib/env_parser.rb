@@ -9,14 +9,26 @@ class EnvParser
   class Error < ::StandardError
   end
 
-  ## Exception class used to indicate parsed values not allowed per a "from_set" option.
-  ##
-  class ValueNotAllowed < Error
-  end
-
   ## Exception class used to indicate a type has already been defined.
   ##
   class TypeAlreadyDefined < Error
+  end
+
+  ## Exception class used to indicate the requested "as" type has not been defined.
+  ##
+  class UnknownType < Error
+  end
+
+  ## Exception class used to indicate value given is not convertible to the requested type.
+  ##
+  class ValueNotConvertible < Error
+  end
+
+  ## Exception class used to indicate parsed values that do not pass user-validation, either by not
+  ## being part of the given "from_set" list, or by failing the "validated_by" Proc or yield-block
+  ## check.
+  ##
+  class ValueNotAllowed < Error
   end
 
   class << self
@@ -43,7 +55,7 @@ class EnvParser
     ##   should return the final output of parsing the given String value as the type being defined.
     ##
     ##   If the value given cannot be sensibly parsed into the type defined, the block should raise
-    ##   an EnvParser::ValueNotAllowed exception.
+    ##   an EnvParser::ValueNotConvertible exception.
     ##
     ## @return [nil]
     ##   This generates no usable value.
@@ -76,7 +88,8 @@ class EnvParser
     ##   The expected return type. A best-effort attempt is made to convert the source String to the
     ##   requested type.
     ##
-    ##   If no "as" option is given (or the "as" value given has not been defined), an ArgumentError
+    ##   If no "as" option is given, an ArgumentError exception is raised. If the "as" option given
+    ##   is unknown (the given type has not been previously defined), an EnvParser::UnknownType
     ##   exception is raised.
     ##
     ## @option options if_unset
@@ -114,14 +127,15 @@ class EnvParser
     ##   is no technical limitation preventing this. **If both are given, both validation checks
     ##   must pass.**
     ##
-    ## @raise [ArgumentError, EnvParser::ValueNotAllowed]
+    ## @raise [ArgumentError, EnvParser::UnknownType, EnvParser::ValueNotAllowed]
     ##
     def parse(value, options = {}, &validation_block)
       value = ENV[value.to_s] if value.is_a? Symbol
       value = value.to_s
 
       type = known_types[options[:as]]
-      raise(ArgumentError, "invalid `as` parameter: #{options[:as].inspect}") unless type
+      raise(ArgumentError, 'missing `as` parameter') unless options.key?(:as)
+      raise(UnknownType, "invalid `as` parameter: #{options[:as].inspect}") unless type
 
       return (options.key?(:if_unset) ? options[:if_unset] : type[:if_unset]) if value.blank?
 
@@ -186,7 +200,7 @@ class EnvParser
       ## We want to allow for registering multiple variables simultaneously via a single `.register`
       ## method call.
       if name.is_a? Hash
-        raise ArgumentError, 'cannot register multiple values with one yield block' if block_given?
+        raise(ArgumentError, 'cannot register multiple values with one yield block') if block_given?
         return register_all(name)
       end
 
@@ -267,7 +281,7 @@ class EnvParser
         raise ArgumentError, "invalid `from_set` parameter type: #{set.class}"
       end
 
-      raise ValueNotAllowed, 'parsed value not in allowed list/range' unless set.include?(value)
+      raise(ValueNotAllowed, 'parsed value not in allowed list/range') unless set.include?(value)
 
       nil
     end
@@ -286,7 +300,7 @@ class EnvParser
     def check_user_defined_validations(value, proc: nil, block: nil)
       immutable_value = value.dup.freeze
       error = 'parsed value failed user validation'
-      raise ValueNotAllowed, error unless [proc, block].compact.all? { |i| i.call(immutable_value) }
+      raise(ValueNotAllowed, error) unless [proc, block].compact.all? { |i| i.call(immutable_value) }
 
       nil
     end
@@ -301,7 +315,7 @@ class EnvParser
     ## @raise [ArgumentError]
     ##
     def register_all(list)
-      raise ArgumentError, "invalid 'list' parameter type: #{list.class}" unless list.is_a?(Hash)
+      raise(ArgumentError, "invalid 'list' parameter type: #{list.class}") unless list.is_a?(Hash)
 
       list.to_a.each_with_object({}) do |tuple, output|
         output[tuple.first] = register(tuple.first, tuple.second)
