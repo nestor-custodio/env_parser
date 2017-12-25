@@ -26,14 +26,14 @@ end
 
 EnvParser.define_type(:array, if_unset: []) do |value|
   decoded_json = EnvParser.parse(value, as: :json)
-  raise(EnvParser::ValueNotConvertible, 'non-array value') unless decoded_json.is_a? Array
+  raise(EnvParser::ValueNotConvertibleError, 'non-array value') unless decoded_json.is_a? Array
 
   decoded_json
 end
 
 EnvParser.define_type(:hash, if_unset: {}) do |value|
   decoded_json = EnvParser.parse(value, as: :json)
-  raise(EnvParser::ValueNotConvertible, 'non-hash value') unless decoded_json.is_a? Hash
+  raise(EnvParser::ValueNotConvertibleError, 'non-hash value') unless decoded_json.is_a? Hash
 
   decoded_json
 end

@@ -1,4 +1,4 @@
-require 'env_parser/exceptions'
+require 'env_parser/errors'
 require 'env_parser/version'
 require 'active_support/all'
 
@@ -29,7 +29,7 @@ class EnvParser
     ##   should return the final output of parsing the given String value as the type being defined.
     ##
     ##   If the value given cannot be sensibly parsed into the type defined, the block should raise
-    ##   an EnvParser::ValueNotConvertible exception.
+    ##   an EnvParser::ValueNotConvertibleError.
     ##
     ## @return [nil]
     ##   This generates no usable value.
@@ -41,7 +41,7 @@ class EnvParser
 
       given_types = (Array(name) + Array(options[:aliases])).map(&:to_s).map(&:to_sym)
       given_types.each do |type|
-        raise(TypeAlreadyDefined, "cannot redefine #{type.inspect}") if known_types.key?(type)
+        raise(TypeAlreadyDefinedError, "cannot redefine #{type.inspect}") if known_types.key?(type)
 
         known_types[type] = {
           parser: parser,
@@ -62,9 +62,8 @@ class EnvParser
     ##   The expected return type. A best-effort attempt is made to convert the source String to the
     ##   requested type.
     ##
-    ##   If no "as" option is given, an ArgumentError exception is raised. If the "as" option given
-    ##   is unknown (the given type has not been previously defined), an EnvParser::UnknownType
-    ##   exception is raised.
+    ##   If no "as" option is given, an ArgumentError is raised. If the "as" option given is unknown
+    ##   (the given type has not been previously defined), an EnvParser::UnknownTypeError is raised.
     ##
     ## @option options if_unset
     ##   Specifies the default value to return if the given "value" is either unset (`nil`) or blank
@@ -74,21 +73,21 @@ class EnvParser
     ##
     ## @option options from_set [Array, Range]
     ##   Gives a limited set of allowed values (after type conversion). If, after parsing, the final
-    ##   value is not included in the "from_set" list/range, an EnvParser::ValueNotAllowed exception
-    ##   is raised.
+    ##   value is not included in the "from_set" list/range, an EnvParser::ValueNotAllowedError is
+    ##   raised.
     ##
     ##   Note that if the "if_unset" option is given and the value to parse is `nil`/`''`, the
     ##   "if_unset" value will be returned, even if it is not part of the "from_set" list/range.
     ##
     ##   Also note that, due to the nature of the lookup, the "from_set" option is only available
     ##   for scalar values (i.e. not arrays, hashes, or other enumerables). An attempt to use the
-    ##   "from_set" option with a non-scalar value will raise an ArgumentError exception.
+    ##   "from_set" option with a non-scalar value will raise an ArgumentError.
     ##
     ## @option options validated_by [Proc]
     ##   If given, the "validated_by" proc is called with the parsed value (after type conversion)
     ##   as its sole argument. This allows for user-defined validation of the parsed value beyond
     ##   what can be enforced by use of the "from_set" option alone. If the proc's return value is
-    ##   `#blank?`, an EnvParser::ValueNotAllowed exception is raised. To accomodate your syntax of
+    ##   `#blank?`, an EnvParser::ValueNotAllowedError is raised. To accomodate your syntax of
     ##   choice, this validation proc may be given as a yield block instead.
     ##
     ##   Note that this option is intended to provide an inspection mechanism only -- no mutation
@@ -109,7 +108,7 @@ class EnvParser
 
       type = known_types[options[:as]]
       raise(ArgumentError, 'missing `as` parameter') unless options.key?(:as)
-      raise(UnknownType, "invalid `as` parameter: #{options[:as].inspect}") unless type
+      raise(UnknownTypeError, "invalid `as` parameter: #{options[:as].inspect}") unless type
 
       return (options.key?(:if_unset) ? options[:if_unset] : type[:if_unset]) if value.blank?
 
@@ -255,7 +254,7 @@ class EnvParser
         raise ArgumentError, "invalid `from_set` parameter type: #{set.class}"
       end
 
-      raise(ValueNotAllowed, 'parsed value not in allowed list/range') unless set.include?(value)
+      raise(ValueNotAllowedError, 'parsed value not in allowed set') unless set.include?(value)
 
       nil
     end
@@ -273,8 +272,8 @@ class EnvParser
     ##
     def check_user_defined_validations(value, proc: nil, block: nil)
       immutable_value = value.dup.freeze
-      error = 'parsed value failed user validation'
-      raise(ValueNotAllowed, error) unless [proc, block].compact.all? { |i| i.call(immutable_value) }
+      all_tests_passed = [proc, block].compact.all? { |i| i.call(immutable_value) }
+      raise(ValueNotAllowedError, 'parsed value failed user validation') unless all_tests_passed
 
       nil
     end
