@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Exception: EnvParser::ValueNotAllowed
+  Exception: EnvParser::Error
   
     &mdash; Documentation by YARD 0.9.11
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "EnvParser::ValueNotAllowed";
+  pathId = "EnvParser::Error";
   relpath = '../';
 </script>
 
@@ -36,10 +36,10 @@
       <div id="header">
         <div id="menu">
   
-    <a href="../_index.html">Index (V)</a> &raquo;
+    <a href="../_index.html">Index (E)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span>
      &raquo; 
-    <span class="title">ValueNotAllowed</span>
+    <span class="title">Error</span>
   
 </div>
 
@@ -59,7 +59,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Exception: EnvParser::ValueNotAllowed
+      <div id="content"><h1>Exception: EnvParser::Error
   
   
   
@@ -69,16 +69,14 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="Error.html" title="EnvParser::Error (class)">Error</a></span></span>
+      <span class="inheritName">StandardError</span>
       
         <ul class="fullTree">
           <li>Object</li>
           
             <li class="next">StandardError</li>
           
-            <li class="next"><span class='object_link'><a href="Error.html" title="EnvParser::Error (class)">Error</a></span></li>
-          
-            <li class="next">EnvParser::ValueNotAllowed</li>
+            <li class="next">EnvParser::Error</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -106,8 +104,7 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Exception class used to indicate parsed values not allowed per a “from_set”
-option.</p>
+<p>Base exception class for EnvParser.</p>
 
 
   </div>
@@ -115,6 +112,9 @@ option.</p>
 <div class="tags">
   
 
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="TypeAlreadyDefined.html" title="EnvParser::TypeAlreadyDefined (class)">TypeAlreadyDefined</a></span>, <span class='object_link'><a href="ValueNotAllowed.html" title="EnvParser::ValueNotAllowed (class)">ValueNotAllowed</a></span></p>
 </div>
 
 
@@ -123,12 +123,7 @@ option.</p>
 
 
 
-  
-  
-  
-  
-  
-  
+
   
 
 </div>

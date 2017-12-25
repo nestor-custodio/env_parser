@@ -42,7 +42,7 @@ timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer
 
 ---
 
-The named `:as` parameter is required. Allowed values are:
+The named `:as` parameter is required. The list of allowed values is user-expandable, but allowed values out-of-the-box are:
 
 <table>
   <tbody>
@@ -181,6 +181,36 @@ ENV.parse :SHORT_PI, as: :float ## => 3.1415926
 ENV.register :SHORT_PI, as: :float ## Your constant is set, my man!
 ```
 
+
+#### Defining your own types for use with EnvParser
+
+```ruby
+## If you use a particular validation many times, or are often manipulating values in the same way
+## after EnvParser has done its thing, you may want to register a new type altogether.
+##
+a = EnvParser.parse :A, as: :int, if_unset: nil
+raise unless passes_all_my_checks?(a)
+
+b = EnvParser.parse :B, as: :int, if_unset: nil
+raise unless passes_all_my_checks?(b)
+
+## ... is perhaps best handled by defining a new type:
+##
+EnvParser.define_type(:my_special_type_of_number, if_unset: nil) do |value|
+  value = value.to_i
+  raise(StandardError, 'this is not a "special type" number') unless passes_all_my_checks?(value)
+
+  value
+end
+
+a = EnvParser.parse :A, as: :my_special_type_of_number
+b = EnvParser.parse :B, as: :my_special_type_of_number
+
+## Defining a new type makes your code both more maintainable (all the logic for your special type
+## is only defined once) and more readable (your "parse" calls aren't littered with type-checking
+## cruft).
+```
+
 ---
 
 [Consult the repo docs](http://nestor-custodio.github.io/env_parser) for the full EnvParser documentation.
@@ -190,7 +220,7 @@ ENV.register :SHORT_PI, as: :float ## Your constant is set, my man!
 
 Additional features/options coming in the future:
 
-- A means to register validation blocks as new "as" types. This will allow for custom "as" types like `:url`, `:email`, etc.
+- Round out the "as" type selection with things like `:url`, `:email`, etc.
 - ... ?
 
 
