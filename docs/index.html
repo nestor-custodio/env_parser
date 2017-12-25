@@ -108,7 +108,8 @@ makes <em>the values themselves</em> usable with a minimum of effort.</p>
 </code></pre>
 <hr>
 
-<p>The named <code>:as</code> parameter is required. Allowed values are:</p>
+<p>The named <code>:as</code> parameter is required. The list of allowed
+values is user-expandable, but allowed values out-of-the-box are:</p>
 <table>
   <tbody>
     <tr>
@@ -236,6 +237,34 @@ makes <em>the values themselves</em> usable with a minimum of effort.</p>
 </span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span> <span class='comment'>## =&gt; 3.1415926
 </span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span> <span class='comment'>## Your constant is set, my man!
 </span></code></pre>
+
+<h4 id="label-Defining+your+own+types+for+use+with+EnvParser">Defining your own types for use with EnvParser</h4>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>## If you use a particular validation many times, or are often manipulating values in the same way
+</span><span class='comment'>## after EnvParser has done its thing, you may want to register a new type altogether.
+</span><span class='comment'>##
+</span><span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:int</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_raise'>raise</span> <span class='kw'>unless</span> <span class='id identifier rubyid_passes_all_my_checks?'>passes_all_my_checks?</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:B</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:int</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span>
+<span class='id identifier rubyid_raise'>raise</span> <span class='kw'>unless</span> <span class='id identifier rubyid_passes_all_my_checks?'>passes_all_my_checks?</span><span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
+
+<span class='comment'>## ... is perhaps best handled by defining a new type:
+</span><span class='comment'>##
+</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define_type'><span class='object_link'><a href="EnvParser.html#define_type-class_method" title="EnvParser.define_type (method)">define_type</a></span></span><span class='lparen'>(</span><span class='symbol'>:my_special_type_of_number</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
+  <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>this is not a &quot;special type&quot; number</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_passes_all_my_checks?'>passes_all_my_checks?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_value'>value</span>
+<span class='kw'>end</span>
+
+<span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:my_special_type_of_number</span>
+<span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:B</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:my_special_type_of_number</span>
+
+<span class='comment'>## Defining a new type makes your code both more maintainable (all the logic for your special type
+</span><span class='comment'>## is only defined once) and more readable (your &quot;parse&quot; calls aren&#39;t littered with type-checking
+</span><span class='comment'>## cruft).
+</span></code></pre>
 <hr>
 
 <p><a href="http://nestor-custodio.github.io/env_parser">Consult the repo
@@ -245,8 +274,8 @@ docs</a> for the full EnvParser documentation.</p>
 
 <p>Additional features/options coming in the future:</p>
 <ul><li>
-<p>A means to register validation blocks as new “as” types. This will allow
-for custom “as” types like <code>:url</code>, <code>:email</code>, etc.</p>
+<p>Round out the “as” type selection with things like <code>:url</code>,
+<code>:email</code>, etc.</p>
 </li><li>
 <p>… ?</p>
 </li></ul>
@@ -280,7 +309,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Mon Dec 11 23:37:25 2017 by
+  Generated on Sun Dec 24 19:33:34 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>
