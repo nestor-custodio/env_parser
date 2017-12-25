@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Exception: EnvParser::Error
+  Exception: EnvParser::UnknownTypeError
   
     &mdash; Documentation by YARD 0.9.11
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "EnvParser::Error";
+  pathId = "EnvParser::UnknownTypeError";
   relpath = '../';
 </script>
 
@@ -36,10 +36,10 @@
       <div id="header">
         <div id="menu">
   
-    <a href="../_index.html">Index (E)</a> &raquo;
+    <a href="../_index.html">Index (U)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span>
      &raquo; 
-    <span class="title">Error</span>
+    <span class="title">UnknownTypeError</span>
   
 </div>
 
@@ -59,7 +59,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Exception: EnvParser::Error
+      <div id="content"><h1>Exception: EnvParser::UnknownTypeError
   
   
   
@@ -69,14 +69,16 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName">StandardError</span>
+      <span class="inheritName"><span class='object_link'><a href="Error.html" title="EnvParser::Error (class)">Error</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
           
             <li class="next">StandardError</li>
           
-            <li class="next">EnvParser::Error</li>
+            <li class="next"><span class='object_link'><a href="Error.html" title="EnvParser::Error (class)">Error</a></span></li>
+          
+            <li class="next">EnvParser::UnknownTypeError</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -104,7 +106,7 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Base error class for EnvParser.</p>
+<p>Error class used to indicate the requested “as” type has not been defined.</p>
 
 
   </div>
@@ -112,11 +114,7 @@
 <div class="tags">
   
 
-</div><div id="subclasses">
-  <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="TypeAlreadyDefinedError.html" title="EnvParser::TypeAlreadyDefinedError (class)">TypeAlreadyDefinedError</a></span>, <span class='object_link'><a href="UnknownTypeError.html" title="EnvParser::UnknownTypeError (class)">UnknownTypeError</a></span>, <span class='object_link'><a href="ValueNotAllowedError.html" title="EnvParser::ValueNotAllowedError (class)">ValueNotAllowedError</a></span>, <span class='object_link'><a href="ValueNotConvertibleError.html" title="EnvParser::ValueNotConvertibleError (class)">ValueNotConvertibleError</a></span></p>
 </div>
-
 
 
 
@@ -125,11 +123,17 @@
 
 
   
+  
+  
+  
+  
+  
+  
 
 </div>
 
       <div id="footer">
-  Generated on Mon Dec 25 00:29:06 2017 by
+  Generated on Mon Dec 25 00:29:07 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

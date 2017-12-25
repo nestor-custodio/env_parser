@@ -86,7 +86,7 @@ RSpec.describe EnvParser do
       expect(EnvParser.parse(nil, as: :json)).to eq(nil)
       expect(EnvParser.parse('', as: :json)).to eq(nil)
 
-      expect { EnvParser.parse('non-json-parseable string', as: :json) }.to raise_exception(JSON::ParserError)
+      expect { EnvParser.parse('non-json-parseable string', as: :json) }.to raise_error(JSON::ParserError)
 
       expect(EnvParser.parse('null', as: :json)).to eq(nil)
       expect(EnvParser.parse('true', as: :json)).to eq(true)
@@ -102,8 +102,8 @@ RSpec.describe EnvParser do
       expect(EnvParser.parse(nil, as: :array)).to eq([])
       expect(EnvParser.parse('', as: :array)).to eq([])
 
-      expect { EnvParser.parse('non-json-parseable string', as: :array) }.to raise_exception(JSON::ParserError)
-      expect { EnvParser.parse('"parseable json, but not an array"', as: :array) }.to raise_exception(ArgumentError)
+      expect { EnvParser.parse('non-json-parseable string', as: :array) }.to raise_error(JSON::ParserError)
+      expect { EnvParser.parse('"parseable json, but not an array"', as: :array) }.to raise_error(EnvParser::ValueNotConvertibleError)
 
       expect(EnvParser.parse('["one", 2, "three"]', as: :array)).to eq(['one', 2, 'three'])
     end
@@ -112,8 +112,8 @@ RSpec.describe EnvParser do
       expect(EnvParser.parse(nil, as: :hash)).to eq({})
       expect(EnvParser.parse('', as: :hash)).to eq({})
 
-      expect { EnvParser.parse('non-json-parseable string', as: :hash) }.to raise_exception(JSON::ParserError)
-      expect { EnvParser.parse('"parseable json, but not a hash"', as: :hash) }.to raise_exception(ArgumentError)
+      expect { EnvParser.parse('non-json-parseable string', as: :hash) }.to raise_error(JSON::ParserError)
+      expect { EnvParser.parse('"parseable json, but not a hash"', as: :hash) }.to raise_error(EnvParser::ValueNotConvertibleError)
 
       expect(EnvParser.parse('{ "one": 1, "two": 2, "three": "three" }', as: :hash)).to eq('one' => 1, 'two' => 2, 'three' => 'three')
     end
@@ -127,7 +127,7 @@ RSpec.describe EnvParser do
 
     it 'only allows values from a limited set' do
       expect(EnvParser.parse('25', as: :integer, from_set: [20, 25, 30])).to eq(25)
-      expect { EnvParser.parse('25', as: :integer, from_set: [1, 2, 3]) }.to raise_exception(EnvParser::ValueNotAllowed)
+      expect { EnvParser.parse('25', as: :integer, from_set: [1, 2, 3]) }.to raise_error(EnvParser::ValueNotAllowedError)
 
       expect(EnvParser.parse(nil, as: :integer, if_unset: 9, from_set: [1, 2, 3])).to eq(9)
     end
@@ -135,11 +135,11 @@ RSpec.describe EnvParser do
     it 'only allows values that pass user-defined validation' do
       expect(EnvParser.parse('abc', as: :string)).to eq('abc')
       expect(EnvParser.parse('abc', as: :string) { |_| true }).to eq('abc')
-      expect { EnvParser.parse('abc', as: :string) { |_| false } }.to raise_exception(EnvParser::ValueNotAllowed)
+      expect { EnvParser.parse('abc', as: :string) { |_| false } }.to raise_error(EnvParser::ValueNotAllowedError)
 
       expect(EnvParser.parse('abc', as: :string)).to eq('abc')
       expect(EnvParser.parse('abc', as: :string, validated_by: ->(_) { true })).to eq('abc')
-      expect { EnvParser.parse('abc', as: :string, validated_by: ->(_) { false }) }.to raise_exception(EnvParser::ValueNotAllowed)
+      expect { EnvParser.parse('abc', as: :string, validated_by: ->(_) { false }) }.to raise_error(EnvParser::ValueNotAllowedError)
     end
   end
 

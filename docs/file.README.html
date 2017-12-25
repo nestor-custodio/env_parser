@@ -63,17 +63,19 @@
 <p>If your code uses environment variables, you know that <code>ENV</code>
 will always surface these as strings. Interpreting these strings as the
 value you <em>actually</em> want to see/use takes some work, however: for
-numbers you need to cast with <code>#to_i</code>/<code>#to_f</code>, for
+numbers you need to cast with <code>to_i</code> or <code>to_f</code> … for
 booleans you need to check for a specific value (<code>ENV['SOME_VAR'] ==
-&#39;true&#39;</code>), etc. Maybe you want to set non-trivial defaults
-(something other than <code>0</code> or <code>&#39;&#39;</code>)? Maybe you
-only want to allow values from a limited set? …</p>
+&#39;true&#39;</code>) … maybe you want to set non-trivial defaults
+(something other than <code>0</code> or <code>&#39;&#39;</code>)? … maybe
+you only want to allow values from a limited set? …</p>
 
 <p>Things can get out of control pretty fast, especially as the number of
 environment variables in play grows. Tools like <a
 href="https://github.com/bkeepers/dotenv">dotenv</a> help to make sure
-you&#39;re loading the correct set of <em>variables</em>, but EnvParser
-makes <em>the values themselves</em> usable with a minimum of effort.</p>
+you&#39;re loading the correct <strong>set</strong> of variables, but <a
+href="https://github.com/nestor-custodio/env_parser">EnvParser</a> makes
+<strong><em>the values themselves</em></strong> usable with a minimum of
+effort.</p>
 
 <h2 id="label-Installation">Installation</h2>
 
@@ -92,68 +94,28 @@ makes <em>the values themselves</em> usable with a minimum of effort.</p>
 
 <h2 id="label-Using+EnvParser">Using EnvParser</h2>
 
-<h4 id="label-Basic+Usage">Basic Usage</h4>
+<h3 id="label-Basic+Usage">Basic Usage</h3>
 
-<pre class="code ruby"><code class="ruby"><span class='comment'>## Returns ENV[&#39;TIMEOUT_MS&#39;] as an Integer.
-</span><span class='comment'>## Yields 0 if ENV[&#39;TIMEOUT_MS&#39;] is unset or nil.
-</span><span class='comment'>##
-</span><span class='id identifier rubyid_timeout_ms'>timeout_ms</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TIMEOUT_MS</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span>
+<h4 id="label-Parsing+ENV+Values">Parsing ENV Values</h4>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>## Returns ENV[&#39;TIMEOUT_MS&#39;] as an Integer,
+</span><span class='comment'>## or 0 if ENV[&#39;TIMEOUT_MS&#39;] is unset or nil.
+</span>
+<span class='id identifier rubyid_timeout_ms'>timeout_ms</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>TIMEOUT_MS</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span>
+
 
 <span class='comment'>## LESS TYPING, PLZ!  :(
 </span><span class='comment'>## If you pass in a Symbol instead of a String, EnvParser
 </span><span class='comment'>## will use the value behind the matching String key in ENV.
 </span><span class='comment'>## (i.e. passing in ENV[&#39;X&#39;] is equivalent to passing in :X)
-</span><span class='comment'>##
-</span><span class='id identifier rubyid_timeout_ms'>timeout_ms</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:TIMEOUT_MS</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span>
+</span>
+<span class='id identifier rubyid_timeout_ms'>timeout_ms</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:TIMEOUT_MS</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span>
 </code></pre>
-<hr>
 
-<p>The named <code>:as</code> parameter is required. The list of allowed
-values is user-expandable, but allowed values out-of-the-box are:</p>
-<table>
-  <tbody>
-    <tr>
-      <th><code>:as</code> value</th>
-      <th>type returned</th>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr>
-      <td>:string</td>
-      <td>String</td>
-    </tr>
-    <tr>
-      <td>:symbol</td>
-      <td>Symbol</td>
-    </tr>
-    <tr>
-      <td>:boolean</td>
-      <td>TrueValue / FalseValue</td>
-    </tr>
-    <tr>
-      <td>:int / :integer</td>
-      <td>Integer</td>
-    </tr>
-    <tr>
-      <td>:float / :decimal / :number</td>
-      <td>Float</td>
-    </tr>
-    <tr>
-      <td>:json</td>
-      <td>&lt; depends on JSON given &gt;</td>
-    </tr>
-    <tr>
-      <td>:array</td>
-      <td>Array</td>
-    </tr>
-    <tr>
-      <td>:hash</td>
-      <td>Hash</td>
-    </tr>
-  </tbody>
-</table>
-<p>Note JSON is parsed using <em>quirks-mode</em> (meaning &#39;true&#39;,
-&#39;25&#39;, and &#39;null&#39; are all considered valid, parseable JSON).</p>
+<p>For a full list of all “as” types available out-of-the-box, <a
+href="http://nestor-custodio.github.io/env_parser/EnvParserTypes.html">see
+the documentation for modules listed under EnvParserTypes</a>.</p>
+<hr>
 
 <h4 id="label-Setting+Non-Trivial+Defaults">Setting Non-Trivial Defaults</h4>
 
@@ -161,99 +123,130 @@ values is user-expandable, but allowed values out-of-the-box are:</p>
 </span><span class='comment'>## the return value is a sensible default for the given &quot;as&quot; type
 </span><span class='comment'>## (0 or 0.0 for numbers, an empty tring, an empty Array or Hash, etc).
 </span><span class='comment'>## Sometimes you want a non-trivial default, however.
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MISSING_ENV_VARIABLE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span> <span class='comment'>## =&gt; 0
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MISSING_ENV_VARIABLE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='int'>250</span> <span class='comment'>## =&gt; 250
 </span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MISSING_ENV_VARIABLE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span>  <span class='comment'>## =&gt; 0
+</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MISSING_ENV_VARIABLE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='int'>250</span>  <span class='comment'>## =&gt; 250
+</span>
+
 <span class='comment'>## Note that &quot;if_unset&quot; values are used as-is, with no type conversion.
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MISSING_ENV_VARIABLE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Whoops!</span><span class='tstring_end'>&#39;</span></span> <span class='comment'>## =&gt; &#39;Whoops!&#39;
-</span></code></pre>
-
-<h4 id="label-Validating+Parsed+ENV+Values">Validating Parsed ENV Values</h4>
-
-<pre class="code ruby"><code class="ruby"><span class='comment'>## Sometimes setting the type alone is a bit too open-ended.
-</span><span class='comment'>## The &quot;from_set&quot; option lets you restrict the set of allowed values.
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:API_TO_USE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:symbol</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='qsymbols_beg'>%i[</span><span class='tstring_content'>internal</span><span class='words_sep'> </span><span class='tstring_content'>external</span><span class='words_sep'>]</span>
-<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:SOME_CUSTOM_NETWORK_PORT</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='lparen'>(</span><span class='int'>1</span><span class='op'>..</span><span class='int'>65535</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='int'>80</span>
-
-<span class='comment'>## And if the value is not allowed...
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:NEGATIVE_NUMBER</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='lparen'>(</span><span class='int'>1</span><span class='op'>..</span><span class='int'>5</span><span class='rparen'>)</span> <span class='comment'>## =&gt; raises EnvParser::ValueNotAllowed
 </span>
-
-<span class='comment'>## The &quot;validated_by&quot; option allows for more complex validation.
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MUST_BE_LOWERCASE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>validated_by:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='rbrace'>}</span>
-
-<span class='comment'>## ... but a block will also do the trick!
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:MUST_BE_LOWERCASE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='rbrace'>}</span>
-<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:CONNECTION_RETRIES</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='symbol'>:nonzero?</span><span class='rparen'>)</span>
-</code></pre>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MISSING_ENV_VARIABLE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Careful!</span><span class='tstring_end'>&#39;</span></span>  <span class='comment'>## =&gt; &#39;Careful!&#39;
+</span></code></pre>
+<hr>
 
 <h4 id="label-Setting+Constants+From+ENV+Values">Setting Constants From ENV Values</h4>
 
 <pre class="code ruby"><code class="ruby"><span class='comment'>## Global constants...
-</span><span class='comment'>##
-</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>API_KEY</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='comment'>## =&gt; &#39;unbreakable p4$$w0rd&#39; (Set elsewhere, like a &quot;.env&quot; file.)
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:API_KEY</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span>
-<span class='const'>API_KEY</span> <span class='comment'>## =&gt; &#39;unbreakable p4$$w0rd&#39; (registered within the Kernel module, so it&#39;s available everywhere)
 </span>
-<span class='comment'>## ... and class/module constants!
-</span><span class='comment'>##
-</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ULTIMATE_LINK</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='comment'>## =&gt; &#39;https://youtu.be/L_jWHffIx5E&#39; (Set elsewhere, like a &quot;.env&quot; file.)
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:ULTIMATE_LINK</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>within:</span> <span class='const'>URI</span>
-<span class='const'>URI</span><span class='op'>::</span><span class='const'>ULTIMATE_LINK</span> <span class='comment'>## =&gt; &#39;https://youtu.be/L_jWHffIx5E&#39; (You know you want to check it out!)
-</span><span class='const'>ULTIMATE_LINK</span> <span class='comment'>## =&gt; raises NameError (the un-namespaced constant is only in scope within the URI module)
+<span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>API_KEY</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>  <span class='comment'>## =&gt; &#39;unbreakable p4$$w0rd&#39;
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:API_KEY</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span>
+<span class='const'>API_KEY</span>  <span class='comment'>## =&gt; &#39;unbreakable p4$$w0rd&#39; (registered within the Kernel module, so it&#39;s available everywhere)
 </span>
 
+<span class='comment'>## ... and class/module-level constants!
+</span>
+<span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ULTIMATE_LINK</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>  <span class='comment'>## =&gt; &#39;https://youtu.be/L_jWHffIx5E&#39;
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:ULTIMATE_LINK</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>within:</span> <span class='const'>URI</span>
+<span class='const'>URI</span><span class='op'>::</span><span class='const'>ULTIMATE_LINK</span>  <span class='comment'>## =&gt; &#39;https://youtu.be/L_jWHffIx5E&#39;
+</span>
+<span class='const'>ULTIMATE_LINK</span>  <span class='comment'>## =&gt; raises NameError (the un-namespaced constant is only in scope within the URI module)
+</span>
+
+
+
 <span class='comment'>## You can also set multiple constants in one call, which is considerably cleaner to read:
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span>
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span>
 <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:B</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='int'>25</span>
 <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span> <span class='symbol'>:C</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:boolean</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>true</span>
 
+
 <span class='comment'>## ... is equivalent to ...
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span><span class='lparen'>(</span>
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'><span class='object_link'><a href="EnvParser.html#register-class_method" title="EnvParser.register (method)">register</a></span></span><span class='lparen'>(</span>
   <span class='label'>A:</span> <span class='lbrace'>{</span> <span class='label'>as:</span> <span class='symbol'>:string</span> <span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>B:</span> <span class='lbrace'>{</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='int'>25</span> <span class='rbrace'>}</span><span class='comma'>,</span>
   <span class='label'>C:</span> <span class='lbrace'>{</span> <span class='label'>as:</span> <span class='symbol'>:boolean</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
 <span class='rparen'>)</span>
 </code></pre>
+<hr>
 
 <h4 id="label-Binding+EnvParser+Proxies+Onto+ENV">Binding EnvParser Proxies Onto ENV</h4>
 
-<pre class="code ruby"><code class="ruby"><span class='comment'>## To allow for even cleaner usage, you can bind proxy &quot;parse&quot; and &quot;register&quot; methods onto ENV.
-</span><span class='comment'>## This is done cleanly and without polluting the method space for any other objects.
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_add_env_bindings'><span class='object_link'><a href="EnvParser.html#add_env_bindings-class_method" title="EnvParser.add_env_bindings (method)">add_env_bindings</a></span></span> <span class='comment'>## Sets up the proxy methods.
+<pre class="code ruby"><code class="ruby"><span class='comment'>## You can bind proxy &quot;parse&quot; and &quot;register&quot; methods onto ENV.
+</span><span class='comment'>## This is done without polluting the method space for other objects.
 </span>
-<span class='comment'>## Now you can call &quot;parse&quot; and &quot;register&quot; on ENV itself. Note that ENV&#39;s proxy &quot;parse&quot; method will
-</span><span class='comment'>## attempt to interpret any value given as an ENV key (converting to a String, if necessary).
-</span><span class='comment'>##
-</span><span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SHORT_PI</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='comment'>## =&gt; &#39;3.1415926&#39;
-</span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span> <span class='comment'>## =&gt; 3.1415926
-</span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span> <span class='comment'>## Your constant is set, my man!
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_add_env_bindings'><span class='object_link'><a href="EnvParser.html#add_env_bindings-class_method" title="EnvParser.add_env_bindings (method)">add_env_bindings</a></span></span>  <span class='comment'>## Sets up the proxy methods.
+</span>
+
+<span class='comment'>## Now you can call &quot;parse&quot; and &quot;register&quot; on ENV itself,
+</span><span class='comment'>## which is more legible and feels more straight-forward.
+</span>
+<span class='const'>ENV</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>SHORT_PI</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>  <span class='comment'>## =&gt; &#39;3.1415926&#39;
+</span>
+<span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span>  <span class='comment'>## =&gt; 3.1415926
+</span><span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span> <span class='symbol'>:SHORT_PI</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:float</span>  <span class='comment'>## Your constant is set, my man!
+</span>
+
+<span class='comment'>## Note that ENV&#39;s proxy &quot;parse&quot; method will *always* interpret the
+</span><span class='comment'>## value given as an ENV key (converting to a String, if necessary).
+</span><span class='comment'>## This is different from the non-proxy &quot;parse&quot; method, which will use
+</span><span class='comment'>## String values as-is and only looks up ENV values when given a Symbol.
 </span></code></pre>
 
-<h4 id="label-Defining+your+own+types+for+use+with+EnvParser">Defining your own types for use with EnvParser</h4>
+<h3 id="label-Advanced+Usage">Advanced Usage</h3>
 
-<pre class="code ruby"><code class="ruby"><span class='comment'>## If you use a particular validation many times, or are often manipulating values in the same way
-</span><span class='comment'>## after EnvParser has done its thing, you may want to register a new type altogether.
-</span><span class='comment'>##
-</span><span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:int</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span>
+<h4 id="label-Custom+Validation+Of+Parsed+Values">Custom Validation Of Parsed Values</h4>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>## Sometimes setting the type alone is a bit too open-ended.
+</span><span class='comment'>## The &quot;from_set&quot; option lets you restrict the set of allowed values.
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:API_TO_USE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:symbol</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='qsymbols_beg'>%i[</span><span class='tstring_content'>internal</span><span class='words_sep'> </span><span class='tstring_content'>external</span><span class='words_sep'>]</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:SOME_CUSTOM_NETWORK_PORT</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='lparen'>(</span><span class='int'>1</span><span class='op'>..</span><span class='int'>65535</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='int'>80</span>
+
+
+<span class='comment'>## And if the value is not allowed...
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:NEGATIVE_NUMBER</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>from_set:</span> <span class='lparen'>(</span><span class='int'>1</span><span class='op'>..</span><span class='int'>5</span><span class='rparen'>)</span>  <span class='comment'>## =&gt; raises EnvParser::ValueNotAllowed
+</span>
+
+
+
+<span class='comment'>## The &quot;validated_by&quot; option allows for more complex validation.
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:MUST_BE_LOWERCASE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>validated_by:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='rbrace'>}</span>
+
+
+<span class='comment'>## ... but a block will also do the trick!
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:MUST_BE_LOWERCASE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='rbrace'>}</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:CONNECTION_RETRIES</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='symbol'>:nonzero?</span><span class='rparen'>)</span>
+</code></pre>
+<hr>
+
+<h4 id="label-Defining+Your+Own+EnvParser+-22as-22+Types">Defining Your Own EnvParser “as” Types</h4>
+
+<pre class="code ruby"><code class="ruby"><span class='comment'>## If you use a particular validation many times,
+</span><span class='comment'>## or are often manipulating values in the same way
+</span><span class='comment'>## after EnvParser has done its thing, you may want
+</span><span class='comment'>## to register a new type altogether.
+</span>
+<span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:int</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span>
 <span class='id identifier rubyid_raise'>raise</span> <span class='kw'>unless</span> <span class='id identifier rubyid_passes_all_my_checks?'>passes_all_my_checks?</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='rparen'>)</span>
 
 <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:B</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:int</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span>
 <span class='id identifier rubyid_raise'>raise</span> <span class='kw'>unless</span> <span class='id identifier rubyid_passes_all_my_checks?'>passes_all_my_checks?</span><span class='lparen'>(</span><span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
 
+
 <span class='comment'>## ... is perhaps best handled by defining a new type:
-</span><span class='comment'>##
-</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define_type'><span class='object_link'><a href="EnvParser.html#define_type-class_method" title="EnvParser.define_type (method)">define_type</a></span></span><span class='lparen'>(</span><span class='symbol'>:my_special_type_of_number</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
+</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_define_type'><span class='object_link'><a href="EnvParser.html#define_type-class_method" title="EnvParser.define_type (method)">define_type</a></span></span><span class='lparen'>(</span><span class='symbol'>:my_special_type_of_number</span><span class='comma'>,</span> <span class='label'>if_unset:</span> <span class='kw'>nil</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span>
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
-  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'>StandardError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>this is not a &quot;special type&quot; number</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_passes_all_my_checks?'>passes_all_my_checks?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_passes_all_my_checks?'>passes_all_my_checks?</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EnvParser/ValueNotConvertibleError.html" title="EnvParser::ValueNotConvertibleError (class)">ValueNotConvertibleError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot parse as a &quot;special type number&quot;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 
   <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span>
@@ -261,14 +254,17 @@ values is user-expandable, but allowed values out-of-the-box are:</p>
 <span class='id identifier rubyid_a'>a</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:A</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:my_special_type_of_number</span>
 <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span> <span class='symbol'>:B</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:my_special_type_of_number</span>
 
-<span class='comment'>## Defining a new type makes your code both more maintainable (all the logic for your special type
-</span><span class='comment'>## is only defined once) and more readable (your &quot;parse&quot; calls aren&#39;t littered with type-checking
-</span><span class='comment'>## cruft).
+
+<span class='comment'>## Defining a new type makes your code both more maintainable
+</span><span class='comment'>## (all the logic for your special type is only defined once)
+</span><span class='comment'>## and more readable (your &quot;parse&quot; calls aren&#39;t littered with
+</span><span class='comment'>## type-checking cruft).
 </span></code></pre>
 <hr>
 
-<p><a href="http://nestor-custodio.github.io/env_parser">Consult the repo
-docs</a> for the full EnvParser documentation.</p>
+<p><a
+href="http://nestor-custodio.github.io/env_parser/EnvParser.html">Consult
+the repo docs for the full EnvParser documentation.</a></p>
 
 <h2 id="label-Feature+Roadmap+-2F+Future+Development">Feature Roadmap / Future Development</h2>
 
@@ -295,13 +291,6 @@ href="https://github.com/bbatsov/rubocop">Rubocop</a> and documentation is
 built using <a href="https://yardoc.org/">Yard</a>. Neither is included in
 the Gemspec; you&#39;ll need to install these locally to take advantage.</p>
 
-<p>To install this gem onto your local machine, run <code>bundle exec rake
-install</code>. To release a new version, update the version number in
-<code>version.rb</code>, and then run <code>bundle exec rake
-release</code>, which will create a git tag for the version, push git
-commits and tags, and push the <code>.gem</code> file to <a
-href="https://rubygems.org">rubygems.org</a>.</p>
-
 <h2 id="label-License">License</h2>
 
 <p>The gem is available as open source under the terms of the <a
@@ -309,7 +298,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Sun Dec 24 19:33:35 2017 by
+  Generated on Mon Dec 25 00:29:06 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>
