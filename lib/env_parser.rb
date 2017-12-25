@@ -324,6 +324,6 @@ class EnvParser
   end
 end
 
-## Load all files listed in "/lib/env_parser/types".
+## Load predefined types.
 ##
-Dir.glob(File.join(__dir__, %w[env_parser types *.rb])).each { |filename| require_relative filename }
+require 'env_parser/types'
