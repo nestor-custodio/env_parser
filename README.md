@@ -209,6 +209,7 @@ b = EnvParser.parse :B, as: :my_special_type_of_number
 
 Additional features/options coming in the future:
 
+- Allow for a ".env_parser" file where you can easily type-check and/or register (as constants) any ENV variables you like.
 - Continue to round out the "as" type selection as ideas come to mind, suggestions are made, and pull requests are submitted.
 
 
