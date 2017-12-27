@@ -222,7 +222,7 @@ the documentation for modules listed under EnvParserTypes</a>.</p>
 <span class='comment'>## ... but a block will also do the trick!
 </span>
 <span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:MUST_BE_LOWERCASE</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_value'>value</span><span class='op'>|</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>==</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span> <span class='rbrace'>}</span>
-<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:CONNECTION_RETRIES</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='symbol'>:nonzero?</span><span class='rparen'>)</span>
+<span class='const'><span class='object_link'><a href="EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse'><span class='object_link'><a href="EnvParser.html#parse-class_method" title="EnvParser.parse (method)">parse</a></span></span><span class='lparen'>(</span><span class='symbol'>:CONNECTION_RETRIES</span><span class='comma'>,</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='symbol'>:positive?</span><span class='rparen'>)</span>
 </code></pre>
 <hr>
 
@@ -296,7 +296,7 @@ href="https://opensource.org/licenses/MIT">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Tue Dec 26 21:39:58 2017 by
+  Generated on Tue Dec 26 21:41:22 2017 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.11 (ruby-2.4.2).
 </div>

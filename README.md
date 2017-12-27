@@ -159,7 +159,7 @@ EnvParser.parse :MUST_BE_LOWERCASE, as: :string, validated_by: ->(value) { value
 ## ... but a block will also do the trick!
 
 EnvParser.parse(:MUST_BE_LOWERCASE, as: :string) { |value| value == value.downcase }
-EnvParser.parse(:CONNECTION_RETRIES, as: :integer, &:nonzero?)
+EnvParser.parse(:CONNECTION_RETRIES, as: :integer, &:positive?)
 ```
 
 ---
