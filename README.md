@@ -146,7 +146,7 @@ EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), i
 
 ## And if the value is not allowed...
 
-EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5)  ## => raises EnvParser::ValueNotAllowed
+EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5)  ## => raises EnvParser::ValueNotAllowedError
 
 
 
