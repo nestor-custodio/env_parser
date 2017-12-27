@@ -209,8 +209,7 @@ b = EnvParser.parse :B, as: :my_special_type_of_number
 
 Additional features/options coming in the future:
 
-- Round out the "as" type selection with things like `:url`, `:email`, etc.
-- ... ?
+- Continue to round out the "as" type selection as ideas come to mind, suggestions are made, and pull requests are submitted.
 
 
 ## Contribution / Development

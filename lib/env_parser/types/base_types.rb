@@ -11,40 +11,58 @@ module EnvParserTypes
   ##     <tr>
   ##       <th><code>:as</code> value</th>
   ##       <th>type returned</th>
+  ##       <th>default</th>
+  ##       <th>notes</th>
   ##     </tr>
   ##   </tbody>
   ##   <tbody>
   ##     <tr>
   ##       <td>:string</td>
   ##       <td>String</td>
+  ##       <td><code>''</code></td>
+  ##       <td></td>
   ##     </tr>
   ##     <tr>
   ##       <td>:symbol</td>
   ##       <td>Symbol</td>
+  ##       <td><code>:''</code></td>
+  ##       <td></td>
   ##     </tr>
   ##     <tr>
   ##       <td>:boolean</td>
   ##       <td>TrueValue / FalseValue</td>
+  ##       <td><code>false</code></td>
+  ##       <td></td>
   ##     </tr>
   ##     <tr>
   ##       <td>:int / :integer</td>
   ##       <td>Integer</td>
+  ##       <td><code>0</code></td>
+  ##       <td></td>
   ##     </tr>
   ##     <tr>
   ##       <td>:float / :decimal / :number</td>
   ##       <td>Float</td>
+  ##       <td><code>0.0</code></td>
+  ##       <td></td>
   ##     </tr>
   ##     <tr>
   ##       <td>:json</td>
   ##       <td>&lt; depends on JSON given &gt;</td>
+  ##       <td><code>nil</code></td>
+  ##       <td></td>
   ##     </tr>
   ##     <tr>
   ##       <td>:array</td>
   ##       <td>Array</td>
+  ##       <td><code>[]</code></td>
+  ##       <td></td>
   ##     </tr>
   ##     <tr>
   ##       <td>:hash</td>
   ##       <td>Hash</td>
+  ##       <td><code>{}</code></td>
+  ##       <td></td>
   ##     </tr>
   ##   </tbody>
   ## </table>
