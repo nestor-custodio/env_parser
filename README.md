@@ -146,7 +146,7 @@ EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), i
 
 ## And if the value is not allowed...
 
-EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5)  ## => raises EnvParser::ValueNotAllowed
+EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5)  ## => raises EnvParser::ValueNotAllowedError
 
 
 
@@ -159,7 +159,7 @@ EnvParser.parse :MUST_BE_LOWERCASE, as: :string, validated_by: ->(value) { value
 ## ... but a block will also do the trick!
 
 EnvParser.parse(:MUST_BE_LOWERCASE, as: :string) { |value| value == value.downcase }
-EnvParser.parse(:CONNECTION_RETRIES, as: :integer, &:nonzero?)
+EnvParser.parse(:CONNECTION_RETRIES, as: :integer, &:positive?)
 ```
 
 ---
@@ -209,6 +209,7 @@ b = EnvParser.parse :B, as: :my_special_type_of_number
 
 Additional features/options coming in the future:
 
+- Allow for a ".env_parser" file where you can easily type-check and/or register (as constants) any ENV variables you like.
 - Continue to round out the "as" type selection as ideas come to mind, suggestions are made, and pull requests are submitted.
 
 
