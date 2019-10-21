@@ -3,20 +3,26 @@ PATH
   specs:
     env_parser (1.1.0)
       activesupport (>= 5.0.0)
+      chronic
+      chronic_duration
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (5.1.4)
+    activesupport (5.2.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
-      i18n (~> 0.7)
+      i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    concurrent-ruby (1.0.5)
+    chronic (0.10.2)
+    chronic_duration (0.10.6)
+      numerizer (~> 0.1.1)
+    concurrent-ruby (1.1.5)
     diff-lcs (1.3)
-    i18n (0.9.1)
+    i18n (1.7.0)
       concurrent-ruby (~> 1.0)
-    minitest (5.10.1)
+    minitest (5.12.2)
+    numerizer (0.1.1)
     rake (10.5.0)
     rspec (3.7.0)
       rspec-core (~> 3.7.0)
@@ -34,7 +40,7 @@ GEM
     rspec_junit_formatter (0.3.0)
       rspec-core (>= 2, < 4, != 2.12.0)
     thread_safe (0.3.6)
-    tzinfo (1.2.4)
+    tzinfo (1.2.5)
       thread_safe (~> 0.1)
 
 PLATFORMS

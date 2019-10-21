@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Exception: EnvParser::ValueNotConvertibleError
+  Module: EnvParserTypes::TimeTypes
   
     &mdash; Documentation by YARD 0.9.20
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" />
 
 <script type="text/javascript" charset="utf-8">
-  pathId = "EnvParser::ValueNotConvertibleError";
+  pathId = "EnvParserTypes::TimeTypes";
   relpath = '../';
 </script>
 
@@ -36,10 +36,10 @@
       <div id="header">
         <div id="menu">
   
-    <a href="../_index.html">Index (V)</a> &raquo;
-    <span class='title'><span class='object_link'><a href="../EnvParser.html" title="EnvParser (class)">EnvParser</a></span></span>
+    <a href="../_index.html">Index (T)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../EnvParserTypes.html" title="EnvParserTypes (module)">EnvParserTypes</a></span></span>
      &raquo; 
-    <span class="title">ValueNotConvertibleError</span>
+    <span class="title">TimeTypes</span>
   
 </div>
 
@@ -59,32 +59,12 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Exception: EnvParser::ValueNotConvertibleError
+      <div id="content"><h1>Module: EnvParserTypes::TimeTypes
   
   
   
 </h1>
 <div class="box_info">
-  
-  <dl>
-    <dt>Inherits:</dt>
-    <dd>
-      <span class="inheritName"><span class='object_link'><a href="Error.html" title="EnvParser::Error (class)">Error</a></span></span>
-      
-        <ul class="fullTree">
-          <li>Object</li>
-          
-            <li class="next">StandardError</li>
-          
-            <li class="next"><span class='object_link'><a href="Error.html" title="EnvParser::Error (class)">Error</a></span></li>
-          
-            <li class="next">EnvParser::ValueNotConvertibleError</li>
-          
-        </ul>
-        <a href="#" class="inheritanceTree">show all</a>
-      
-    </dd>
-  </dl>
   
 
   
@@ -98,7 +78,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/env_parser/errors.rb</dd>
+    <dd>lib/env_parser/types/chronology.rb</dd>
   </dl>
   
 </div>
@@ -106,9 +86,50 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>Error class used to indicate value given is not convertible to the
-requested type.</p>
-
+<p>Defines types for date/time-related values, adding the following:</p>
+<table>
+  <tbody>
+    <tr>
+      <th><code>:as</code> value</th>
+      <th>type returned</th>
+      <th>default</th>
+      <th>notes</th>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr>
+      <td>:date</td>
+      <td>Date</td>
+      <td><code>nil</code></td>
+      <td>
+        A natural language or ISO8601-parseable date.
+        <br />
+        Actual interpretation of the value is handled by the *chronic* gem.
+      </td>
+    </tr>
+    <tr>
+      <td>:time / :datetime</td>
+      <td>Time</td>
+      <td><code>nil</code></td>
+      <td>
+        A natural language or ISO8601-parseable date and time.
+        <br />
+        Actual interpretation of the value is handled by the *chronic* gem.
+      </td>
+    </tr>
+    <tr>
+      <td>:duration</td>
+      <td>Numeric</td>
+      <td><code>nil</code></td>
+      <td>
+        A natural language or ISO8601-parseable period. Value returns is number of seconds in
+        the given period.
+        <br />
+        Actual interpretation of the value is handled by the *chronic_duration* gem.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
   </div>
 </div>
@@ -123,18 +144,11 @@ requested type.</p>
 
 
 
-  
-  
-  
-  
-  
-  
-  
 
 </div>
 
       <div id="footer">
-  Generated on Sun Oct 20 23:39:48 2019 by
+  Generated on Sun Oct 20 23:33:13 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.20 (ruby-2.4.2).
 </div>
