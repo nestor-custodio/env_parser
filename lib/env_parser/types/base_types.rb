@@ -67,7 +67,8 @@ module EnvParserTypes
   ##   </tbody>
   ## </table>
   ##
-  ## Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered valid, parseable JSON).
+  ## Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered
+  ## valid, parseable JSON).
   ##
   module BaseTypes
     EnvParser.define_type(:string, if_unset: '') do |value|
