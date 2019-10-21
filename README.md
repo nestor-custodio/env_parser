@@ -43,7 +43,7 @@ timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
 timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer
 ```
 
-For a full list of all "as" types available out-of-the-box, [see the documentation for modules listed under EnvParserTypes](http://nestor-custodio.github.io/env_parser/EnvParserTypes.html).
+For a full list of all "as" types available out-of-the-box, [see the documentation for modules listed under EnvParser::Types](http://nestor-custodio.github.io/env_parser/EnvParser/Types.html).
 
 ---
 
