@@ -3,7 +3,7 @@ require 'env_parser'
 ## The parent module for all EnvParser type definition modules.
 ## Exists only for documentation's sake.
 ##
-module EnvParserTypes
+module EnvParser::Types
   ## Defines types for primitive classes, adding the following:
   ##
   ## <table>
