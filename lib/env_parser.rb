@@ -189,7 +189,7 @@ class EnvParser
         name = name.to_s
       end
 
-      unless from.is_a?(Hash)
+      unless from.is_a? Hash
         raise ArgumentError, "invalid `from` parameter: #{from.class}"
       end
 
@@ -288,7 +288,7 @@ class EnvParser
     ## @raise [ArgumentError]
     ##
     def register_all(list)
-      raise(ArgumentError, "invalid 'list' parameter type: #{list.class}") unless list.is_a?(Hash)
+      raise(ArgumentError, "invalid 'list' parameter type: #{list.class}") unless list.is_a? Hash
 
       list.to_a.each_with_object({}) do |tuple, output|
         output[tuple.first] = register(tuple.first, tuple.second)

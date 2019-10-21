@@ -117,6 +117,8 @@ different data types.</p>
 <p class="children">
   
     
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="EnvParser/Types.html" title="EnvParser::Types (module)">Types</a></span>
+    
   
     
       <strong class="classes">Classes:</strong> <span class='object_link'><a href="EnvParser/Error.html" title="EnvParser::Error (class)">Error</a></span>, <span class='object_link'><a href="EnvParser/TypeAlreadyDefinedError.html" title="EnvParser::TypeAlreadyDefinedError (class)">TypeAlreadyDefinedError</a></span>, <span class='object_link'><a href="EnvParser/UnknownTypeError.html" title="EnvParser::UnknownTypeError (class)">UnknownTypeError</a></span>, <span class='object_link'><a href="EnvParser/ValueNotAllowedError.html" title="EnvParser::ValueNotAllowedError (class)">ValueNotAllowedError</a></span>, <span class='object_link'><a href="EnvParser/ValueNotConvertibleError.html" title="EnvParser::ValueNotConvertibleError (class)">ValueNotConvertibleError</a></span>
@@ -1057,7 +1059,7 @@ each value needing validation must give its own “validated_by” Proc.</p>
     <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
   <span class='kw'>end</span>
 
-  <span class='kw'>unless</span> <span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
+  <span class='kw'>unless</span> <span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `from` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
 
@@ -1081,7 +1083,7 @@ each value needing validation must give its own “validated_by” Proc.</p>
 </div>
 
       <div id="footer">
-  Generated on Sun Oct 20 23:39:48 2019 by
+  Generated on Mon Oct 21 00:16:36 2019 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.20 (ruby-2.4.2).
 </div>

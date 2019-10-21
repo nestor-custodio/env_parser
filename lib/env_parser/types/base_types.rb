@@ -3,7 +3,7 @@ require 'env_parser'
 ## The parent module for all EnvParser type definition modules.
 ## Exists only for documentation's sake.
 ##
-module EnvParserTypes
+module EnvParser::Types
   ## Defines types for primitive classes, adding the following:
   ##
   ## <table>
@@ -67,7 +67,8 @@ module EnvParserTypes
   ##   </tbody>
   ## </table>
   ##
-  ## Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered valid, parseable JSON).
+  ## Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered
+  ## valid, parseable JSON).
   ##
   module BaseTypes
     EnvParser.define_type(:string, if_unset: '') do |value|
