@@ -57,6 +57,7 @@ GEM
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.0)
+    yard (0.9.20)
 
 PLATFORMS
   ruby
@@ -68,6 +69,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rspec_junit_formatter
   rubocop
+  yard
 
 BUNDLED WITH
    1.16.0
