@@ -6,7 +6,10 @@ begin
   auto_register_spec = Psych.load_file(auto_register_file)
 
   auto_register_spec.deep_symbolize_keys!
-  auto_register_spec.transform_values! { |spec| spec.merge as: spec[:as]&.to_sym }
+  auto_register_spec.transform_values! do |spec|
+    spec.slice(:as, :if_unset, :from_set).merge as: spec[:as]&.to_sym
+  end
+
   EnvParser.register auto_register_spec
 
 ## Psych raises an Errno::ENOENT on file-not-found.
