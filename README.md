@@ -219,7 +219,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/nestor
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-Linting is courtesy of [Rubocop](https://github.com/bbatsov/rubocop) and documentation is built using [Yard](https://yardoc.org/). Neither is included in the Gemspec; you'll need to install these locally to take advantage.
+Linting is courtesy of [Rubocop](https://github.com/bbatsov/rubocop) (included in the Gemspec for sanity's sake) and documentation is built using [Yard](https://yardoc.org/) (*not* included int the Gemspec, so you'll need to install locally to take advantage).
 
 
 ## License

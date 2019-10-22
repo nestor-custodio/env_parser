@@ -1,78 +1,69 @@
 AllCops:
   TargetRubyVersion: 2.4
   Include:
+  - "**/*.rb"
   - "**/*.rake"
   - "**/Gemfile"
-  - "**/Rakefile"
-  - "**/Capfile"
-  - "**/Berksfile"
-  - "**/Cheffile"
   Exclude:
-  - "vendor/**/*"
-  - "db/**/*"
+  - ".git/**/*"
   - "tmp/**/*"
   - "true/**/*"
-Metrics/ClassLength:
-  Description: Avoid classes longer than 100 lines of code.
+  - "vendor/**/*"
+
+
+Layout/EmptyLineAfterGuardClause:
+  # Add empty line after guard clause.
   Enabled: false
-  CountComments: false
-  Max: 100
-Metrics/LineLength:
-  Description: Limit lines to 100 characters.
-  Enabled: false
-  Max: 100
-Metrics/BlockLength:
-  Exclude:
-    - 'spec/**/*.rb'
-Metrics/MethodLength:
-  Description: Avoid methods longer than 10 lines of code.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
-  Enabled: false
-  CountComments: false
-  Max: 10
+
+
 Metrics/AbcSize:
-  Description: A calculated magnitude based on number of assignments, branches, and conditions.
+  # A calculated magnitude based on number of assignments, branches, and conditions.
   Enabled: false
-  Max: 15
-Metrics/CyclomaticComplexity:
-  Description: A complexity metric that is strongly correlated to the number of test cases needed to validate a method.
-  Enabled: false
-  Max: 6
-Lint/Debugger:
-  Description: Warn in debugger entries
-  Enabled: false
-Lint/RescueWithoutErrorClass:
-  Description: Avoid rescuing without specifying an error class.
-  Enabled: false
-Style/SymbolArray:
-  Description: Use %i or %I for arrays of symbols.
-  Enabled: false
-Style/RegexpLiteral:
-  Description: Enforces using / or %r around regular expressions.
-  EnforcedStyle: percent_r
-Style/AsciiComments:
-  # Disabling this so we can use non-breaking spaces (' ') in documentation comments, preventing browsers from collapsing multiple spaces in code blocks.
-  Description: This cop checks for non-ascii (non-English) characters in comments.
-  Enabled: false
-Style/NumericLiterals:
-  Description: This cop checks for big numeric literals without _ between groups of digits in them.
-  Enabled: false
-Style/Documentation:
-  Description: Document classes and non-namespace modules.
-  Enabled: false
-Style/ClassAndModuleChildren:
-  Description: Use nested modules/class definitions instead of compact style.
-  Enabled: false
-Style/FrozenStringLiteralComment:
-  Enabled: false
-Style/EmptyMethod:
-  Enabled: false
-Style/StderrPuts:
-  Enabled: true
-  Exclude:
-    - 'bin/**/*'
-Style/BlockDelimiters:
-  Description: Check for uses of braces or do/end around single line or multi-line blocks.
-  Enabled: true
+
+Metrics/BlockLength:
+  # Avoid long blocks with many lines.
   Exclude:
     - 'spec/**/*.rb'
+
+Metrics/CyclomaticComplexity:
+  # A complexity metric that is strongly correlated to the number of test cases needed to validate a method.
+  Max: 10
+
+Metrics/LineLength:
+  # Limit lines to 100 characters.
+  Max: 100
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/MethodLength:
+  # Avoid methods longer than 25 lines of code.
+  Max: 25
+
+
+Style/AsciiComments:
+  # This cop checks for non-ascii (non-English) characters in comments.
+  #
+  # NLC: Disabling this so we can use non-breaking spaces (' ') in documentation comments, preventing browsers from collapsing
+  #      multiple spaces in code blocks.
+  Enabled: false
+
+Style/BlockDelimiters:
+  # Check for uses of braces or do/end around single line or multi-line blocks.
+  Exclude:
+    - 'spec/**/*.rb'
+
+Style/ClassAndModuleChildren:
+  # Use nested modules/class definitions instead of compact style.
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  # Add the frozen_string_literal comment to the top of files to help transition to frozen string literals by default.
+  Enabled: false
+
+Style/NumericLiterals:
+  # his cop checks for big numeric literals without _ between groups of digits in them.
+  Enabled: false
+
+Style/RegexpLiteral:
+  # Enforces using / or %r around regular expressions.
+  EnforcedStyle: percent_r

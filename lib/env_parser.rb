@@ -189,9 +189,7 @@ class EnvParser
         name = name.to_s
       end
 
-      unless from.is_a? Hash
-        raise ArgumentError, "invalid `from` parameter: #{from.class}"
-      end
+      raise ArgumentError, "invalid `from` parameter: #{from.class}" unless from.is_a? Hash
 
       unless within.is_a?(Module) || within.is_a?(Class)
         raise ArgumentError, "invalid `within` parameter: #{within.inspect}"
