@@ -79,7 +79,7 @@ module EnvParser::Types
     EnvParser.define_type(:network_port, aliases: :port, if_unset: nil) do |value|
       begin
         Integer(value)
-      rescue
+      rescue ArgumentError
         raise(EnvParser::ValueNotConvertibleError, 'non-numeric value')
       end
 
@@ -90,7 +90,7 @@ module EnvParser::Types
     end
 
     EnvParser.define_type(:email_address, if_unset: nil) do |value|
-      simple_email = %r[^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$]i
+      simple_email = %r[^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$]i ## rubocop:disable Metrics/LineLength
       raise(EnvParser::ValueNotConvertibleError, 'not an email') unless value.match?(simple_email)
 
       value
