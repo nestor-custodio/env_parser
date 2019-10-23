@@ -1,6 +1,7 @@
 require 'env_parser/errors'
 require 'env_parser/version'
 require 'active_support/all'
+require 'psych'
 
 ## The EnvParser class simplifies parsing of environment variables as different data types.
 ##
@@ -223,6 +224,29 @@ class EnvParser
       end
 
       ENV
+    end
+
+    def autoregister
+      EnvParser::AUTOREGISTER_FILE = '.env_parser.yml'.freeze
+
+      autoregister_spec = Psych.load_file(EnvParser::AUTOREGISTER_FILE)
+
+      autoregister_spec.deep_symbolize_keys!
+      autoregister_spec.transform_values! do |spec|
+        spec.slice(:as, :if_unset, :from_set).merge as: spec[:as]&.to_sym
+      end
+
+      register_all autoregister_spec
+
+    ## Psych raises an Errno::ENOENT on file-not-found.
+    ##
+    rescue Errno::ENOENT
+      raise EnvParser::AutoregisterFileNotFound, %(file not found: "#{EnvParser::AUTOREGISTER_FILE}")
+
+    ## Psych raises a Psych::SyntaxError on unparseable YAML.
+    ##
+    rescue Psych::SyntaxError => e
+      raise EnvParser::UnparseableAutoregisterSpec, "malformed YAML in spec file: #{e.message}"
     end
 
     private

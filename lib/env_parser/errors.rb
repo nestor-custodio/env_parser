@@ -26,15 +26,15 @@ class EnvParser
   class ValueNotAllowedError < Error
   end
 
-  ## Error class used to indicate a missing auto-registration spec file (used by the "auto-register"
+  ## Error class used to indicate a missing auto-registration spec file (used by the "autoregister"
   ## feature).
   ##
-  class AutoRegisterFileNotFound < Error
+  class AutoregisterFileNotFound < Error
   end
 
-  ## Error class used to indicate an unparseable auto-registration spec (used by the "auto-register"
+  ## Error class used to indicate an unparseable auto-registration spec (used by the "autoregister"
   ## feature).
   ##
-  class UnparseableAutoRegisterSpec < Error
+  class UnparseableAutoregisterSpec < Error
   end
 end
