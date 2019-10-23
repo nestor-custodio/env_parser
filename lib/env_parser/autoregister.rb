@@ -1,9 +1,10 @@
 require 'env_parser'
 require 'psych'
 
+EnvParser::AUTOREGISTER_FILE = '.env_parser.yml'.freeze
+
 begin
-  auto_register_file = '.env_parser.yml'
-  auto_register_spec = Psych.load_file(auto_register_file)
+  auto_register_spec = Psych.load_file(EnvParser::AUTOREGISTER_FILE)
 
   auto_register_spec.deep_symbolize_keys!
   auto_register_spec.transform_values! do |spec|
@@ -15,7 +16,7 @@ begin
 ## Psych raises an Errno::ENOENT on file-not-found.
 ##
 rescue Errno::ENOENT
-  raise EnvParser::AutoRegisterFileNotFound, %(file not found: "#{auto_register_file}")
+  raise EnvParser::AutoRegisterFileNotFound, %(file not found: "#{EnvParser::AUTOREGISTER_FILE}")
 
 ## Psych raises a Psych::SyntaxError on unparseable YAML.
 ##
