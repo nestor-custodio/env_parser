@@ -6,6 +6,10 @@ require 'psych'
 ## The EnvParser class simplifies parsing of environment variables as different data types.
 ##
 class EnvParser
+  ## The default filename to use for {.autoregister} requests.
+  ##
+  AUTOREGISTER_FILE = '.env_parser.yml'.freeze
+
   class << self
     ## Defines a new type for use as the "as" option on a subsequent {.parse} or {.register} call.
     ##
@@ -237,9 +241,7 @@ class EnvParser
     ## #raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
     ##
     def autoregister
-      EnvParser::AUTOREGISTER_FILE = '.env_parser.yml'.freeze
-
-      autoregister_spec = Psych.load_file(EnvParser::AUTOREGISTER_FILE)
+      autoregister_spec = Psych.load_file(AUTOREGISTER_FILE)
 
       autoregister_spec.deep_symbolize_keys!
       autoregister_spec.transform_values! do |spec|
@@ -251,7 +253,7 @@ class EnvParser
     ## Psych raises an Errno::ENOENT on file-not-found.
     ##
     rescue Errno::ENOENT
-      raise EnvParser::AutoregisterFileNotFound, %(file not found: "#{EnvParser::AUTOREGISTER_FILE}")
+      raise EnvParser::AutoregisterFileNotFound, %(file not found: "#{AUTOREGISTER_FILE}")
 
     ## Psych raises a Psych::SyntaxError on unparseable YAML.
     ##
