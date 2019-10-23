@@ -232,16 +232,22 @@ class EnvParser
 
     ## Reads an "autoregister" file and registers the ENV constants defined therein.
     ##
-    ## The "autoregister" file (see {EnvParser::AUTOREGISTER_FILE}) is read, parsed as YAML,
-    ## sanitized for use as a parameter to {.register_all}, and then passed along for processing.
+    ## The "autoregister" file is read, parsed as YAML, sanitized for use as a parameter to
+    ## {.register_all}, and then passed along for processing. The return value from that
+    ## {.register_all} call is passed through.
+    ##
+    ## @param filename [String]
+    ##   A path for the autoregister file to parse and process. Defaults to
+    ##   {EnvParser::AUTOREGISTER_FILE} if unset.
     ##
     ## @return [Hash]
-    ##   The return value from the {.register_all} call that handles the registration.
+    ##   The return value from the {.register_all} call that handles the actual registration.
     ##
     ## #raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
     ##
-    def autoregister
-      autoregister_spec = Psych.load_file(AUTOREGISTER_FILE)
+    def autoregister(filename = nil)
+      filename ||= AUTOREGISTER_FILE
+      autoregister_spec = Psych.load_file(filename)
 
       autoregister_spec.deep_symbolize_keys!
       autoregister_spec.transform_values! do |spec|
@@ -253,7 +259,7 @@ class EnvParser
     ## Psych raises an Errno::ENOENT on file-not-found.
     ##
     rescue Errno::ENOENT
-      raise EnvParser::AutoregisterFileNotFound, %(file not found: "#{AUTOREGISTER_FILE}")
+      raise EnvParser::AutoregisterFileNotFound, %(file not found: "#{filename}")
 
     ## Psych raises a Psych::SyntaxError on unparseable YAML.
     ##
