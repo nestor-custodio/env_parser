@@ -226,6 +226,16 @@ class EnvParser
       ENV
     end
 
+    ## Reads an "autoregister" file and registers the ENV constants defined therein.
+    ##
+    ## The "autoregister" file (see {EnvParser::AUTOREGISTER_FILE}) is read, parsed as YAML,
+    ## sanitized for use as a parameter to {.register_all}, and then passed along for processing.
+    ##
+    ## @return [Hash]
+    ##   The return value from the {.register_all} call that handles the registration.
+    ##
+    ## #raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
+    ##
     def autoregister
       EnvParser::AUTOREGISTER_FILE = '.env_parser.yml'.freeze
 
