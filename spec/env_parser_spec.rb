@@ -5,22 +5,22 @@ RSpec.describe EnvParser do
     expect(EnvParser::VERSION).not_to be nil
   end
 
-  it 'responds to `.define_type`' do
-    expect(EnvParser).to respond_to(:define_type)
-  end
-
   describe 'EnvParser.define_type' do
+    it 'exists' do
+      expect(EnvParser).to respond_to(:define_type)
+    end
+
     it 'can register new types' do
       EnvParser.define_type(:thirty) { |_| 30 }
       expect(EnvParser.parse('dummy value', as: :thirty)).to eq(30)
     end
   end
 
-  it 'responds to `.parse`' do
-    expect(EnvParser).to respond_to(:parse)
-  end
-
   describe 'EnvParser.parse' do
+    it 'exists' do
+      expect(EnvParser).to respond_to(:parse)
+    end
+
     it 'returns the requested default when necessary' do
       expect(EnvParser.parse(nil, as: :integer, if_unset: 25)).to eq(25)
       expect(EnvParser.parse('', as: :integer, if_unset: 25)).to eq(25)
@@ -46,11 +46,11 @@ RSpec.describe EnvParser do
     end
   end
 
-  it 'responds to `.register`' do
-    expect(EnvParser).to respond_to(:register)
-  end
-
   describe 'EnvParse.register' do
+    it 'exists' do
+      expect(EnvParser).to respond_to(:register)
+    end
+
     it 'ceates global constants' do
       source_hash = { ABC: '123' }
       EnvParser.register(:ABC, from: source_hash, as: :integer)
@@ -82,18 +82,18 @@ RSpec.describe EnvParser do
     end
   end
 
-  it 'responds to `.add_env_bindings`' do
-    expect(EnvParser).to respond_to(:add_env_bindings)
-  end
-
   describe 'EnvParser.add_env_bindings' do
     before(:context) { EnvParser.add_env_bindings }
 
-    it 'lets ENV respond to `.parse`' do
-      expect(ENV).to respond_to(:parse)
+    it 'exists' do
+      expect(EnvParser).to respond_to(:add_env_bindings)
     end
 
     describe 'ENV.parse' do
+      it 'now exists' do
+        expect(ENV).to respond_to(:parse)
+      end
+
       it 'interprets input values as ENV keys' do
         ENV['ABC'] = '123'
         expect(ENV.parse('ABC', as: :integer)).to eq(123)
@@ -101,11 +101,11 @@ RSpec.describe EnvParser do
       end
     end
 
-    it 'lets ENV respond to `.register`' do
-      expect(ENV).to respond_to(:register)
-    end
-
     describe 'ENV.register' do
+      it 'now exists' do
+        expect(ENV).to respond_to(:register)
+      end
+
       it 'ceates global constants' do
         ENV['ABCD'] = '1234'
         ENV.register(:ABCD, as: :integer)
@@ -141,11 +141,11 @@ RSpec.describe EnvParser do
     end
   end
 
-  it 'responds to `.autoregister`' do
-    expect(EnvParser).to respond_to(:autoregister)
-  end
-
   describe 'EnvParser.autoregister' do
+    it 'exists' do
+      expect(EnvParser).to respond_to(:autoregister)
+    end
+
     it 'can autoregister constants' do
       filename = Tempfile.open('EnvParser.autoregister.') do |file|
         file.write <<~YAML.chomp
@@ -169,24 +169,22 @@ RSpec.describe EnvParser do
       expect(SOME_STRING).to eq('twelve')
     end
 
-    describe 'error handling' do
-      it 'properly handles file-not-found' do
-        expect { EnvParser.autoregister 'nonexistent filename' }.to raise_error(EnvParser::AutoregisterFileNotFound)
+    it 'properly handles file-not-found' do
+      expect { EnvParser.autoregister 'nonexistent filename' }.to raise_error(EnvParser::AutoregisterFileNotFound)
+    end
+
+    it 'properly handles unparseable YAML' do
+      filename = Tempfile.open('EnvParser.autoregister.') do |file|
+        file.write <<~MALFORMED_YAML.chomp
+          SOME_INT:
+            as:
+            hello
+        MALFORMED_YAML
+
+        file.path
       end
 
-      it 'properly handles unparseable YAML' do
-        filename = Tempfile.open('EnvParser.autoregister.') do |file|
-          file.write <<~MALFORMED_YAML.chomp
-            SOME_INT:
-              as:
-              hello
-          MALFORMED_YAML
-
-          file.path
-        end
-
-        expect { EnvParser.autoregister filename }.to raise_error(EnvParser::UnparseableAutoregisterSpec)
-      end
+      expect { EnvParser.autoregister filename }.to raise_error(EnvParser::UnparseableAutoregisterSpec)
     end
   end
 end
