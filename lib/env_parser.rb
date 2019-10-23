@@ -1,10 +1,15 @@
 require 'env_parser/errors'
 require 'env_parser/version'
 require 'active_support/all'
+require 'psych'
 
 ## The EnvParser class simplifies parsing of environment variables as different data types.
 ##
 class EnvParser
+  ## The default filename to use for {.autoregister} requests.
+  ##
+  AUTOREGISTER_FILE = '.env_parser.yml'.freeze
+
   class << self
     ## Defines a new type for use as the "as" option on a subsequent {.parse} or {.register} call.
     ##
@@ -223,6 +228,43 @@ class EnvParser
       end
 
       ENV
+    end
+
+    ## Reads an "autoregister" file and registers the ENV constants defined therein.
+    ##
+    ## The "autoregister" file is read, parsed as YAML, sanitized for use as a parameter to
+    ## {.register_all}, and then passed along for processing. The return value from that
+    ## {.register_all} call is passed through.
+    ##
+    ## @param filename [String]
+    ##   A path for the autoregister file to parse and process. Defaults to
+    ##   {EnvParser::AUTOREGISTER_FILE} if unset.
+    ##
+    ## @return [Hash]
+    ##   The return value from the {.register_all} call that handles the actual registration.
+    ##
+    ## #raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
+    ##
+    def autoregister(filename = nil)
+      filename ||= AUTOREGISTER_FILE
+      autoregister_spec = Psych.load_file(filename)
+
+      autoregister_spec.deep_symbolize_keys!
+      autoregister_spec.transform_values! do |spec|
+        spec.slice(:as, :if_unset, :from_set).merge as: spec[:as]&.to_sym
+      end
+
+      register_all autoregister_spec
+
+    ## Psych raises an Errno::ENOENT on file-not-found.
+    ##
+    rescue Errno::ENOENT
+      raise EnvParser::AutoregisterFileNotFound, %(file not found: "#{filename}")
+
+    ## Psych raises a Psych::SyntaxError on unparseable YAML.
+    ##
+    rescue Psych::SyntaxError => e
+      raise EnvParser::UnparseableAutoregisterSpec, "malformed YAML in spec file: #{e.message}"
     end
 
     private
