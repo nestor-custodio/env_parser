@@ -4,14 +4,14 @@ require 'psych'
 EnvParser::AUTOREGISTER_FILE = '.env_parser.yml'.freeze
 
 begin
-  auto_register_spec = Psych.load_file(EnvParser::AUTOREGISTER_FILE)
+  autoregister_spec = Psych.load_file(EnvParser::AUTOREGISTER_FILE)
 
-  auto_register_spec.deep_symbolize_keys!
-  auto_register_spec.transform_values! do |spec|
+  autoregister_spec.deep_symbolize_keys!
+  autoregister_spec.transform_values! do |spec|
     spec.slice(:as, :if_unset, :from_set).merge as: spec[:as]&.to_sym
   end
 
-  EnvParser.register auto_register_spec
+  EnvParser.register autoregister_spec
 
 ## Psych raises an Errno::ENOENT on file-not-found.
 ##
