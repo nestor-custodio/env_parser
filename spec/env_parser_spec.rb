@@ -1,3 +1,5 @@
+require 'tempfile'
+
 RSpec.describe EnvParser do
   it 'has a version number' do
     expect(EnvParser::VERSION).not_to be nil
@@ -135,6 +137,55 @@ RSpec.describe EnvParser do
         expect(SIXTH).to eq(99)
         expect(SEVENTH).to eq('seventh')
         expect(EIGHTH).to eq('no eighth')
+      end
+    end
+  end
+
+  it 'responds to `.autoregister`' do
+    expect(EnvParser).to respond_to(:autoregister)
+  end
+
+  describe 'EnvParser.autoregister' do
+    it 'can autoregister constants' do
+      filename = Tempfile.open('EnvParser.autoregister.') do |file|
+        file.write <<~YAML.chomp
+          SOME_INT:
+            as: :integer
+            if_unset: 25
+
+          SOME_STRING:
+            as: :string
+            if_unset: "unexpected"
+        YAML
+
+        file.path
+      end
+
+      ENV['SOME_INT'] = '99'
+      ENV['SOME_STRING'] = 'twelve'
+      EnvParser.autoregister filename
+
+      expect(SOME_INT).to eq(99)
+      expect(SOME_STRING).to eq('twelve')
+    end
+
+    describe 'error handling' do
+      it 'properly handles file-not-found' do
+        expect { EnvParser.autoregister 'nonexistent filename' }.to raise_error(EnvParser::AutoregisterFileNotFound)
+      end
+
+      it 'properly handles unparseable YAML' do
+        filename = Tempfile.open('EnvParser.autoregister.') do |file|
+          file.write <<~MALFORMED_YAML.chomp
+            SOME_INT:
+              as:
+              hello
+          MALFORMED_YAML
+
+          file.path
+        end
+
+        expect { EnvParser.autoregister filename }.to raise_error(EnvParser::UnparseableAutoregisterSpec)
       end
     end
   end
