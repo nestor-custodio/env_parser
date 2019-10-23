@@ -1,4 +1,4 @@
-RSpec.describe EnvParser::Types::BaseTypes do
+RSpec.describe EnvParser::Types::InternetTypes do
   it 'can parse ipv4 addresses' do
     expect(EnvParser.parse(nil, as: :ipv4_address)).to eq(nil)
     expect(EnvParser.parse('', as: :ipv4_address)).to eq(nil)
