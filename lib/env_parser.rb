@@ -251,7 +251,11 @@ class EnvParser
 
       autoregister_spec.deep_symbolize_keys!
       autoregister_spec.transform_values! do |spec|
-        spec.slice(:as, :if_unset, :from_set).merge as: spec[:as]&.to_sym
+        sanitized = spec.slice(:as, :within, :if_unset, :from_set)
+        sanitized[:as] = sanitized[:as].to_sym if sanitized.key? :as
+        sanitized[:within] = sanitized[:within].constantize if sanitized.key? :within
+
+        sanitized
       end
 
       register_all autoregister_spec

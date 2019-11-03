@@ -156,6 +156,10 @@ RSpec.describe EnvParser do
           SOME_STRING:
             as: :string
             if_unset: "unexpected"
+
+          CLASS_CONSTANT:
+            as: :string
+            within: String
         YAML
 
         file.path
@@ -163,10 +167,12 @@ RSpec.describe EnvParser do
 
       ENV['SOME_INT'] = '99'
       ENV['SOME_STRING'] = 'twelve'
+      ENV['CLASS_CONSTANT'] = 'tricky'
       EnvParser.autoregister filename
 
       expect(SOME_INT).to eq(99)
       expect(SOME_STRING).to eq('twelve')
+      expect(String::CLASS_CONSTANT).to eq('tricky')
     end
 
     it 'properly handles file-not-found' do
