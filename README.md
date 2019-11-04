@@ -1,227 +1,316 @@
-# EnvParser  [![Gem Version](https://badge.fury.io/rb/env_parser.svg)](https://badge.fury.io/rb/env_parser)
+[![Gem Version](https://img.shields.io/github/v/release/nestor-custodio/env_parser?color=green&label=gem%20version)](https://rubygems.org/gems/env_parser)
+[![MIT License](https://img.shields.io/github/license/nestor-custodio/env_parser)](https://github.com/nestor-custodio/env_parser/blob/master/LICENSE.txt)
+
+
+# EnvParser
 
 If your code uses environment variables, you know that `ENV` will always surface these as strings. Interpreting these strings as the value you *actually* want to see/use takes some work, however: for numbers you need to cast with `to_i` or `to_f` ... for booleans you need to check for a specific value (`ENV['SOME_VAR'] == 'true'`) ... maybe you want to set non-trivial defaults (something other than `0` or `''`)? ... maybe you only want to allow values from a limited set? ...
 
-Things can get out of control pretty fast, especially as the number of environment variables in play grows. Tools like [dotenv](https://github.com/bkeepers/dotenv) help to make sure you're loading the correct **set** of variables, but [EnvParser](https://github.com/nestor-custodio/env_parser) makes ***the values themselves*** usable with a minimum of effort.
+Things can get out of control pretty fast, especially as the number of environment variables in play grows. Tools like [dotenv](https://github.com/bkeepers/dotenv) help to make sure you're loading the correct **set** of variables, but [EnvParser](https://github.com/nestor-custodio/env_parser) makes **the values themselves** usable with a minimum of effort.
+
+[Full documentation is available here](http://nestor-custodio.github.io/env_parser/EnvParser.html), but do read below for a crash course on availble featues!
 
 
 ## Installation
 
-Add this line to your application's Gemfile:
+- If your project uses [Bundler](https://github.com/bundler/bundler):
+  - Add one of the following to your application's Gemfile:
+    ```ruby
+    ## For on-demand usage ...
+    ##
+    gem 'env_parser'
+
+    ## To automatically register ENV
+    ## constants per ".env_parser.yml" ...
+    ##
+    gem 'env_parser', require: 'env_parser/autoregister'
+    ```
+  - And then run a:
+    ```shell
+    $ bundle install
+    ```
+
+- Or, you can keep things simple with a manual install:
+  ```shell
+  $ gem install env_parser
+  ```
+
+
+## Syntax Cheat Sheet
 
 ```ruby
-gem 'env_parser'
-```
+## Returns an ENV value parsed "as" a specific type:
+##
+EnvParser.parse env_key_as_a_symbol
+                as: …                          ## ➜ required
+                if_unset: …                    ## ➜ optional; default value
+                from_set: …                    ## ➜ optional; an Array or Range
+                validated_by: ->(value) { … }  ## ➜ optional; may also be given as a block
 
-And then execute:
+## Parse an ENV value and register it as a constant:
+##
+EnvParser.register env_key_as_a_symbol
+                   as: …                          ## ➜ required
+                   within: …                      ## ➜ optional; Class or Module
+                   if_unset: …                    ## ➜ optional; default value
+                   from_set: …                    ## ➜ optional; an Array or Range
+                   validated_by: ->(value) { … }  ## ➜ optional; may also be given as a block
 
-    $ bundle
+## Registers all ENV variables as spec'ed in ".env_parser.yml":
+##
+EnvParser.autoregister  ## Note this is automatically called if your
+                        ## Gemfile included the "env_parser" gem with
+                        ## the "require: 'env_parser/autoregister'" option.
 
-Or install it yourself as:
-
-    $ gem install env_parser
-
-
-## Using EnvParser
-
-### Basic Usage
-
-#### Parsing ENV Values
-
-```ruby
-## Returns ENV['TIMEOUT_MS'] as an Integer,
-## or 0 if ENV['TIMEOUT_MS'] is unset or nil.
-
-timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
-
-
-## LESS TYPING, PLZ!  :(
-## If you pass in a Symbol instead of a String, EnvParser
-## will use the value behind the matching String key in ENV.
-## (i.e. passing in ENV['X'] is equivalent to passing in :X)
-
-timeout_ms = EnvParser.parse :TIMEOUT_MS, as: :integer
-```
-
-For a full list of all "as" types available out-of-the-box, [see the documentation for modules listed under EnvParserTypes](http://nestor-custodio.github.io/env_parser/EnvParserTypes.html).
-
----
-
-#### Setting Non-Trivial Defaults
-
-```ruby
-## If the ENV variable you want is unset (nil) or blank (''),
-## the return value is a sensible default for the given "as" type
-## (0 or 0.0 for numbers, an empty tring, an empty Array or Hash, etc).
-## Sometimes you want a non-trivial default, however.
-
-EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer  ## => 0
-EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 250  ## => 250
-
-
-## Note that "if_unset" values are used as-is, with no type conversion.
-
-EnvParser.parse :MISSING_ENV_VARIABLE, as: :integer, if_unset: 'Careful!'  ## => 'Careful!'
-```
-
----
-
-#### Setting Constants From ENV Values
-
-```ruby
-## Global constants...
-
-ENV['API_KEY']  ## => 'unbreakable p4$$w0rd'
-
-EnvParser.register :API_KEY, as: :string
-API_KEY  ## => 'unbreakable p4$$w0rd' (registered within the Kernel module, so it's available everywhere)
-
-
-## ... and class/module-level constants!
-
-ENV['ULTIMATE_LINK']  ## => 'https://youtu.be/L_jWHffIx5E'
-
-EnvParser.register :ULTIMATE_LINK, as: :string, within: URI
-URI::ULTIMATE_LINK  ## => 'https://youtu.be/L_jWHffIx5E'
-
-ULTIMATE_LINK  ## => raises NameError (the un-namespaced constant is only in scope within the URI module)
-
-
-
-
-## You can also set multiple constants in one call, which is considerably cleaner to read:
-
-EnvParser.register :A, as: :string
-EnvParser.register :B, as: :integer, if_unset: 25
-EnvParser.register :C, as: :boolean, if_unset: true
-
-
-## ... is equivalent to ...
-
-EnvParser.register(
-  A: { as: :string },
-  B: { as: :integer, if_unset: 25 },
-  C: { as: :boolean, if_unset: true }
-)
-```
-
----
-
-#### Binding EnvParser Proxies Onto ENV
-
-```ruby
-## You can bind proxy "parse" and "register" methods onto ENV.
-## This is done without polluting the method space for other objects.
-
-EnvParser.add_env_bindings  ## Sets up the proxy methods.
-
-
-## Now you can call "parse" and "register" on ENV itself,
-## which is more legible and feels more straight-forward.
-
-ENV['SHORT_PI']  ## => '3.1415926'
-
-ENV.parse :SHORT_PI, as: :float  ## => 3.1415926
-ENV.register :SHORT_PI, as: :float  ## Your constant is set, my man!
-
-
-## Note that ENV's proxy "parse" method will *always* interpret the
-## value given as an ENV key (converting to a String, if necessary).
-## This is different from the non-proxy "parse" method, which will use
-## String values as-is and only looks up ENV values when given a Symbol.
+## Lets you call "parse" and "register" on ENV itself:
+##
+EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
+                            ## and ENV.register will now be a proxy for EnvParser.register
 ```
 
 
-### Advanced Usage
+## Extended How-To-Use
 
-#### Custom Validation Of Parsed Values
+#### Basic Usage
 
-```ruby
-## Sometimes setting the type alone is a bit too open-ended.
-## The "from_set" option lets you restrict the set of allowed values.
+- **Parsing `ENV` Values**
 
-EnvParser.parse :API_TO_USE, as: :symbol, from_set: %i[internal external]
-EnvParser.parse :SOME_CUSTOM_NETWORK_PORT, as: :integer, from_set: (1..65535), if_unset: 80
+  At its core, EnvParser is a straight-forward parser for string values (since that's all `ENV` ever gives you), allowing you to read a given string **_as_** a variety of types.
+
+  ```ruby
+  ## Returns ENV['TIMEOUT_MS'] as an Integer,
+  ## or a sensible default (0) if ENV['TIMEOUT_MS'] is unset.
+  ##
+  timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
+  ```
+
+  You can check the full documentation for [a list of all **_as_** types available right out of the box](http://nestor-custodio.github.io/env_parser/EnvParser/Types.html).
+
+- **How About Less Typing?**
+
+  EnvParser is all about ~~simplification~~ ~~less typing~~ *laziness*. If you pass in a symbol instead of a string, EnvParser will look to `ENV` and use the value from the corresponding (string) key.
+
+  ```ruby
+  ## YAY, LESS TYPING!  😃
+  ## These two are the same:
+  ##
+  more_typing = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
+  less_typing = EnvParser.parse :TIMEOUT_MS, as: :integer
+  ```
+
+- **Registering Constants From `ENV` Values**
+
+  The `EnvParser.register` method lets you "promote" `ENV` variables into their own constants, already parsed into the correct type.
+
+  ```ruby
+  ENV['API_KEY']  ## => 'unbreakable p4$$w0rd'
+
+  EnvParser.register :API_KEY, as: :string
+  API_KEY  ## => 'unbreakable p4$$w0rd'
+  ```
+
+  By default, `EnvParser.register` will create the requested constant within the Kernel module (making it available everywhere), but you can specify any class or module you like.
+
+  ```ruby
+  ENV['BEST_VIDEO']  ## => 'https://youtu.be/L_jWHffIx5E'
+
+  EnvParser.register :BEST_VIDEO, as: :string, within: URI
+  URI::BEST_VIDEO  ## => 'https://youtu.be/L_jWHffIx5E'
+  BEST_VIDEO  ## => raises NameError
+  ```
+
+  You can also register multiple constants with a single call, which is a bit cleaner.
+
+  ```ruby
+  EnvParser.register :USERNAME, as: :string
+  EnvParser.register :PASSWORD, as: :string
+  EnvParser.register :MOCK_API, as: :boolean, within: MyClassOrModule }
+
+  ## ... is equivalent to ... ##
+
+  EnvParser.register USERNAME: { as: :string                           },
+                     PASSWORD: { as: :string                           },
+                     MOCK_API: { as: :boolean, within: MyClassOrModule }
+  ```
+
+- **Okay, But... How About Even Less Typing?**
+
+  Calling `EnvParser.add_env_bindings` binds proxy `parse` and `register` methods onto `ENV`. With these bindings in place, you can call `parse` or `register` on `ENV` itself, which is more legible and feels more straight-forward.
+
+  ```ruby
+  ENV['SHORT_PI']  ## => '3.1415926'
+  ENV['BETTER_PI']  ## => '["flaky crust", "strawberry filling"]'
+
+  ## Bind the proxy methods.
+  ##
+  EnvParser.add_env_bindings
+
+  ENV.parse :SHORT_PI, as: :float  ## => 3.1415926
+  ENV.register :BETTER_PI, as: :array  ## Your constant is set!
+  ```
+
+  Note that the proxy `ENV.parse` method will (naturally) *always* interpret the value given as an `ENV` key (converting it to a string, if necessary), which is slightly different from the original `EnvParser.parse` method.
+
+  ```ruby
+  ENV['SHORT_PI']  ## => '3.1415926'
+
+  EnvParser.parse 'SHORT_PI', as: :float  ## => 'SHORT_PI' as a float: 0.0
+  EnvParser.parse :SHORT_PI , as: :float  ## => ENV['SHORT_PI'] as a float: 3.1415926
+
+  ## Bind the proxy methods.
+  ##
+  EnvParser.add_env_bindings
+
+  ENV.parse 'SHORT_PI', as: :float  ## => ENV['SHORT_PI'] as a float: 3.1415926
+  ENV.parse :SHORT_PI , as: :float  ## => ENV['SHORT_PI'] as a float: 3.1415926
+  ```
+
+  Note also that the `ENV.parse` and `ENV.register` binding is done safely and without polluting the method space for other objects.
+
+  **All additional examples below will assume that `ENV` bindings are already in place, for brevity's sake.**
 
 
-## And if the value is not allowed...
+#### Ensuring Usable Values
 
-EnvParser.parse :NEGATIVE_NUMBER, as: :integer, from_set: (1..5)  ## => raises EnvParser::ValueNotAllowedError
+- **Sensible Defaults**
 
+  If the `ENV` variable you want is unset (`nil`) or blank (`''`), the return value is a sensible default for the given **_as_** type: 0 or 0.0 for numbers, an empty string/array/hash, etc. Sometimes you want a non-trivial default, however. The **_if_unset_** option lets you specify a default that better meets your needs.
 
+  ```ruby
+  ENV.parse :MISSING_VAR, as: :integer  ## => 0
+  ENV.parse :MISSING_VAR, as: :integer, if_unset: 250  ## => 250
+  ```
 
+  Note these default values are used as-is with no type conversion, so exercise caution.
 
-## The "validated_by" option allows for more complex validation.
+  ```ruby
+  ENV.parse :MISSING_VAR, as: :integer, if_unset: 'Careful!'  ## => 'Careful!' (NOT AN INTEGER)
+  ```
 
-EnvParser.parse :MUST_BE_LOWERCASE, as: :string, validated_by: ->(value) { value == value.downcase }
+- **Selecting From A Set**
 
+  Sometimes setting the **_as_** type is a bit too open-ended. The **_from_set_** option lets you restrict the domain of allowed values.
 
-## ... but a block will also do the trick!
+  ```ruby
+  ENV.parse :API_TO_USE, as: :symbol, from_set: %i[internal external]
+  ENV.parse :NETWORK_PORT, as: :integer, from_set: (1..65535), if_unset: 80
 
-EnvParser.parse(:MUST_BE_LOWERCASE, as: :string) { |value| value == value.downcase }
-EnvParser.parse(:CONNECTION_RETRIES, as: :integer, &:positive?)
-```
+  ## And if the value is not in the allowed set ...
+  ##
+  ENV.parse :TWELVE, as: :integer, from_set: (1..5)  ## => raises EnvParser::ValueNotAllowedError
+  ```
 
----
+- **Custom Validation Of Parsed Values**
 
-#### Defining Your Own EnvParser "as" Types
+  You can write your own, more complex validations by passing in a **_validated_by_** lambda or an equivalent block. The lambda/block should take one value and return true if the given value passes the custom validation.
 
-```ruby
-## If you use a particular validation many times,
-## or are often manipulating values in the same way
-## after EnvParser has done its thing, you may want
-## to register a new type altogether.
+  ```ruby
+  ## Via a "validated_by" lambda ...
+  ##
+  ENV.parse :MUST_BE_LOWERCASE, as: :string, validated_by: ->(value) { value == value.downcase }
 
-a = EnvParser.parse :A, as: :int, if_unset: nil
-raise unless passes_all_my_checks?(a)
+  ## ... or with a block!
+  ##
+  ENV.parse(:MUST_BE_LOWERCASE, as: :string) { |value| value == value.downcase }
+  ENV.parse(:CONNECTION_RETRIES, as: :integer, &:positive?)
+  ```
 
-b = EnvParser.parse :B, as: :int, if_unset: nil
-raise unless passes_all_my_checks?(b)
+- **Defining Your Own EnvParser "*as*" Types**
 
+  If you use a particular validation many times or are often manipulating values in the same way after EnvParser has done its thing, you may want to register a new type altogether. Defining a new type makes your code both more maintainable (all the logic for your special type is only defined once) and more readable (your `parse` calls aren't littered with type-checking cruft).
 
-## ... is perhaps best handled by defining a new type:
+  Something as repetitive as:
 
-EnvParser.define_type(:my_special_type_of_number, if_unset: nil) do |value|
-  value = value.to_i
-  unless passes_all_my_checks?(value)
-    raise(EnvParser::ValueNotConvertibleError, 'cannot parse as a "special type number"')
+  ```ruby
+  a = ENV.parse :A, as: :int, if_unset: 6
+  raise unless passes_all_my_checks?(a)
+
+  b = ENV.parse :B, as: :int, if_unset: 6
+  raise unless passes_all_my_checks?(b)
+  ```
+
+  ... is perhaps best handled by defining a new type:
+
+  ```ruby
+  EnvParser.define_type(:my_special_type_of_number, if_unset: 6) do |value|
+    value = value.to_i
+    unless passes_all_my_checks?(value)
+      raise(EnvParser::ValueNotConvertibleError, 'cannot parse as a "special type number"')
+    end
+
+    value
   end
 
-  value
-end
-
-a = EnvParser.parse :A, as: :my_special_type_of_number
-b = EnvParser.parse :B, as: :my_special_type_of_number
+  a = ENV.parse :A, as: :my_special_type_of_number
+  b = ENV.parse :B, as: :my_special_type_of_number
+  ```
 
 
-## Defining a new type makes your code both more maintainable
-## (all the logic for your special type is only defined once)
-## and more readable (your "parse" calls aren't littered with
-## type-checking cruft).
-```
+#### Auto-Registering Constants
 
----
+- **The `autoregister` Call**
 
-[Consult the repo docs for the full EnvParser documentation.](http://nestor-custodio.github.io/env_parser/EnvParser.html)
+  Consolidating all of your `EnvParser.register` calls into a single place only makes sense. A single `EnvParser.autoregister` call take a filename to read and process as a series of constant registration requests. If no filename is given, the default `".env_parser.yml"` is assumed.
+
+  You'll normally want to call `EnvParser.autoregister` as early in your application as possible. For Rails applications (and other frameworks that call `require 'bundler/setup'`), requiring the EnvParser gem via ...
+
+  ```ruby
+  gem 'env_parser', require: 'env_parser/autoregister'
+  ```
+
+  ... will automatically make the autoregistration call for you as soon as the gem is loaded (which should be early enough for most uses). If this is *still* not early enough for your needs, you can always `require 'env_parser/autoregister'` yourself even before `bundler/setup` is invoked.
+
+- **The ".env_parser.yml" File**
+
+  If you recall, multiple constants can be registered via a single `EnvParser.register` call:
+
+  ```ruby
+  EnvParser.register :USERNAME, as: :string
+  EnvParser.register :PASSWORD, as: :string
+  EnvParser.register :MOCK_API, as: :boolean, within: MyClassOrModule }
+
+  ## ... is equivalent to ... ##
+
+  EnvParser.register USERNAME: { as: :string                           },
+                     PASSWORD: { as: :string                           },
+                     MOCK_API: { as: :boolean, within: MyClassOrModule }
+  ```
+
+  The autoregistraton file is intended to read as a YAML version of what you'd pass to the single-call version of `EnvParser.register`: a single hash with keys for each of the constants you'd like to register, with each value being the set of options to parse that constant.
+
+  The equivalent autoregistration file for the above would be:
+
+  ```yaml
+  USERNAME:
+    as: :string
+
+  PASSWORD:
+    as: :string
+
+  MOCK_API:
+    as: :boolean
+    within: MyClassOrModule
+  ```
+
+  Because no Ruby *statements* can be safely represented via YAML, the set of `EnvParser.register` options available via autoregistration is limited to **_as_**, **_within_**, **_if_unset_**, and **_from_set_**. As an additional restriction, **_from_set_** (if given) must be an array, as ranges cannot be represented in YAML.
 
 
 ## Feature Roadmap / Future Development
 
-Additional features/options coming in the future:
+Additional features coming in the future:
 
-- Allow for a ".env_parser" file where you can easily type-check and/or register (as constants) any ENV variables you like.
-- Continue to round out the "as" type selection as ideas come to mind, suggestions are made, and pull requests are submitted.
+- Continue to round out the **_as_** type selection as ideas come to mind, suggestions are made, and pull requests are submitted.
 
 
 ## Contribution / Development
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/nestor-custodio/env_parser.
+Bug reports and pull requests are welcome at: [https://github.com/nestor-custodio/env_parser](https://github.com/nestor-custodio/env_parser)
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-Linting is courtesy of [Rubocop](https://github.com/bbatsov/rubocop) (included in the Gemspec for sanity's sake) and documentation is built using [Yard](https://yardoc.org/) (*not* included int the Gemspec, so you'll need to install locally to take advantage).
+Linting is courtesy of [Rubocop](https://docs.rubocop.org/) (`bundle exec rubocop`) and documentation is built using [Yard](https://yardoc.org/) (`bundle exec yard`). Please ensure you have a clean bill of health from Rubocop and that any new features and/or changes to behaviour are reflected in the documentation before submitting a pull request.
 
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+EnvParser is available as open source under the terms of the [MIT License](https://tldrlegal.com/license/mit-license).

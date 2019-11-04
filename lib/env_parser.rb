@@ -243,7 +243,7 @@ class EnvParser
     ## @return [Hash]
     ##   The return value from the {.register_all} call that handles the actual registration.
     ##
-    ## #raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
+    ## @raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
     ##
     def autoregister(filename = nil)
       filename ||= AUTOREGISTER_FILE
