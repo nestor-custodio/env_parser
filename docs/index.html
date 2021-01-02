@@ -6,15 +6,15 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.20
+    &mdash; Documentation by YARD 0.9.26
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
   pathId = "README";
   relpath = '';
 </script>
@@ -58,38 +58,19 @@
       </div>
 
       <div id="content"><div id='filecontents'>
-<p><a href="https://rubygems.org/gems/env_parser"><img
-src="https://img.shields.io/github/v/release/nestor-custodio/env_parser?color=green&label=gem%20version"></a>
-<a
-href="https://github.com/nestor-custodio/env_parser/blob/master/LICENSE.txt"><img
-src="https://img.shields.io/github/license/nestor-custodio/env_parser"></a></p>
+<p><a href="https://rubygems.org/gems/env_parser"><img src="https://img.shields.io/github/v/release/nestor-custodio/env_parser?color=green&label=gem%20version"></a> <a href="https://github.com/nestor-custodio/env_parser/blob/master/LICENSE.txt"><img src="https://img.shields.io/github/license/nestor-custodio/env_parser"></a></p>
 
 <h1 id="label-EnvParser">EnvParser</h1>
 
-<p>If your code uses environment variables, you know that <code>ENV</code>
-will always surface these as strings. Interpreting these strings as the
-value you <em>actually</em> want to see/use takes some work, however: for
-numbers you need to cast with <code>to_i</code> or <code>to_f</code> … for
-booleans you need to check for a specific value (<code>ENV['SOME_VAR'] ==
-&#39;true&#39;</code>) … maybe you want to set non-trivial defaults
-(something other than <code>0</code> or <code>&#39;&#39;</code>)? … maybe
-you only want to allow values from a limited set? …</p>
+<p>If your code uses environment variables, you know that <code>ENV</code> will always surface these as strings. Interpreting these strings as the value you <em>actually</em> want to see/use takes some work, however: for numbers you need to cast with <code>to_i</code> or <code>to_f</code> … for booleans you need to check for a specific value (<code>ENV['SOME_VAR'] == &#39;true&#39;</code>) … maybe you want to set non-trivial defaults (something other than <code>0</code> or <code>&#39;&#39;</code>)? … maybe you only want to allow values from a limited set? …</p>
 
-<p>Things can get out of control pretty fast, especially as the number of
-environment variables in play grows. Tools like <a
-href="https://github.com/bkeepers/dotenv">dotenv</a> help to make sure
-you&#39;re loading the correct <strong>set</strong> of variables, but <a
-href="https://github.com/nestor-custodio/env_parser">EnvParser</a> makes
-<strong>the values themselves</strong> usable with a minimum of effort.</p>
+<p>Things can get out of control pretty fast, especially as the number of environment variables in play grows. Tools like <a href="https://github.com/bkeepers/dotenv">dotenv</a> help to make sure you&#39;re loading the correct <strong>set</strong> of variables, but <a href="https://github.com/nestor-custodio/env_parser">EnvParser</a> makes <strong>the values themselves</strong> usable with a minimum of effort.</p>
 
-<p><a href="http://nestor-custodio.github.io/env_parser/EnvParser.html">Full
-documentation is available here</a>, but do read below for a crash course
-on availble featues!</p>
+<p><a href="http://nestor-custodio.github.io/env_parser/EnvParser.html">Full documentation is available here</a>, but do read below for a crash course on availble featues!</p>
 
 <h2 id="label-Installation">Installation</h2>
 <ul><li>
-<p>If your project uses <a
-href="https://github.com/bundler/bundler">Bundler</a>:</p>
+<p>If your project uses <a href="https://github.com/bundler/bundler">Bundler</a>:</p>
 </li><li>
 <p>Add one of the following to your application&#39;s Gemfile: "`ruby</p>
 
@@ -105,8 +86,7 @@ href="https://github.com/bundler/bundler">Bundler</a>:</p>
 </li><li>
 <p>And then run a: <code>shell $ bundle install </code></p>
 </li><li>
-<p>Or, you can keep things simple with a manual install:  <code>shell   $ gem
-install env_parser </code></p>
+<p>Or, you can keep things simple with a manual install:  <code>shell   $ gem install env_parser </code></p>
 </li></ul>
 
 <h2 id="label-Syntax+Cheat+Sheet">Syntax Cheat Sheet</h2>
@@ -147,236 +127,145 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
 <p><strong>Parsing <code>ENV</code> Values</strong></p>
 </li></ul>
 
-<p>At its core, EnvParser is a straight-forward parser for string values
-(since that&#39;s all <code>ENV</code> ever gives you), allowing you to
-read a given string <strong><em>as</em></strong> a variety of types.</p>
+<p>At its core, EnvParser is a straight-forward parser for string values (since that&#39;s all <code>ENV</code> ever gives you), allowing you to read a given string <strong><em>as</em></strong> a variety of types.</p>
 
-<p><code>ruby   ## Returns ENV['TIMEOUT_MS'] as an Integer,   ## or a sensible
-default (0) if ENV['TIMEOUT_MS'] is unset.   ##   timeout_ms =
-EnvParser.parse ENV['TIMEOUT_MS'], as: :integer </code></p>
+<p><code>ruby   ## Returns ENV['TIMEOUT_MS'] as an Integer,   ## or a sensible default (0) if ENV['TIMEOUT_MS'] is unset.   ##   timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer </code></p>
 
-<p>You can check the full documentation for <a
-href="http://nestor-custodio.github.io/env_parser/EnvParser/Types.html">a
-list of all as types available right out of the box</a>.</p>
+<p>You can check the full documentation for <a href="http://nestor-custodio.github.io/env_parser/EnvParser/Types.html">a list of all as types available right out of the box</a>.</p>
 <ul><li>
 <p><strong>How About Less Typing?</strong></p>
 </li></ul>
 
-<p>EnvParser is all about ~~simplification~~ ~~less typing~~
-<em>laziness</em>. If you pass in a symbol instead of a string, EnvParser
-will look to <code>ENV</code> and use the value from the corresponding
-(string) key.</p>
+<p>EnvParser is all about ~simplification~ &lt;s&gt;less typing&lt;/s&gt; <em>laziness</em>. If you pass in a symbol instead of a string, EnvParser will look to <code>ENV</code> and use the value from the corresponding (string) key.</p>
 
-<p><code>ruby   ## YAY, LESS TYPING!  😃   ## These two are the same:   ##  
-more_typing = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer   less_typing
-= EnvParser.parse :TIMEOUT_MS, as: :integer </code></p>
+<p><code>ruby   ## YAY, LESS TYPING!  😃   ## These two are the same:   ##   more_typing = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer   less_typing = EnvParser.parse :TIMEOUT_MS, as: :integer </code></p>
 <ul><li>
 <p><strong>Registering Constants From <code>ENV</code> Values</strong></p>
 </li></ul>
 
-<p>The <code>EnvParser.register</code> method lets you “promote”
-<code>ENV</code> variables into their own constants, already parsed into
-the correct type.</p>
+<p>The <code>EnvParser.register</code> method lets you “promote” <code>ENV</code> variables into their own constants, already parsed into the correct type.</p>
 
 <p>“`ruby  <a href="'API_KEY'">ENV</a> ## =&gt; &#39;unbreakable p4$$w0rd&#39;</p>
 
-<p>EnvParser.register :API_KEY, as: :string  API_KEY ## =&gt; &#39;unbreakable
-p4$$w0rd&#39;  “`</p>
+<p>EnvParser.register :API_KEY, as: :string  API_KEY ## =&gt; &#39;unbreakable p4$$w0rd&#39;  “`</p>
 
-<p>By default, <code>EnvParser.register</code> will create the requested
-constant within the Kernel module (making it available everywhere), but you
-can specify any class or module you like.</p>
+<p>By default, <code>EnvParser.register</code> will create the requested constant within the Kernel module (making it available everywhere), but you can specify any class or module you like.</p>
 
-<p>“`ruby  <a href="'BEST_VIDEO'">ENV</a> ## =&gt; &#39;<a
-href="https://youtu.be/L_jWHffIx5E">youtu.be/L_jWHffIx5E</a>&#39;</p>
+<p>“`ruby  <a href="'BEST_VIDEO'">ENV</a> ## =&gt; &#39;<a href="https://youtu.be/L_jWHffIx5E">youtu.be/L_jWHffIx5E</a>&#39;</p>
 
-<p>EnvParser.register :BEST_VIDEO, as: :string, within: URI  URI::BEST_VIDEO
-## =&gt; &#39;<a
-href="https://youtu.be/L_jWHffIx5E">youtu.be/L_jWHffIx5E</a>&#39; 
-BEST_VIDEO ## =&gt; raises NameError  “`</p>
+<p>EnvParser.register :BEST_VIDEO, as: :string, within: URI  URI::BEST_VIDEO ## =&gt; &#39;<a href="https://youtu.be/L_jWHffIx5E">youtu.be/L_jWHffIx5E</a>&#39;  BEST_VIDEO ## =&gt; raises NameError  “`</p>
 
-<p>You can also register multiple constants with a single call, which is a bit
-cleaner.</p>
+<p>You can also register multiple constants with a single call, which is a bit cleaner.</p>
 
-<p>“`ruby  EnvParser.register :USERNAME, as: :string  EnvParser.register
-:PASSWORD, as: :string  EnvParser.register :MOCK_API, as: :boolean, within:
-MyClassOrModule }</p>
+<p>“`ruby  EnvParser.register :USERNAME, as: :string  EnvParser.register :PASSWORD, as: :string  EnvParser.register :MOCK_API, as: :boolean, within: MyClassOrModule }</p>
 
 <p>## … is equivalent to … ##</p>
 
-<p>EnvParser.register USERNAME: { as: :string },  PASSWORD: { as: :string }, 
-MOCK_API: { as: :boolean, within: MyClassOrModule }  “`</p>
+<p>EnvParser.register USERNAME: { as: :string },  PASSWORD: { as: :string },  MOCK_API: { as: :boolean, within: MyClassOrModule }  “`</p>
 <ul><li>
 <p><strong>Okay, But… How About Even Less Typing?</strong></p>
 </li></ul>
 
-<p>Calling <code>EnvParser.add_env_bindings</code> binds proxy
-<code>parse</code> and <code>register</code> methods onto <code>ENV</code>.
-With these bindings in place, you can call <code>parse</code> or
-<code>register</code> on <code>ENV</code> itself, which is more legible and
-feels more straight-forward.</p>
+<p>Calling <code>EnvParser.add_env_bindings</code> binds proxy <code>parse</code> and <code>register</code> methods onto <code>ENV</code>. With these bindings in place, you can call <code>parse</code> or <code>register</code> on <code>ENV</code> itself, which is more legible and feels more straight-forward.</p>
 
-<p>“`ruby  <a href="'SHORT_PI'">ENV</a> ## =&gt; &#39;3.1415926&#39;  <a
-href="'BETTER_PI'">ENV</a> ## =&gt; &#39;[“flaky crust”, “strawberry
-filling”]&#39;</p>
+<p>“`ruby  <a href="'SHORT_PI'">ENV</a> ## =&gt; &#39;3.1415926&#39;  <a href="'BETTER_PI'">ENV</a> ## =&gt; &#39;[“flaky crust”, “strawberry filling”]&#39;</p>
 
 <p>## Bind the proxy methods.  ##  EnvParser.add_env_bindings</p>
 
-<p>ENV.parse :SHORT_PI, as: :float ## =&gt; 3.1415926  ENV.register
-:BETTER_PI, as: :array ## Your constant is set!  “`</p>
+<p>ENV.parse :SHORT_PI, as: :float ## =&gt; 3.1415926  ENV.register :BETTER_PI, as: :array ## Your constant is set!  “`</p>
 
-<p>Note that the proxy <code>ENV.parse</code> method will (naturally)
-<em>always</em> interpret the value given as an <code>ENV</code> key
-(converting it to a string, if necessary), which is slightly different from
-the original <code>EnvParser.parse</code> method.</p>
+<p>Note that the proxy <code>ENV.parse</code> method will (naturally) <em>always</em> interpret the value given as an <code>ENV</code> key (converting it to a string, if necessary), which is slightly different from the original <code>EnvParser.parse</code> method.</p>
 
 <p>“`ruby  <a href="'SHORT_PI'">ENV</a> ## =&gt; &#39;3.1415926&#39;</p>
 
-<p>EnvParser.parse &#39;SHORT_PI&#39;, as: :float ## =&gt; &#39;SHORT_PI&#39;
-as a float: 0.0  EnvParser.parse :SHORT_PI , as: :float ## =&gt; <a
-href="'SHORT_PI'">ENV</a> as a float: 3.1415926</p>
+<p>EnvParser.parse &#39;SHORT_PI&#39;, as: :float ## =&gt; &#39;SHORT_PI&#39; as a float: 0.0  EnvParser.parse :SHORT_PI , as: :float ## =&gt; <a href="'SHORT_PI'">ENV</a> as a float: 3.1415926</p>
 
 <p>## Bind the proxy methods.  ##  EnvParser.add_env_bindings</p>
 
-<p>ENV.parse &#39;SHORT_PI&#39;, as: :float ## =&gt; <a
-href="'SHORT_PI'">ENV</a> as a float: 3.1415926  ENV.parse :SHORT_PI , as:
-:float ## =&gt; <a href="'SHORT_PI'">ENV</a> as a float: 3.1415926  “`</p>
+<p>ENV.parse &#39;SHORT_PI&#39;, as: :float ## =&gt; <a href="'SHORT_PI'">ENV</a> as a float: 3.1415926  ENV.parse :SHORT_PI , as: :float ## =&gt; <a href="'SHORT_PI'">ENV</a> as a float: 3.1415926  “`</p>
 
-<p>Note also that the <code>ENV.parse</code> and <code>ENV.register</code>
-binding is done safely and without polluting the method space for other
-objects.</p>
+<p>Note also that the <code>ENV.parse</code> and <code>ENV.register</code> binding is done safely and without polluting the method space for other objects.</p>
 
-<p><strong>All additional examples below will assume that <code>ENV</code>
-bindings are already in place, for brevity&#39;s sake.</strong></p>
+<p><strong>All additional examples below will assume that <code>ENV</code> bindings are already in place, for brevity&#39;s sake.</strong></p>
 
 <h4 id="label-Ensuring+Usable+Values">Ensuring Usable Values</h4>
 <ul><li>
 <p><strong>Sensible Defaults</strong></p>
 </li></ul>
 
-<p>If the <code>ENV</code> variable you want is unset (<code>nil</code>) or
-blank (<code>&#39;&#39;</code>), the return value is a sensible default for
-the given <strong><em>as</em></strong> type: 0 or 0.0 for numbers, an empty
-string/array/hash, etc. Sometimes you want a non-trivial default, however.
-The <strong><em>if_unset</em></strong> option lets you specify a default
-that better meets your needs.</p>
+<p>If the <code>ENV</code> variable you want is unset (<code>nil</code>) or blank (<code>&#39;&#39;</code>), the return value is a sensible default for the given <strong><em>as</em></strong> type: 0 or 0.0 for numbers, an empty string/array/hash, etc. Sometimes you want a non-trivial default, however. The <strong><em>if_unset</em></strong> option lets you specify a default that better meets your needs.</p>
 
-<p><code>ruby   ENV.parse :MISSING_VAR, as: :integer  ## =&gt; 0   ENV.parse
-:MISSING_VAR, as: :integer, if_unset: 250  ## =&gt; 250 </code></p>
+<p><code>ruby   ENV.parse :MISSING_VAR, as: :integer  ## =&gt; 0   ENV.parse :MISSING_VAR, as: :integer, if_unset: 250  ## =&gt; 250 </code></p>
 
-<p>Note these default values are used as-is with no type conversion, so
-exercise caution.</p>
+<p>Note these default values are used as-is with no type conversion, so exercise caution.</p>
 
-<p><code>ruby   ENV.parse :MISSING_VAR, as: :integer, if_unset:
-&#39;Careful!&#39;  ## =&gt; &#39;Careful!&#39; (NOT AN INTEGER) </code></p>
+<p><code>ruby   ENV.parse :MISSING_VAR, as: :integer, if_unset: &#39;Careful!&#39;  ## =&gt; &#39;Careful!&#39; (NOT AN INTEGER) </code></p>
 <ul><li>
 <p><strong>Selecting From A Set</strong></p>
 </li></ul>
 
-<p>Sometimes setting the <strong><em>as</em></strong> type is a bit too
-open-ended. The <strong><em>from_set</em></strong> option lets you restrict
-the domain of allowed values.</p>
+<p>Sometimes setting the <strong><em>as</em></strong> type is a bit too open-ended. The <strong><em>from_set</em></strong> option lets you restrict the domain of allowed values.</p>
 
-<p>“`ruby  ENV.parse :API_TO_USE, as: :symbol, from_set: %i[internal external]
-ENV.parse :NETWORK_PORT, as: :integer, from_set: (1..65535), if_unset: 80</p>
+<p>“`ruby  ENV.parse :API_TO_USE, as: :symbol, from_set: %i[internal external]  ENV.parse :NETWORK_PORT, as: :integer, from_set: (1..65535), if_unset: 80</p>
 
-<p>## And if the value is not in the allowed set …  ##  ENV.parse :TWELVE, as:
-:integer, from_set: (1..5) ## =&gt; raises EnvParser::ValueNotAllowedError 
-“`</p>
+<p>## And if the value is not in the allowed set …  ##  ENV.parse :TWELVE, as: :integer, from_set: (1..5) ## =&gt; raises EnvParser::ValueNotAllowedError  “`</p>
 <ul><li>
 <p><strong>Custom Validation Of Parsed Values</strong></p>
 </li></ul>
 
-<p>You can write your own, more complex validations by passing in a
-<strong><em>validated_by</em></strong> lambda or an equivalent block. The
-lambda/block should take one value and return true if the given value
-passes the custom validation.</p>
+<p>You can write your own, more complex validations by passing in a <strong><em>validated_by</em></strong> lambda or an equivalent block. The lambda/block should take one value and return true if the given value passes the custom validation.</p>
 
-<p>“`ruby  ## Via a “validated_by” lambda …  ##  ENV.parse :MUST_BE_LOWERCASE,
-as: :string, validated_by: -&gt;(value) { value == value.downcase }</p>
+<p>“`ruby  ## Via a “validated_by” lambda …  ##  ENV.parse :MUST_BE_LOWERCASE, as: :string, validated_by: -&gt;(value) { value == value.downcase }</p>
 
-<p>## … or with a block!  ##  ENV.parse(:MUST_BE_LOWERCASE, as: :string) {
-|value| value == value.downcase }  ENV.parse(:CONNECTION_RETRIES, as:
-:integer, &amp;:positive?)  “`</p>
+<p>## … or with a block!  ##  ENV.parse(:MUST_BE_LOWERCASE, as: :string) { |value| value == value.downcase }  ENV.parse(:CONNECTION_RETRIES, as: :integer, &amp;:positive?)  “`</p>
 <ul><li>
 <p><strong>Defining Your Own EnvParser “<em>as</em>” Types</strong></p>
 </li></ul>
 
-<p>If you use a particular validation many times or are often manipulating
-values in the same way after EnvParser has done its thing, you may want to
-register a new type altogether. Defining a new type makes your code both
-more maintainable (all the logic for your special type is only defined
-once) and more readable (your <code>parse</code> calls aren&#39;t littered
-with type-checking cruft).</p>
+<p>If you use a particular validation many times or are often manipulating values in the same way after EnvParser has done its thing, you may want to register a new type altogether. Defining a new type makes your code both more maintainable (all the logic for your special type is only defined once) and more readable (your <code>parse</code> calls aren&#39;t littered with type-checking cruft).</p>
 
 <p>Something as repetitive as:</p>
 
-<p>“`ruby  a = ENV.parse :A, as: :int, if_unset: 6  raise unless
-passes_all_my_checks?(a)</p>
+<p>“`ruby  a = ENV.parse :A, as: :int, if_unset: 6  raise unless passes_all_my_checks?(a)</p>
 
-<p>b = ENV.parse :B, as: :int, if_unset: 6  raise unless
-passes_all_my_checks?(b)  “`</p>
+<p>b = ENV.parse :B, as: :int, if_unset: 6  raise unless passes_all_my_checks?(b)  “`</p>
 
 <p>… is perhaps best handled by defining a new type:</p>
 
-<p>“`ruby  EnvParser.define_type(:my_special_type_of_number, if_unset: 6) do
-|value|  value = value.to_i  unless passes_all_my_checks?(value) 
-raise(EnvParser::ValueNotConvertibleError, &#39;cannot parse as a “special
-type number”&#39;)  end</p>
+<p>“`ruby  EnvParser.define_type(:my_special_type_of_number, if_unset: 6) do |value|  value = value.to_i  unless passes_all_my_checks?(value)  raise(EnvParser::ValueNotConvertibleError, &#39;cannot parse as a “special type number”&#39;)  end</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_value'>value</span>
 </code></pre>
 
 <p>end</p>
 
-<p>a = ENV.parse :A, as: :my_special_type_of_number  b = ENV.parse :B, as:
-:my_special_type_of_number  “`</p>
+<p>a = ENV.parse :A, as: :my_special_type_of_number  b = ENV.parse :B, as: :my_special_type_of_number  “`</p>
 
 <h4 id="label-Auto-Registering+Constants">Auto-Registering Constants</h4>
 <ul><li>
 <p><strong>The <code>autoregister</code> Call</strong></p>
 </li></ul>
 
-<p>Consolidating all of your <code>EnvParser.register</code> calls into a
-single place only makes sense. A single <code>EnvParser.autoregister</code>
-call take a filename to read and process as a series of constant
-registration requests. If no filename is given, the default
-<code>&quot;.env_parser.yml&quot;</code> is assumed.</p>
+<p>Consolidating all of your <code>EnvParser.register</code> calls into a single place only makes sense. A single <code>EnvParser.autoregister</code> call take a filename to read and process as a series of constant registration requests. If no filename is given, the default <code>&quot;.env_parser.yml&quot;</code> is assumed.</p>
 
-<p>You&#39;ll normally want to call <code>EnvParser.autoregister</code> as
-early in your application as possible. For Rails applications (and other
-frameworks that call <code>require &#39;bundler/setup&#39;</code>),
-requiring the EnvParser gem via …</p>
+<p>You&#39;ll normally want to call <code>EnvParser.autoregister</code> as early in your application as possible. For Rails applications (and other frameworks that call <code>require &#39;bundler/setup&#39;</code>), requiring the EnvParser gem via …</p>
 
-<p><code>ruby   gem &#39;env_parser&#39;, require:
-&#39;env_parser/autoregister&#39; </code></p>
+<p><code>ruby   gem &#39;env_parser&#39;, require: &#39;env_parser/autoregister&#39; </code></p>
 
-<p>… will automatically make the autoregistration call for you as soon as the
-gem is loaded (which should be early enough for most uses). If this is
-<em>still</em> not early enough for your needs, you can always
-<code>require &#39;env_parser/autoregister&#39;</code> yourself even before
-<code>bundler/setup</code> is invoked.</p>
+<p>… will automatically make the autoregistration call for you as soon as the gem is loaded (which should be early enough for most uses). If this is <em>still</em> not early enough for your needs, you can always <code>require &#39;env_parser/autoregister&#39;</code> yourself even before <code>bundler/setup</code> is invoked.</p>
 <ul><li>
 <p><strong>The “.env_parser.yml” File</strong></p>
 </li></ul>
 
-<p>If you recall, multiple constants can be registered via a single
-<code>EnvParser.register</code> call:</p>
+<p>If you recall, multiple constants can be registered via a single <code>EnvParser.register</code> call:</p>
 
-<p>“`ruby  EnvParser.register :USERNAME, as: :string  EnvParser.register
-:PASSWORD, as: :string  EnvParser.register :MOCK_API, as: :boolean, within:
-MyClassOrModule }</p>
+<p>“`ruby  EnvParser.register :USERNAME, as: :string  EnvParser.register :PASSWORD, as: :string  EnvParser.register :MOCK_API, as: :boolean, within: MyClassOrModule }</p>
 
 <p>## … is equivalent to … ##</p>
 
-<p>EnvParser.register USERNAME: { as: :string },  PASSWORD: { as: :string }, 
-MOCK_API: { as: :boolean, within: MyClassOrModule }  “`</p>
+<p>EnvParser.register USERNAME: { as: :string },  PASSWORD: { as: :string },  MOCK_API: { as: :boolean, within: MyClassOrModule }  “`</p>
 
-<p>The autoregistraton file is intended to read as a YAML version of what
-you&#39;d pass to the single-call version of
-<code>EnvParser.register</code>: a single hash with keys for each of the
-constants you&#39;d like to register, with each value being the set of
-options to parse that constant.</p>
+<p>The autoregistraton file is intended to read as a YAML version of what you&#39;d pass to the single-call version of <code>EnvParser.register</code>: a single hash with keys for each of the constants you&#39;d like to register, with each value being the set of options to parse that constant.</p>
 
 <p>The equivalent autoregistration file for the above would be:</p>
 
@@ -386,49 +275,32 @@ options to parse that constant.</p>
 
 <p>MOCK_API:  as: :boolean  within: MyClassOrModule  “`</p>
 
-<p>Because no Ruby <em>statements</em> can be safely represented via YAML, the
-set of <code>EnvParser.register</code> options available via
-autoregistration is limited to <strong><em>as</em></strong>,
-<strong><em>within</em></strong>, <strong><em>if_unset</em></strong>, and
-<strong><em>from_set</em></strong>. As an additional restriction,
-<strong><em>from_set</em></strong> (if given) must be an array, as ranges
-cannot be represented in YAML.</p>
+<p>Because no Ruby <em>statements</em> can be safely represented via YAML, the set of <code>EnvParser.register</code> options available via autoregistration is limited to <strong><em>as</em></strong>, <strong><em>within</em></strong>, <strong><em>if_unset</em></strong>, and <strong><em>from_set</em></strong>. As an additional restriction, <strong><em>from_set</em></strong> (if given) must be an array, as ranges cannot be represented in YAML.</p>
 
 <h2 id="label-Feature+Roadmap+-2F+Future+Development">Feature Roadmap / Future Development</h2>
 
 <p>Additional features coming in the future:</p>
 <ul><li>
-<p>Continue to round out the <strong><em>as</em></strong> type selection as
-ideas come to mind, suggestions are made, and pull requests are submitted.</p>
+<p>Continue to round out the <strong><em>as</em></strong> type selection as ideas come to mind, suggestions are made, and pull requests are submitted.</p>
 </li></ul>
 
 <h2 id="label-Contribution+-2F+Development">Contribution / Development</h2>
 
-<p>Bug reports and pull requests are welcome at: <a
-href="https://github.com/nestor-custodio/env_parser">github.com/nestor-custodio/env_parser</a></p>
+<p>Bug reports and pull requests are welcome at: <a href="https://github.com/nestor-custodio/env_parser">github.com/nestor-custodio/env_parser</a></p>
 
-<p>After checking out the repo, run <code>bin/setup</code> to install
-dependencies. Then, run <code>bundle exec rspec</code> to run the tests.
-You can also run <code>bin/console</code> for an interactive prompt that
-will allow you to experiment.</p>
+<p>After checking out the repo, run <code>bin/setup</code> to install dependencies. Then, run <code>bundle exec rspec</code> to run the tests. You can also run <code>bin/console</code> for an interactive prompt that will allow you to experiment.</p>
 
-<p>Linting is courtesy of <a href="https://docs.rubocop.org/">Rubocop</a>
-(<code>bundle exec rubocop</code>) and documentation is built using <a
-href="https://yardoc.org/">Yard</a> (<code>bundle exec yard</code>). Please
-ensure you have a clean bill of health from Rubocop and that any new
-features and/or changes to behaviour are reflected in the documentation
-before submitting a pull request.</p>
+<p>Linting is courtesy of <a href="https://docs.rubocop.org/">Rubocop</a> (<code>bundle exec rubocop</code>) and documentation is built using <a href="https://yardoc.org/">Yard</a> (<code>bundle exec yard</code>). Please ensure you have a clean bill of health from Rubocop and that any new features and/or changes to behaviour are reflected in the documentation before submitting a pull request.</p>
 
 <h2 id="label-License">License</h2>
 
-<p>EnvParser is available as open source under the terms of the <a
-href="https://tldrlegal.com/license/mit-license">MIT License</a>.</p>
+<p>EnvParser is available as open source under the terms of the <a href="https://tldrlegal.com/license/mit-license">MIT License</a>.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Sun Nov  3 21:30:35 2019 by
+  Generated on Sat Jan  2 17:31:16 2021 by
   <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.20 (ruby-2.4.2).
+  0.9.26 (ruby-2.7.2).
 </div>
 
     </div>
