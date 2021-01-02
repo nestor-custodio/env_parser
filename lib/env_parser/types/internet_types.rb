@@ -90,7 +90,7 @@ module EnvParser::Types
     end
 
     EnvParser.define_type(:email_address, if_unset: nil) do |value|
-      simple_email = %r[^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$]i ## rubocop:disable Metrics/LineLength
+      simple_email = %r[^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$]i ## rubocop:disable Layout/LineLength
       raise(EnvParser::ValueNotConvertibleError, 'not an email') unless value.match?(simple_email)
 
       value

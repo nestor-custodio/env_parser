@@ -88,7 +88,7 @@ module EnvParser::Types
         ## With `raise_exceptions` set, ChronicDuration will fail on the "P" and "T" in ISO8601
         ## periods, so we have to check for and remove them.
         ##
-        iso_period = %r{^\s*P(?:[0-9.]Y)?(?:[0-9.]M)?(?:[0-9.]W)?(?:[0-9.]D)?(?:T(?:[0-9.]H)?(?:[0-9.]M)?(?:[0-9.]S)?)?\s*$} ## rubocop:disable Metrics/LineLength
+        iso_period = %r{^\s*P(?:[0-9.]Y)?(?:[0-9.]M)?(?:[0-9.]W)?(?:[0-9.]D)?(?:T(?:[0-9.]H)?(?:[0-9.]M)?(?:[0-9.]S)?)?\s*$} ## rubocop:disable Layout/LineLength
         value = value.delete 'PT' if value =~ iso_period
 
         value = ChronicDuration.parse value, keep_zero: true

@@ -1,5 +1,7 @@
 AllCops:
   TargetRubyVersion: 2.7
+  NewCops: enable
+  SuggestExtensions: false
   Include:
   - "**/*.rb"
   - "**/*.rake"
@@ -15,6 +17,18 @@ Layout/EmptyLineAfterGuardClause:
   # Add empty line after guard clause.
   Enabled: false
 
+Layout/LineLength:
+  # Limit lines to 100 characters.
+  Max: 100
+  Exclude:
+    - 'spec/**/*.rb'
+
+
+Lint/ConstantDefinitionInBlock:
+  # Do not define constants within a block.
+  Exclude:
+    - 'spec/**/*.rb'
+
 
 Metrics/AbcSize:
   # A calculated magnitude based on number of assignments, branches, and conditions.
@@ -28,12 +42,6 @@ Metrics/BlockLength:
 Metrics/CyclomaticComplexity:
   # A complexity metric that is strongly correlated to the number of test cases needed to validate a method.
   Max: 10
-
-Metrics/LineLength:
-  # Limit lines to 100 characters.
-  Max: 100
-  Exclude:
-    - 'spec/**/*.rb'
 
 Metrics/MethodLength:
   # Avoid methods longer than 25 lines of code.

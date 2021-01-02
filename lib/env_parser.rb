@@ -299,8 +299,6 @@ class EnvParser
       end
 
       raise(ValueNotAllowedError, 'parsed value not in allowed set') unless set.include?(value)
-
-      nil
     end
 
     ## Verifies that the given "value" passes both the "proc" and "block" validations.
@@ -317,9 +315,8 @@ class EnvParser
     def check_user_defined_validations(value, proc: nil, block: nil)
       immutable_value = value.dup.freeze
       all_tests_passed = [proc, block].compact.all? { |i| i.call(immutable_value) }
-      raise(ValueNotAllowedError, 'parsed value failed user validation') unless all_tests_passed
 
-      nil
+      raise(ValueNotAllowedError, 'parsed value failed user validation') unless all_tests_passed
     end
 
     ## Receives a list of {.register} calls to make, as a Hash keyed with variable names and the

@@ -58,8 +58,7 @@ RSpec.describe EnvParser do
     end
 
     it 'creates module constants' do
-      module Sample
-      end
+      module Sample; end
 
       source_hash = { XYZ: '456' }
       EnvParser.register(:XYZ, from: source_hash, as: :integer, within: Sample)
@@ -113,8 +112,7 @@ RSpec.describe EnvParser do
       end
 
       it 'creates module constants' do
-        module Sample
-        end
+        module Sample; end
 
         ENV['WXYZ'] = '5678'
         ENV.register(:WXYZ, as: :integer, within: Sample)
