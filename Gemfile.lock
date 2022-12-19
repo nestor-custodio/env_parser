@@ -71,10 +71,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 2.0)
+  bundler (~> 2)
   env_parser!
   rake
-  rspec (~> 3.0)
+  rspec (~> 3)
   rspec_junit_formatter
   rubocop
   yard
