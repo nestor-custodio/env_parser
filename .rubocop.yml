@@ -1,16 +1,7 @@
 AllCops:
-  TargetRubyVersion: 2.7
-  NewCops: enable
+  TargetRubyVersion: 3.0
   SuggestExtensions: false
-  Include:
-  - "**/*.rb"
-  - "**/*.rake"
-  - "**/Gemfile"
-  Exclude:
-  - ".git/**/*"
-  - "tmp/**/*"
-  - "true/**/*"
-  - "vendor/**/*"
+  NewCops: enable
 
 
 Layout/EmptyLineAfterGuardClause:
@@ -18,21 +9,13 @@ Layout/EmptyLineAfterGuardClause:
   Enabled: false
 
 Layout/LineLength:
-  # Limit lines to 100 characters.
-  Max: 100
-  Exclude:
-    - 'spec/**/*.rb'
-
-
-Lint/ConstantDefinitionInBlock:
-  # Do not define constants within a block.
-  Exclude:
-    - 'spec/**/*.rb'
+  # Checks that line length does not exceed the configured limit.
+  Max: 150
 
 
 Metrics/AbcSize:
   # A calculated magnitude based on number of assignments, branches, and conditions.
-  Enabled: false
+  Max: 30
 
 Metrics/BlockLength:
   # Avoid long blocks with many lines.
@@ -49,29 +32,33 @@ Metrics/MethodLength:
 
 
 Style/AsciiComments:
-  # This cop checks for non-ascii (non-English) characters in comments.
+  # Use only ASCII symbols in comments.
   #
-  # NLC: Disabling this so we can use non-breaking spaces (' ') in documentation comments, preventing browsers from collapsing
-  #      multiple spaces in code blocks.
-  Enabled: false
-
-Style/BlockDelimiters:
-  # Check for uses of braces or do/end around single line or multi-line blocks.
-  Exclude:
-    - 'spec/**/*.rb'
+  # NLC: We're allowing non-breaking spaces (' '), as they're needed to prevent
+  #      browsers from collapsing multiple spaces in documentation code blocks.
+  AllowedChars:
+    - ' '
 
 Style/ClassAndModuleChildren:
-  # Use nested modules/class definitions instead of compact style.
+  # Checks style of children classes and modules.
+  Enabled: false
+
+Style/FetchEnvVar:
+  # Suggests `ENV.fetch` for the replacement of `ENV[]`.
   Enabled: false
 
 Style/FrozenStringLiteralComment:
   # Add the frozen_string_literal comment to the top of files to help transition to frozen string literals by default.
-  Enabled: false
+  EnforcedStyle: never
 
 Style/NumericLiterals:
-  # his cop checks for big numeric literals without _ between groups of digits in them.
+  # Add underscores to large numeric literals to improve their readability.
   Enabled: false
 
 Style/RegexpLiteral:
-  # Enforces using / or %r around regular expressions.
+  # Use / or %r around regular expressions.
   EnforcedStyle: percent_r
+
+Style/StringLiterals:
+  # Check for use of ' vs ".
+  ConsistentQuotesInMultiline: true
