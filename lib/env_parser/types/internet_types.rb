@@ -1,56 +1,56 @@
 require 'env_parser'
 
-## The parent module for all EnvParser type definition modules.
-## Exists only for documentation's sake.
-##
+# The parent module for all EnvParser type definition modules.
+# Exists only for documentation's sake.
+#
 module EnvParser::Types
-  ## Defines types for internet-related values, adding the following:
-  ##
-  ## <table>
-  ##   <tbody>
-  ##     <tr>
-  ##       <th><code>:as</code> value</th>
-  ##       <th>type returned</th>
-  ##       <th>default</th>
-  ##       <th>notes</th>
-  ##     </tr>
-  ##   </tbody>
-  ##   <tbody>
-  ##     <tr>
-  ##       <td>:ipv4_address</td>
-  ##       <td>String</td>
-  ##       <td><code>nil</code></td>
-  ##       <td>
-  ##         An IPv4 address in 4-octet dot-decimal notation,
-  ##         <br />
-  ##         with no CIDR or subnet suffix (e.g. <code>'192.168.0.1'</code>).
-  ##       </td>
-  ##     </tr>
-  ##     <tr>
-  ##       <td>:ipv6_address</td>
-  ##       <td>String</td>
-  ##       <td><code>nil</code></td>
-  ##       <td>An IPv6 address, in RFC5952 format.</td>
-  ##     </tr>
-  ##     <tr>
-  ##       <td>:network_port / :port</td>
-  ##       <td>Integer</td>
-  ##       <td><code>nil</code></td>
-  ##       <td></td>
-  ##     </tr>
-  ##     <tr>
-  ##       <td>:email_address</td>
-  ##       <td>String</td>
-  ##       <td><code>nil</code></td>
-  ##       <td>
-  ##         A "simple" email address, containing only a username and a domain.
-  ##         <br />
-  ##         Note this does not guarantee RFC5322-conformity.
-  ##       </td>
-  ##     </tr>
-  ##   </tbody>
-  ## </table>
-  ##
+  # Defines types for internet-related values, adding the following:
+  #
+  # <table>
+  #   <tbody>
+  #     <tr>
+  #       <th><code>:as</code> value</th>
+  #       <th>type returned</th>
+  #       <th>default</th>
+  #       <th>notes</th>
+  #     </tr>
+  #   </tbody>
+  #   <tbody>
+  #     <tr>
+  #       <td>:ipv4_address</td>
+  #       <td>String</td>
+  #       <td><code>nil</code></td>
+  #       <td>
+  #         An IPv4 address in 4-octet dot-decimal notation,
+  #         <br />
+  #         with no CIDR or subnet suffix (e.g. <code>'192.168.0.1'</code>).
+  #       </td>
+  #     </tr>
+  #     <tr>
+  #       <td>:ipv6_address</td>
+  #       <td>String</td>
+  #       <td><code>nil</code></td>
+  #       <td>An IPv6 address, in RFC5952 format.</td>
+  #     </tr>
+  #     <tr>
+  #       <td>:network_port / :port</td>
+  #       <td>Integer</td>
+  #       <td><code>nil</code></td>
+  #       <td></td>
+  #     </tr>
+  #     <tr>
+  #       <td>:email_address</td>
+  #       <td>String</td>
+  #       <td><code>nil</code></td>
+  #       <td>
+  #         A "simple" email address, containing only a username and a domain.
+  #         <br />
+  #         Note this does not guarantee RFC5322-conformity.
+  #       </td>
+  #     </tr>
+  #   </tbody>
+  # </table>
+  #
   module InternetTypes
     EnvParser.define_type(:ipv4_address, if_unset: nil) do |value|
       begin
