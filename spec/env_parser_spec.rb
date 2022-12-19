@@ -1,5 +1,7 @@
 require 'tempfile'
 
+module Sample; end
+
 RSpec.describe EnvParser do
   it 'has a version number' do
     expect(EnvParser::VERSION).not_to be nil
@@ -58,8 +60,6 @@ RSpec.describe EnvParser do
     end
 
     it 'creates module constants' do
-      module Sample; end
-
       source_hash = { XYZ: '456' }
       EnvParser.register(:XYZ, from: source_hash, as: :integer, within: Sample)
       expect(Sample::XYZ).to eq(456)
@@ -112,8 +112,6 @@ RSpec.describe EnvParser do
       end
 
       it 'creates module constants' do
-        module Sample; end
-
         ENV['WXYZ'] = '5678'
         ENV.register(:WXYZ, as: :integer, within: Sample)
         expect(Sample::WXYZ).to eq(5678)

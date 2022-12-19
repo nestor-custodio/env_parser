@@ -195,10 +195,7 @@ class EnvParser
       end
 
       raise ArgumentError, "invalid `from` parameter: #{from.class}" unless from.is_a? Hash
-
-      unless within.is_a?(Module) || within.is_a?(Class)
-        raise ArgumentError, "invalid `within` parameter: #{within.inspect}"
-      end
+      raise ArgumentError, "invalid `within` parameter: #{within.inspect}" unless within.is_a?(Module) || within.is_a?(Class)
 
       value = from[name]
       value = parse(value, options, &validation_block)
@@ -290,13 +287,8 @@ class EnvParser
     ## @raise [ArgumentError, EnvParser::ValueNotAllowedError]
     ##
     def check_for_set_inclusion(value, set: nil)
-      if value.respond_to?(:each)
-        raise ArgumentError, "`from_set` option is not compatible with #{value.class} values"
-      end
-
-      unless set.is_a?(Array) || set.is_a?(Range)
-        raise ArgumentError, "invalid `from_set` parameter type: #{set.class}"
-      end
+      raise ArgumentError, "`from_set` option is not compatible with #{value.class} values" if value.respond_to?(:each)
+      raise ArgumentError, "invalid `from_set` parameter type: #{set.class}" unless set.is_a?(Array) || set.is_a?(Range)
 
       raise(ValueNotAllowedError, 'parsed value not in allowed set') unless set.include?(value)
     end
