@@ -9,3 +9,6 @@
 
 # rspec failure tracking
 .rspec_status
+
+# don't commit gem builds
+env_parser-*.gem
