@@ -3,44 +3,44 @@ require 'env_parser/version'
 require 'active_support/all'
 require 'psych'
 
-## The EnvParser class simplifies parsing of environment variables as different data types.
-##
+# The EnvParser class simplifies parsing of environment variables as different data types.
+#
 class EnvParser
-  ## The default filename to use for {.autoregister} requests.
-  ##
+  # The default filename to use for {.autoregister} requests.
+  #
   AUTOREGISTER_FILE = '.env_parser.yml'.freeze
 
   class << self
-    ## Defines a new type for use as the "as" option on a subsequent {.parse} or {.register} call.
-    ##
-    ## @param name [Symbol]
-    ##   The name to assign to the type.
-    ##
-    ## @option options [Array<Symbol>] aliases
-    ##   An array of additional names you'd like to see refer to this same type.
-    ##
-    ## @option options if_unset (nil)
-    ##   Specifies a "sensible default" to return for this type if the value being parsed (via
-    ##   {.parse} or {.register}) is either unset (`nil`) or blank (`''`). Note this may be
-    ##   overridden by the user via the {.parse}/{.register} "if_unset" option.
-    ##
-    ## @yield [value]
-    ##   A block to act as the parser for the this type. If no block is given, an ArgumentError is
-    ##   raised.
-    ##
-    ##   When the type defined is used via a {.parse}/{.register} call, this block is invoked with
-    ##   the value to be parsed. Said value is guaranteed to be a non-empty String (the "if_unset"
-    ##   check will have already run), but no other assurances as to content are given. The block
-    ##   should return the final output of parsing the given String value as the type being defined.
-    ##
-    ##   If the value given cannot be sensibly parsed into the type defined, the block should raise
-    ##   an {EnvParser::ValueNotConvertibleError}.
-    ##
-    ## @return [nil]
-    ##   This generates no usable value.
-    ##
-    ## @raise [ArgumentError, EnvParser::TypeAlreadyDefinedError]
-    ##
+    # Defines a new type for use as the "as" option on a subsequent {.parse} or {.register} call.
+    #
+    # @param name [Symbol]
+    #   The name to assign to the type.
+    #
+    # @option options [Array<Symbol>] aliases
+    #   An array of additional names you'd like to see refer to this same type.
+    #
+    # @option options if_unset (nil)
+    #   Specifies a "sensible default" to return for this type if the value being parsed (via
+    #   {.parse} or {.register}) is either unset (`nil`) or blank (`''`). Note this may be
+    #   overridden by the user via the {.parse}/{.register} "if_unset" option.
+    #
+    # @yield [value]
+    #   A block to act as the parser for the this type. If no block is given, an ArgumentError is
+    #   raised.
+    #
+    #   When the type defined is used via a {.parse}/{.register} call, this block is invoked with
+    #   the value to be parsed. Said value is guaranteed to be a non-empty String (the "if_unset"
+    #   check will have already run), but no other assurances as to content are given. The block
+    #   should return the final output of parsing the given String value as the type being defined.
+    #
+    #   If the value given cannot be sensibly parsed into the type defined, the block should raise
+    #   an {EnvParser::ValueNotConvertibleError}.
+    #
+    # @return [nil]
+    #   This generates no usable value.
+    #
+    # @raise [ArgumentError, EnvParser::TypeAlreadyDefinedError]
+    #
     def define_type(name, options = {}, &parser)
       raise(ArgumentError, 'no parsing block given') unless block_given?
 
@@ -57,58 +57,58 @@ class EnvParser
       nil
     end
 
-    ## Interprets the given value as the specified type.
-    ##
-    ## @param value [String, Symbol]
-    ##   The value to parse/interpret. If a String is given, the value will be used as-is. If a
-    ##   Symbol is given, the ENV value for the matching string key will be used.
-    ##
-    ## @option options [Symbol] as
-    ##   The expected return type. A best-effort attempt is made to convert the source String to the
-    ##   requested type.
-    ##
-    ##   If no "as" option is given, an ArgumentError is raised. If the "as" option given is unknown
-    ##   (the given type has not been previously defined via {.define_type}), an
-    ##   {EnvParser::UnknownTypeError} is raised.
-    ##
-    ## @option options if_unset
-    ##   Specifies the default value to return if the given "value" is either unset (`nil`) or blank
-    ##   (`''`). Any "if_unset" value given will be returned as-is, with no type conversion or other
-    ##   change having been made.  If unspecified, the "default" value for `nil`/`''` input will
-    ##   depend on the "as" type.
-    ##
-    ## @option options [Array, Range] from_set
-    ##   Gives a limited set of allowed values (after type conversion). If, after parsing, the final
-    ##   value is not included in the "from_set" list/range, an {EnvParser::ValueNotAllowedError} is
-    ##   raised.
-    ##
-    ##   Note that if the "if_unset" option is given and the value to parse is `nil`/`''`, the
-    ##   "if_unset" value will be returned, even if it is not part of the "from_set" list/range.
-    ##
-    ##   Also note that, due to the nature of the lookup, the "from_set" option is only available
-    ##   for scalar values (i.e. not arrays, hashes, or other enumerables). An attempt to use the
-    ##   "from_set" option with a non-scalar value will raise an ArgumentError.
-    ##
-    ## @option options [Proc] validated_by
-    ##   If given, the "validated_by" Proc is called with the parsed value (after type conversion)
-    ##   as its sole argument. This allows for user-defined validation of the parsed value beyond
-    ##   what can be enforced by use of the "from_set" option alone. If the Proc's return value is
-    ##   `#blank?`, an {EnvParser::ValueNotAllowedError} is raised. To accomodate your syntax of
-    ##   choice, this validation Proc may be given as a block instead.
-    ##
-    ##   Note that this option is intended to provide an inspection mechanism only -- no mutation
-    ##   of the parsed value should occur within the given Proc. To that end, the argument passed is
-    ##   a *frozen* duplicate of the parsed value.
-    ##
-    ## @yield [value]
-    ##   A block (if given) is treated exactly as the "validated_by" Proc would.
-    ##
-    ##   Although there is no compelling reason to provide both a "validated_by" Proc *and* a
-    ##   validation block, there is no technical limitation preventing this. **If both are given,
-    ##   both validation checks must pass.**
-    ##
-    ## @raise [ArgumentError, EnvParser::UnknownTypeError, EnvParser::ValueNotAllowedError]
-    ##
+    # Interprets the given value as the specified type.
+    #
+    # @param value [String, Symbol]
+    #   The value to parse/interpret. If a String is given, the value will be used as-is. If a
+    #   Symbol is given, the ENV value for the matching string key will be used.
+    #
+    # @option options [Symbol] as
+    #   The expected return type. A best-effort attempt is made to convert the source String to the
+    #   requested type.
+    #
+    #   If no "as" option is given, an ArgumentError is raised. If the "as" option given is unknown
+    #   (the given type has not been previously defined via {.define_type}), an
+    #   {EnvParser::UnknownTypeError} is raised.
+    #
+    # @option options if_unset
+    #   Specifies the default value to return if the given "value" is either unset (`nil`) or blank
+    #   (`''`). Any "if_unset" value given will be returned as-is, with no type conversion or other
+    #   change having been made.  If unspecified, the "default" value for `nil`/`''` input will
+    #   depend on the "as" type.
+    #
+    # @option options [Array, Range] from_set
+    #   Gives a limited set of allowed values (after type conversion). If, after parsing, the final
+    #   value is not included in the "from_set" list/range, an {EnvParser::ValueNotAllowedError} is
+    #   raised.
+    #
+    #   Note that if the "if_unset" option is given and the value to parse is `nil`/`''`, the
+    #   "if_unset" value will be returned, even if it is not part of the "from_set" list/range.
+    #
+    #   Also note that, due to the nature of the lookup, the "from_set" option is only available
+    #   for scalar values (i.e. not arrays, hashes, or other enumerables). An attempt to use the
+    #   "from_set" option with a non-scalar value will raise an ArgumentError.
+    #
+    # @option options [Proc] validated_by
+    #   If given, the "validated_by" Proc is called with the parsed value (after type conversion)
+    #   as its sole argument. This allows for user-defined validation of the parsed value beyond
+    #   what can be enforced by use of the "from_set" option alone. If the Proc's return value is
+    #   `#blank?`, an {EnvParser::ValueNotAllowedError} is raised. To accomodate your syntax of
+    #   choice, this validation Proc may be given as a block instead.
+    #
+    #   Note that this option is intended to provide an inspection mechanism only -- no mutation
+    #   of the parsed value should occur within the given Proc. To that end, the argument passed is
+    #   a *frozen* duplicate of the parsed value.
+    #
+    # @yield [value]
+    #   A block (if given) is treated exactly as the "validated_by" Proc would.
+    #
+    #   Although there is no compelling reason to provide both a "validated_by" Proc *and* a
+    #   validation block, there is no technical limitation preventing this. **If both are given,
+    #   both validation checks must pass.**
+    #
+    # @raise [ArgumentError, EnvParser::UnknownTypeError, EnvParser::ValueNotAllowedError]
+    #
     def parse(value, options = {}, &validation_block)
       value = ENV[value.to_s] if value.is_a? Symbol
       value = value.to_s
@@ -126,57 +126,57 @@ class EnvParser
       value
     end
 
-    ## Parses the referenced value and creates a matching constant in the requested context.
-    ##
-    ## Multiple calls to {.register} may be shortcutted by passing in a Hash whose keys are the
-    ## variable names and whose values are the options set for each variable's {.register} call.
-    ##
-    ## <pre>
-    ##   ## Example shortcut usage:
-    ##
-    ##   EnvParser.register :A, from: one_hash, as: :integer
-    ##   EnvParser.register :B, from: another_hash, as: :string, if_unset: 'none'
-    ##
-    ##   ## ... is equivalent to ...
-    ##
-    ##   EnvParser.register(
-    ##     A: { from: one_hash, as: :integer }
-    ##     B: { from: another_hash, as: :string, if_unset: 'none' }
-    ##   )
-    ## </pre>
-    ##
-    ## @param name
-    ##   The name of the value to parse/interpret from the "from" Hash. If the "from" value is
-    ##   `ENV`, you may give a Symbol and the corresponding String key will be used instead.
-    ##
-    ## @option options [Hash] from (ENV)
-    ##   The source Hash from which to pull the value referenced by the "name" key.
-    ##
-    ## @option options [Module, Class] within (Kernel)
-    ##   The module or class in which the constant should be created. Creates global constants by
-    ##   default.
-    ##
-    ## @option options [Symbol] as
-    ##   See {.parse}.
-    ##
-    ## @option options if_unset
-    ##   See {.parse}.
-    ##
-    ## @option options [Array, Range] from_set
-    ##   See {.parse}.
-    ##
-    ## @option options [Proc] validated_by
-    ##   See {.parse}.
-    ##
-    ## @yield [value]
-    ##   A block (if given) is treated exactly as in {.parse}. Note, however, that a single block
-    ##   cannot be used to register multiple constants simultaneously -- each value needing
-    ##   validation must give its own "validated_by" Proc.
-    ##
-    ## @raise [ArgumentError]
-    ##
+    # Parses the referenced value and creates a matching constant in the requested context.
+    #
+    # Multiple calls to {.register} may be shortcutted by passing in a Hash whose keys are the
+    # variable names and whose values are the options set for each variable's {.register} call.
+    #
+    # <pre>
+    #   ## Example shortcut usage:
+    #
+    #   EnvParser.register :A, from: one_hash, as: :integer
+    #   EnvParser.register :B, from: another_hash, as: :string, if_unset: 'none'
+    #
+    #   ## ... is equivalent to ...
+    #
+    #   EnvParser.register(
+    #     A: { from: one_hash, as: :integer }
+    #     B: { from: another_hash, as: :string, if_unset: 'none' }
+    #   )
+    # </pre>
+    #
+    # @param name
+    #   The name of the value to parse/interpret from the "from" Hash. If the "from" value is
+    #   `ENV`, you may give a Symbol and the corresponding String key will be used instead.
+    #
+    # @option options [Hash] from (ENV)
+    #   The source Hash from which to pull the value referenced by the "name" key.
+    #
+    # @option options [Module, Class] within (Kernel)
+    #   The module or class in which the constant should be created. Creates global constants by
+    #   default.
+    #
+    # @option options [Symbol] as
+    #   See {.parse}.
+    #
+    # @option options if_unset
+    #   See {.parse}.
+    #
+    # @option options [Array, Range] from_set
+    #   See {.parse}.
+    #
+    # @option options [Proc] validated_by
+    #   See {.parse}.
+    #
+    # @yield [value]
+    #   A block (if given) is treated exactly as in {.parse}. Note, however, that a single block
+    #   cannot be used to register multiple constants simultaneously -- each value needing
+    #   validation must give its own "validated_by" Proc.
+    #
+    # @raise [ArgumentError]
+    #
     def register(name, options = {}, &validation_block)
-      ## Allow for registering multiple variables simultaneously via a single call.
+      # Allow for registering multiple variables simultaneously via a single call.
       if name.is_a? Hash
         raise(ArgumentError, 'cannot register multiple values with one block') if block_given?
         return register_all(name)
@@ -185,20 +185,17 @@ class EnvParser
       from = options.fetch(:from, ENV)
       within = options.fetch(:within, Kernel)
 
-      ## ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
-      ## bite you in some cases. Making sure we're working with a straight-up Hash saves a lot of
-      ## sanity checks later on. This is also a good place to make sure we're working with a String
-      ## key.
+      # ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
+      # bite you in some cases. Making sure we're working with a straight-up Hash saves a lot of
+      # sanity checks later on. This is also a good place to make sure we're working with a String
+      # key.
       if from == ENV
         from = from.to_h
         name = name.to_s
       end
 
       raise ArgumentError, "invalid `from` parameter: #{from.class}" unless from.is_a? Hash
-
-      unless within.is_a?(Module) || within.is_a?(Class)
-        raise ArgumentError, "invalid `within` parameter: #{within.inspect}"
-      end
+      raise ArgumentError, "invalid `within` parameter: #{within.inspect}" unless within.is_a?(Module) || within.is_a?(Class)
 
       value = from[name]
       value = parse(value, options, &validation_block)
@@ -207,15 +204,15 @@ class EnvParser
       value
     end
 
-    ## Creates ENV bindings for {.parse} and {.register} proxy methods.
-    ##
-    ## The sole difference between these proxy methods and their EnvParser counterparts is that
-    ## ENV.parse will interpret any value given as an ENV key (as a String), not the given value
-    ## itself.  i.e. ENV.parse('XYZ', ...) is equivalent to EnvParser.parse(ENV['XYZ'], ...)
-    ##
-    ## @return [ENV]
-    ##   This generates no usable value.
-    ##
+    # Creates ENV bindings for {.parse} and {.register} proxy methods.
+    #
+    # The sole difference between these proxy methods and their EnvParser counterparts is that
+    # ENV.parse will interpret any value given as an ENV key (as a String), not the given value
+    # itself.  i.e. ENV.parse('XYZ', ...) is equivalent to EnvParser.parse(ENV['XYZ'], ...)
+    #
+    # @return [ENV]
+    #   This generates no usable value.
+    #
     def add_env_bindings
       ENV.instance_eval do
         def parse(name, options = {}, &validation_block)
@@ -230,21 +227,21 @@ class EnvParser
       ENV
     end
 
-    ## Reads an "autoregister" file and registers the ENV constants defined therein.
-    ##
-    ## The "autoregister" file is read, parsed as YAML, sanitized for use as a parameter to
-    ## {.register_all}, and then passed along for processing. The return value from that
-    ## {.register_all} call is passed through.
-    ##
-    ## @param filename [String]
-    ##   A path for the autoregister file to parse and process. Defaults to
-    ##   {EnvParser::AUTOREGISTER_FILE} if unset.
-    ##
-    ## @return [Hash]
-    ##   The return value from the {.register_all} call that handles the actual registration.
-    ##
-    ## @raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
-    ##
+    # Reads an "autoregister" file and registers the ENV constants defined therein.
+    #
+    # The "autoregister" file is read, parsed as YAML, sanitized for use as a parameter to
+    # {.register_all}, and then passed along for processing. The return value from that
+    # {.register_all} call is passed through.
+    #
+    # @param filename [String]
+    #   A path for the autoregister file to parse and process. Defaults to
+    #   {EnvParser::AUTOREGISTER_FILE} if unset.
+    #
+    # @return [Hash]
+    #   The return value from the {.register_all} call that handles the actual registration.
+    #
+    # @raise [EnvParser::AutoregisterFileNotFound, EnvParser::UnparseableAutoregisterSpec]
+    #
     def autoregister(filename = nil)
       filename ||= AUTOREGISTER_FILE
       autoregister_spec = Psych.load_file(filename)
@@ -260,58 +257,53 @@ class EnvParser
 
       register_all autoregister_spec
 
-    ## Psych raises an Errno::ENOENT on file-not-found.
-    ##
+    # Psych raises an Errno::ENOENT on file-not-found.
+    #
     rescue Errno::ENOENT
       raise EnvParser::AutoregisterFileNotFound, %(file not found: "#{filename}")
 
-    ## Psych raises a Psych::SyntaxError on unparseable YAML.
-    ##
+    # Psych raises a Psych::SyntaxError on unparseable YAML.
+    #
     rescue Psych::SyntaxError => e
       raise EnvParser::UnparseableAutoregisterSpec, "malformed YAML in spec file: #{e.message}"
     end
 
     private
 
-    ## Class instance variable for storing known type data.
-    ##
+    # Class instance variable for storing known type data.
+    #
     def known_types
       @known_types ||= {}
     end
 
-    ## Verifies that the given "value" is included in the "set".
-    ##
-    ## @param value
-    ## @param set [Array, Range]
-    ##
-    ## @return [nil]
-    ##   This generates no usable value.
-    ##
-    ## @raise [ArgumentError, EnvParser::ValueNotAllowedError]
-    ##
+    # Verifies that the given "value" is included in the "set".
+    #
+    # @param value
+    # @param set [Array, Range]
+    #
+    # @return [nil]
+    #   This generates no usable value.
+    #
+    # @raise [ArgumentError, EnvParser::ValueNotAllowedError]
+    #
     def check_for_set_inclusion(value, set: nil)
-      if value.respond_to?(:each)
-        raise ArgumentError, "`from_set` option is not compatible with #{value.class} values"
-      end
-
-      unless set.is_a?(Array) || set.is_a?(Range)
-        raise ArgumentError, "invalid `from_set` parameter type: #{set.class}"
-      end
+      raise ArgumentError, "`from_set` option is not compatible with #{value.class} values" if value.respond_to?(:each)
+      raise ArgumentError, "invalid `from_set` parameter type: #{set.class}" unless set.is_a?(Array) || set.is_a?(Range)
 
       raise(ValueNotAllowedError, 'parsed value not in allowed set') unless set.include?(value)
     end
 
-    ## Verifies that the given "value" passes both the "proc" and "block" validations.
-    ##
-    ## @param value
-    ## @param proc [Proc, nil]
-    ## @param block [Proc, nil]
-    ##
-    ## @return [nil]
-    ##   This generates no usable value.
-    ##
-    ## @raise [EnvParser::ValueNotAllowedError]
-    ##
+    # Verifies that the given "value" passes both the "proc" and "block" validations.
+    #
+    # @param value
+    # @param proc [Proc, nil]
+    # @param block [Proc, nil]
+    #
+    # @return [nil]
+    #   This generates no usable value.
+    #
+    # @raise [EnvParser::ValueNotAllowedError]
+    #
     def check_user_defined_validations(value, proc: nil, block: nil)
       immutable_value = value.dup.freeze
       all_tests_passed = [proc, block].compact.all? { |i| i.call(immutable_value) }
@@ -319,15 +311,15 @@ class EnvParser
       raise(ValueNotAllowedError, 'parsed value failed user validation') unless all_tests_passed
     end
 
-    ## Receives a list of {.register} calls to make, as a Hash keyed with variable names and the
-    ## values being each {.register} call's option set.
-    ##
-    ## @param list [Hash]
-    ##
-    ## @return [Hash]
-    ##
-    ## @raise [ArgumentError]
-    ##
+    # Receives a list of {.register} calls to make, as a Hash keyed with variable names and the
+    # values being each {.register} call's option set.
+    #
+    # @param list [Hash]
+    #
+    # @return [Hash]
+    #
+    # @raise [ArgumentError]
+    #
     def register_all(list)
       raise(ArgumentError, "invalid 'list' parameter type: #{list.class}") unless list.is_a? Hash
 
@@ -338,6 +330,6 @@ class EnvParser
   end
 end
 
-## Load predefined types.
-##
+# Load predefined types.
+#
 require 'env_parser/types'
