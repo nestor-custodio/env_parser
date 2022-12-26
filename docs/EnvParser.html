@@ -6,7 +6,7 @@
 <title>
   Class: EnvParser
   
-    &mdash; Documentation by YARD 0.9.26
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
@@ -103,8 +103,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>The EnvParser class simplifies parsing of environment variables as different data types.</p>
+    <p>The EnvParser class simplifies parsing of environment variables as different data types.</p>
 
 
   </div>
@@ -136,8 +135,7 @@
         <dt id="AUTOREGISTER_FILE-constant" class="">AUTOREGISTER_FILE =
           <div class="docstring">
   <div class="discussion">
-    
-<p>The default filename to use for <span class='object_link'><a href="#autoregister-class_method" title="EnvParser.autoregister (method)">autoregister</a></span> requests.</p>
+    <p>The default filename to use for <span class='object_link'><a href="#autoregister-class_method" title="EnvParser.autoregister (method)">autoregister</a></span> requests.</p>
 
 
   </div>
@@ -152,7 +150,7 @@
         <dt id="VERSION-constant" class="">VERSION =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1.3.1</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1.3.2</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -188,8 +186,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Creates ENV bindings for <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">EnvParser.parse</a></span> and <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">EnvParser.register</a></span> proxy methods.</p>
+    <span class="summary_desc"><div class='inline'><p>Creates ENV bindings for <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">EnvParser.parse</a></span> and <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">EnvParser.register</a></span> proxy methods.</p>
 </div></span>
   
 </li>
@@ -212,8 +209,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Reads an “autoregister” file and registers the ENV constants defined therein.</p>
+    <span class="summary_desc"><div class='inline'><p>Reads an “autoregister” file and registers the ENV constants defined therein.</p>
 </div></span>
   
 </li>
@@ -236,8 +232,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Defines a new type for use as the “as” option on a subsequent <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">EnvParser.parse</a></span> or <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">EnvParser.register</a></span> call.</p>
+    <span class="summary_desc"><div class='inline'><p>Defines a new type for use as the “as” option on a subsequent <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">EnvParser.parse</a></span> or <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">EnvParser.register</a></span> call.</p>
 </div></span>
   
 </li>
@@ -260,8 +255,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Interprets the given value as the specified type.</p>
+    <span class="summary_desc"><div class='inline'><p>Interprets the given value as the specified type.</p>
 </div></span>
   
 </li>
@@ -284,8 +278,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Parses the referenced value and creates a matching constant in the requested context.</p>
+    <span class="summary_desc"><div class='inline'><p>Parses the referenced value and creates a matching constant in the requested context.</p>
 </div></span>
   
 </li>
@@ -311,10 +304,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Creates ENV bindings for <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span> and <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> proxy methods.</p>
+    <p>Creates ENV bindings for <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span> and <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> proxy methods.</p>
 
-<p>The sole difference between these proxy methods and their EnvParser counterparts is that ENV.parse will interpret any value given as an ENV key (as a String), not the given value itself. i.e. ENV.parse(&#39;XYZ&#39;, …) is equivalent to <a href="'XYZ'">EnvParser.parse(ENV</a>, …)</p>
+<p>The sole difference between these proxy methods and their EnvParser counterparts is that
+ENV.parse will interpret any value given as an ENV key (as a String), not the given value
+itself.  i.e. ENV.parse(‘XYZ’, …) is equivalent to EnvParser.parse(ENV[‘XYZ’], …)</p>
 
 
   </div>
@@ -332,8 +326,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>This generates no usable value.</p>
+        <div class='inline'><p>This generates no usable value.</p>
 </div>
       
     </li>
@@ -346,6 +339,9 @@
       <pre class="lines">
 
 
+216
+217
+218
 219
 220
 221
@@ -355,13 +351,10 @@
 225
 226
 227
-228
-229
-230
-231</pre>
+228</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 219</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 216</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_env_bindings'>add_env_bindings</span>
   <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_instance_eval'>instance_eval</span> <span class='kw'>do</span>
@@ -392,10 +385,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Reads an “autoregister” file and registers the ENV constants defined therein.</p>
+    <p>Reads an “autoregister” file and registers the ENV constants defined therein.</p>
 
-<p>The “autoregister” file is read, parsed as YAML, sanitized for use as a parameter to <span class='object_link'>register_all</span>, and then passed along for processing. The return value from that <span class='object_link'>register_all</span> call is passed through.</p>
+<p>The “autoregister” file is read, parsed as YAML, sanitized for use as a parameter to
+<span class='object_link'>register_all</span>, and then passed along for processing. The return value from that
+<span class='object_link'>register_all</span> call is passed through.</p>
 
 
   </div>
@@ -416,8 +410,8 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>A path for the autoregister file to parse and process. Defaults to <span class='object_link'><a href="#AUTOREGISTER_FILE-constant" title="EnvParser::AUTOREGISTER_FILE (constant)">AUTOREGISTER_FILE</a></span> if unset.</p>
+        <div class='inline'><p>A path for the autoregister file to parse and process. Defaults to
+<span class='object_link'><a href="#AUTOREGISTER_FILE-constant" title="EnvParser::AUTOREGISTER_FILE (constant)">AUTOREGISTER_FILE</a></span> if unset.</p>
 </div>
       
     </li>
@@ -435,8 +429,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The return value from the <span class='object_link'>register_all</span> call that handles the actual registration.</p>
+        <div class='inline'><p>The return value from the <span class='object_link'>register_all</span> call that handles the actual registration.</p>
 </div>
       
     </li>
@@ -462,6 +455,9 @@
       <pre class="lines">
 
 
+245
+246
+247
 248
 249
 250
@@ -483,17 +479,14 @@
 266
 267
 268
-269
-270
-271
-272</pre>
+269</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 248</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 245</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_autoregister'>autoregister</span><span class='lparen'>(</span><span class='id identifier rubyid_filename'><span class='object_link'><a href="top-level-namespace.html#filename-instance_method" title="#filename (method)">filename</a></span></span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_filename'><span class='object_link'><a href="top-level-namespace.html#filename-instance_method" title="#filename (method)">filename</a></span></span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="#AUTOREGISTER_FILE-constant" title="EnvParser::AUTOREGISTER_FILE (constant)">AUTOREGISTER_FILE</a></span></span>
-  <span class='id identifier rubyid_autoregister_spec'>autoregister_spec</span> <span class='op'>=</span> <span class='const'>Psych</span><span class='period'>.</span><span class='id identifier rubyid_load_file'>load_file</span><span class='lparen'>(</span><span class='id identifier rubyid_filename'><span class='object_link'><a href="top-level-namespace.html#filename-instance_method" title="#filename (method)">filename</a></span></span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_autoregister'>autoregister</span><span class='lparen'>(</span><span class='id identifier rubyid_filename'>filename</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_filename'>filename</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="#AUTOREGISTER_FILE-constant" title="EnvParser::AUTOREGISTER_FILE (constant)">AUTOREGISTER_FILE</a></span></span>
+  <span class='id identifier rubyid_autoregister_spec'>autoregister_spec</span> <span class='op'>=</span> <span class='const'>Psych</span><span class='period'>.</span><span class='id identifier rubyid_load_file'>load_file</span><span class='lparen'>(</span><span class='id identifier rubyid_filename'>filename</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_autoregister_spec'>autoregister_spec</span><span class='period'>.</span><span class='id identifier rubyid_deep_symbolize_keys!'>deep_symbolize_keys!</span>
   <span class='id identifier rubyid_autoregister_spec'>autoregister_spec</span><span class='period'>.</span><span class='id identifier rubyid_transform_values!'>transform_values!</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_spec'>spec</span><span class='op'>|</span>
@@ -506,13 +499,13 @@
 
   <span class='id identifier rubyid_register_all'>register_all</span> <span class='id identifier rubyid_autoregister_spec'>autoregister_spec</span>
 
-<span class='comment'>## Psych raises an Errno::ENOENT on file-not-found.
-</span><span class='comment'>##
+<span class='comment'># Psych raises an Errno::ENOENT on file-not-found.
+</span><span class='comment'>#
 </span><span class='kw'>rescue</span> <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ENOENT</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EnvParser/AutoregisterFileNotFound.html" title="EnvParser::AutoregisterFileNotFound (class)">AutoregisterFileNotFound</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>%(</span><span class='tstring_content'>file not found: &quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_filename'><span class='object_link'><a href="top-level-namespace.html#filename-instance_method" title="#filename (method)">filename</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>)</span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EnvParser/AutoregisterFileNotFound.html" title="EnvParser::AutoregisterFileNotFound (class)">AutoregisterFileNotFound</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>%(</span><span class='tstring_content'>file not found: &quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_filename'>filename</span><span class='embexpr_end'>}</span><span class='tstring_content'>&quot;</span><span class='tstring_end'>)</span></span>
 
-<span class='comment'>## Psych raises a Psych::SyntaxError on unparseable YAML.
-</span><span class='comment'>##
+<span class='comment'># Psych raises a Psych::SyntaxError on unparseable YAML.
+</span><span class='comment'>#
 </span><span class='kw'>rescue</span> <span class='const'>Psych</span><span class='op'>::</span><span class='const'>SyntaxError</span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EnvParser/UnparseableAutoregisterSpec.html" title="EnvParser::UnparseableAutoregisterSpec (class)">UnparseableAutoregisterSpec</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>malformed YAML in spec file: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
@@ -532,8 +525,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Defines a new type for use as the “as” option on a subsequent <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span> or <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> call.</p>
+    <p>Defines a new type for use as the “as” option on a subsequent <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span> or <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> call.</p>
 
 
   </div>
@@ -552,8 +544,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The name to assign to the type.</p>
+        <div class='inline'><p>The name to assign to the type.</p>
 </div>
       
     </li>
@@ -570,8 +561,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>a customizable set of options</p>
+        <div class='inline'><p>a customizable set of options</p>
 </div>
       
     </li>
@@ -593,8 +583,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>An array of additional names you&#39;d like to see refer to this same type.</p>
+            &mdash; <div class='inline'><p>An array of additional names you’d like to see refer to this same type.</p>
 </div>
           
         </li>
@@ -609,8 +598,9 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Specifies a “sensible default” to return for this type if the value being parsed (via <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span> or <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span>) is either unset (<code>nil</code>) or blank (<code>&#39;&#39;</code>). Note this may be overridden by the user via the <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>/<span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> “if_unset” option.</p>
+            &mdash; <div class='inline'><p>Specifies a “sensible default” to return for this type if the value being parsed (via
+<span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span> or <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span>) is either unset (<code>nil</code>) or blank (<code>''</code>). Note this may be
+overridden by the user via the <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>/<span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> “if_unset” option.</p>
 </div>
           
         </li>
@@ -629,12 +619,16 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>A block to act as the parser for the this type. If no block is given, an ArgumentError is raised.</p>
+        <div class='inline'><p>A block to act as the parser for the this type. If no block is given, an ArgumentError is
+raised.</p>
 
-<p>When the type defined is used via a <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>/<span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> call, this block is invoked with the value to be parsed. Said value is guaranteed to be a non-empty String (the “if_unset” check will have already run), but no other assurances as to content are given. The block should return the final output of parsing the given String value as the type being defined.</p>
+<p>When the type defined is used via a <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>/<span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> call, this block is invoked with
+the value to be parsed. Said value is guaranteed to be a non-empty String (the “if_unset”
+check will have already run), but no other assurances as to content are given. The block
+should return the final output of parsing the given String value as the type being defined.</p>
 
-<p>If the value given cannot be sensibly parsed into the type defined, the block should raise an <span class='object_link'><a href="EnvParser/ValueNotConvertibleError.html" title="EnvParser::ValueNotConvertibleError (class)">ValueNotConvertibleError</a></span>.</p>
+<p>If the value given cannot be sensibly parsed into the type defined, the block should raise
+an <span class='object_link'><a href="EnvParser/ValueNotConvertibleError.html" title="EnvParser::ValueNotConvertibleError (class)">ValueNotConvertibleError</a></span>.</p>
 </div>
       
     </li>
@@ -651,8 +645,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>This generates no usable value.</p>
+        <div class='inline'><p>This generates no usable value.</p>
 </div>
       
     </li>
@@ -728,8 +721,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Interprets the given value as the specified type.</p>
+    <p>Interprets the given value as the specified type.</p>
 
 
   </div>
@@ -748,8 +740,8 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The value to parse/interpret. If a String is given, the value will be used as-is. If a Symbol is given, the ENV value for the matching string key will be used.</p>
+        <div class='inline'><p>The value to parse/interpret. If a String is given, the value will be used as-is. If a
+Symbol is given, the ENV value for the matching string key will be used.</p>
 </div>
       
     </li>
@@ -766,8 +758,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>a customizable set of options</p>
+        <div class='inline'><p>a customizable set of options</p>
 </div>
       
     </li>
@@ -789,10 +780,12 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>The expected return type. A best-effort attempt is made to convert the source String to the requested type.</p>
+            &mdash; <div class='inline'><p>The expected return type. A best-effort attempt is made to convert the source String to the
+requested type.</p>
 
-<p>If no “as” option is given, an ArgumentError is raised. If the “as” option given is unknown (the given type has not been previously defined via <span class='object_link'><a href="#define_type-class_method" title="EnvParser.define_type (method)">define_type</a></span>), an <span class='object_link'><a href="EnvParser/UnknownTypeError.html" title="EnvParser::UnknownTypeError (class)">UnknownTypeError</a></span> is raised.</p>
+<p>If no “as” option is given, an ArgumentError is raised. If the “as” option given is unknown
+(the given type has not been previously defined via <span class='object_link'><a href="#define_type-class_method" title="EnvParser.define_type (method)">define_type</a></span>), an
+<span class='object_link'><a href="EnvParser/UnknownTypeError.html" title="EnvParser::UnknownTypeError (class)">UnknownTypeError</a></span> is raised.</p>
 </div>
           
         </li>
@@ -804,8 +797,10 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Specifies the default value to return if the given “value” is either unset (<code>nil</code>) or blank (<code>&#39;&#39;</code>). Any “if_unset” value given will be returned as-is, with no type conversion or other change having been made. If unspecified, the “default” value for <code>nil</code>/<code>&#39;&#39;</code> input will depend on the “as” type.</p>
+            &mdash; <div class='inline'><p>Specifies the default value to return if the given “value” is either unset (<code>nil</code>) or blank
+(<code>''</code>). Any “if_unset” value given will be returned as-is, with no type conversion or other
+change having been made.  If unspecified, the “default” value for <code>nil</code>/<code>''</code> input will
+depend on the “as” type.</p>
 </div>
           
         </li>
@@ -817,12 +812,16 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>Gives a limited set of allowed values (after type conversion). If, after parsing, the final value is not included in the “from_set” list/range, an <span class='object_link'><a href="EnvParser/ValueNotAllowedError.html" title="EnvParser::ValueNotAllowedError (class)">ValueNotAllowedError</a></span> is raised.</p>
+            &mdash; <div class='inline'><p>Gives a limited set of allowed values (after type conversion). If, after parsing, the final
+value is not included in the “from_set” list/range, an <span class='object_link'><a href="EnvParser/ValueNotAllowedError.html" title="EnvParser::ValueNotAllowedError (class)">ValueNotAllowedError</a></span> is
+raised.</p>
 
-<p>Note that if the “if_unset” option is given and the value to parse is <code>nil</code>/<code>&#39;&#39;</code>, the “if_unset” value will be returned, even if it is not part of the “from_set” list/range.</p>
+<p>Note that if the “if_unset” option is given and the value to parse is <code>nil</code>/<code>''</code>, the
+“if_unset” value will be returned, even if it is not part of the “from_set” list/range.</p>
 
-<p>Also note that, due to the nature of the lookup, the “from_set” option is only available for scalar values (i.e. not arrays, hashes, or other enumerables). An attempt to use the “from_set” option with a non-scalar value will raise an ArgumentError.</p>
+<p>Also note that, due to the nature of the lookup, the “from_set” option is only available
+for scalar values (i.e. not arrays, hashes, or other enumerables). An attempt to use the
+“from_set” option with a non-scalar value will raise an ArgumentError.</p>
 </div>
           
         </li>
@@ -834,10 +833,15 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>If given, the “validated_by” Proc is called with the parsed value (after type conversion) as its sole argument. This allows for user-defined validation of the parsed value beyond what can be enforced by use of the “from_set” option alone. If the Proc&#39;s return value is <code>#blank?</code>, an <span class='object_link'><a href="EnvParser/ValueNotAllowedError.html" title="EnvParser::ValueNotAllowedError (class)">ValueNotAllowedError</a></span> is raised. To accomodate your syntax of choice, this validation Proc may be given as a block instead.</p>
+            &mdash; <div class='inline'><p>If given, the “validated_by” Proc is called with the parsed value (after type conversion)
+as its sole argument. This allows for user-defined validation of the parsed value beyond
+what can be enforced by use of the “from_set” option alone. If the Proc’s return value is
+<code>#blank?</code>, an <span class='object_link'><a href="EnvParser/ValueNotAllowedError.html" title="EnvParser::ValueNotAllowedError (class)">ValueNotAllowedError</a></span> is raised. To accomodate your syntax of
+choice, this validation Proc may be given as a block instead.</p>
 
-<p>Note that this option is intended to provide an inspection mechanism only – no mutation of the parsed value should occur within the given Proc. To that end, the argument passed is a <em>frozen</em> duplicate of the parsed value.</p>
+<p>Note that this option is intended to provide an inspection mechanism only – no mutation
+of the parsed value should occur within the given Proc. To that end, the argument passed is
+a <em>frozen</em> duplicate of the parsed value.</p>
 </div>
           
         </li>
@@ -856,10 +860,11 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>A block (if given) is treated exactly as the “validated_by” Proc would.</p>
+        <div class='inline'><p>A block (if given) is treated exactly as the “validated_by” Proc would.</p>
 
-<p>Although there is no compelling reason to provide both a “validated_by” Proc <em>and</em> a validation block, there is no technical limitation preventing this. <strong>If both are given, both validation checks must pass.</strong></p>
+<p>Although there is no compelling reason to provide both a “validated_by” Proc <em>and</em> a
+validation block, there is no technical limitation preventing this. <strong>If both are given,
+both validation checks must pass.</strong></p>
 </div>
       
     </li>
@@ -937,10 +942,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Parses the referenced value and creates a matching constant in the requested context.</p>
+    <p>Parses the referenced value and creates a matching constant in the requested context.</p>
 
-<p>Multiple calls to <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> may be shortcutted by passing in a Hash whose keys are the variable names and whose values are the options set for each variable&#39;s <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> call.</p>
+<p>Multiple calls to <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> may be shortcutted by passing in a Hash whose keys are the
+variable names and whose values are the options set for each variable’s <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> call.</p>
+
 <pre class="code ruby"><code class="ruby">
   ## Example shortcut usage:
 
@@ -954,6 +960,7 @@
     B: { from: another_hash, as: :string, if_unset: &#39;none&#39; }
   )
 </code></pre>
+
 
   </div>
 </div>
@@ -971,8 +978,8 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>The name of the value to parse/interpret from the “from” Hash. If the “from” value is <code>ENV</code>, you may give a Symbol and the corresponding String key will be used instead.</p>
+        <div class='inline'><p>The name of the value to parse/interpret from the “from” Hash. If the “from” value is
+<code>ENV</code>, you may give a Symbol and the corresponding String key will be used instead.</p>
 </div>
       
     </li>
@@ -989,8 +996,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>a customizable set of options</p>
+        <div class='inline'><p>a customizable set of options</p>
 </div>
       
     </li>
@@ -1015,8 +1021,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>The source Hash from which to pull the value referenced by the “name” key.</p>
+            &mdash; <div class='inline'><p>The source Hash from which to pull the value referenced by the “name” key.</p>
 </div>
           
         </li>
@@ -1031,8 +1036,8 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>The module or class in which the constant should be created. Creates global constants by default.</p>
+            &mdash; <div class='inline'><p>The module or class in which the constant should be created. Creates global constants by
+default.</p>
 </div>
           
         </li>
@@ -1044,8 +1049,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
+            &mdash; <div class='inline'><p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
 </div>
           
         </li>
@@ -1057,8 +1061,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
+            &mdash; <div class='inline'><p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
 </div>
           
         </li>
@@ -1070,8 +1073,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
+            &mdash; <div class='inline'><p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
 </div>
           
         </li>
@@ -1083,8 +1085,7 @@
             
           </span>
           
-            &mdash; <div class='inline'>
-<p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
+            &mdash; <div class='inline'><p>See <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>.</p>
 </div>
           
         </li>
@@ -1103,8 +1104,9 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>A block (if given) is treated exactly as in <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>. Note, however, that a single block cannot be used to register multiple constants simultaneously – each value needing validation must give its own “validated_by” Proc.</p>
+        <div class='inline'><p>A block (if given) is treated exactly as in <span class='object_link'><a href="#parse-class_method" title="EnvParser.parse (method)">parse</a></span>. Note, however, that a single block
+cannot be used to register multiple constants simultaneously – each value needing
+validation must give its own “validated_by” Proc.</p>
 </div>
       
     </li>
@@ -1157,16 +1159,13 @@
 202
 203
 204
-205
-206
-207
-208</pre>
+205</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 178</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
-  <span class='comment'>## Allow for registering multiple variables simultaneously via a single call.
+  <span class='comment'># Allow for registering multiple variables simultaneously via a single call.
 </span>  <span class='kw'>if</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
     <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot register multiple values with one block</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
     <span class='kw'>return</span> <span class='id identifier rubyid_register_all'>register_all</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
@@ -1175,20 +1174,17 @@
   <span class='id identifier rubyid_from'>from</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:from</span><span class='comma'>,</span> <span class='const'>ENV</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_within'>within</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:within</span><span class='comma'>,</span> <span class='const'>Kernel</span><span class='rparen'>)</span>
 
-  <span class='comment'>## ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
-</span>  <span class='comment'>## bite you in some cases. Making sure we&#39;re working with a straight-up Hash saves a lot of
-</span>  <span class='comment'>## sanity checks later on. This is also a good place to make sure we&#39;re working with a String
-</span>  <span class='comment'>## key.
+  <span class='comment'># ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
+</span>  <span class='comment'># bite you in some cases. Making sure we&#39;re working with a straight-up Hash saves a lot of
+</span>  <span class='comment'># sanity checks later on. This is also a good place to make sure we&#39;re working with a String
+</span>  <span class='comment'># key.
 </span>  <span class='kw'>if</span> <span class='id identifier rubyid_from'>from</span> <span class='op'>==</span> <span class='const'>ENV</span>
     <span class='id identifier rubyid_from'>from</span> <span class='op'>=</span> <span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span>
     <span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `from` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_from'>from</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='const'>Hash</span>
-
-  <span class='kw'>unless</span> <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Module</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `within` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid `within` parameter: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Module</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Class</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_from'>from</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
@@ -1206,9 +1202,9 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jan  2 17:31:18 2021 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.26 (ruby-2.7.2).
+  Generated on Sun Dec 25 19:08:38 2022 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.28 (ruby-3.0.4).
 </div>
 
     </div>
