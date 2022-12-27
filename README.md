@@ -16,13 +16,13 @@ Things can get out of control pretty fast, especially as the number of environme
 - If your project uses [Bundler](https://github.com/bundler/bundler):
   - Add one of the following to your application's Gemfile:
     ```ruby
-    ## For on-demand usage ...
-    ##
+    # For on-demand usage ...
+    #
     gem 'env_parser'
 
-    ## To automatically register ENV
-    ## constants per ".env_parser.yml" ...
-    ##
+    # To automatically register ENV
+    # constants per ".env_parser.yml" ...
+    #
     gem 'env_parser', require: 'env_parser/autoregister'
     ```
   - And then run a:
@@ -39,33 +39,33 @@ Things can get out of control pretty fast, especially as the number of environme
 ## Syntax Cheat Sheet
 
 ```ruby
-## Returns an ENV value parsed "as" a specific type:
-##
+# Returns an ENV value parsed "as" a specific type:
+#
 EnvParser.parse env_key_as_a_symbol
-                as: …                          ## ➜ required
-                if_unset: …                    ## ➜ optional; default value
-                from_set: …                    ## ➜ optional; an Array or Range
-                validated_by: ->(value) { … }  ## ➜ optional; may also be given as a block
+                as: …                          # ➜ required
+                if_unset: …                    # ➜ optional; default value
+                from_set: …                    # ➜ optional; an Array or Range
+                validated_by: ->(value) { … }  # ➜ optional; may also be given as a block
 
-## Parse an ENV value and register it as a constant:
-##
+# Parse an ENV value and register it as a constant:
+#
 EnvParser.register env_key_as_a_symbol
-                   as: …                          ## ➜ required
-                   within: …                      ## ➜ optional; Class or Module
-                   if_unset: …                    ## ➜ optional; default value
-                   from_set: …                    ## ➜ optional; an Array or Range
-                   validated_by: ->(value) { … }  ## ➜ optional; may also be given as a block
+                   as: …                          # ➜ required
+                   within: …                      # ➜ optional; Class or Module
+                   if_unset: …                    # ➜ optional; default value
+                   from_set: …                    # ➜ optional; an Array or Range
+                   validated_by: ->(value) { … }  # ➜ optional; may also be given as a block
 
-## Registers all ENV variables as spec'ed in ".env_parser.yml":
-##
-EnvParser.autoregister  ## Note this is automatically called if your
-                        ## Gemfile included the "env_parser" gem with
-                        ## the "require: 'env_parser/autoregister'" option.
+# Registers all ENV variables as spec'ed in ".env_parser.yml":
+#
+EnvParser.autoregister  # Note this is automatically called if your
+                        # Gemfile included the "env_parser" gem with
+                        # the "require: 'env_parser/autoregister'" option.
 
-## Lets you call "parse" and "register" on ENV itself:
-##
-EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
-                            ## and ENV.register will now be a proxy for EnvParser.register
+# Lets you call "parse" and "register" on ENV itself:
+#
+EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
+                            # and ENV.register will now be a proxy for EnvParser.register
 ```
 
 
@@ -78,9 +78,9 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   At its core, EnvParser is a straight-forward parser for string values (since that's all `ENV` ever gives you), allowing you to read a given string **_as_** a variety of types.
 
   ```ruby
-  ## Returns ENV['TIMEOUT_MS'] as an Integer,
-  ## or a sensible default (0) if ENV['TIMEOUT_MS'] is unset.
-  ##
+  # Returns ENV['TIMEOUT_MS'] as an Integer,
+  # or a sensible default (0) if ENV['TIMEOUT_MS'] is unset.
+  #
   timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
   ```
 
@@ -91,9 +91,9 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   EnvParser is all about ~~simplification~~ ~~less typing~~ *laziness*. If you pass in a symbol instead of a string, EnvParser will look to `ENV` and use the value from the corresponding (string) key.
 
   ```ruby
-  ## YAY, LESS TYPING!  😃
-  ## These two are the same:
-  ##
+  # YAY, LESS TYPING!  😃
+  # These two are the same:
+  #
   more_typing = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
   less_typing = EnvParser.parse :TIMEOUT_MS, as: :integer
   ```
@@ -103,20 +103,20 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   The `EnvParser.register` method lets you "promote" `ENV` variables into their own constants, already parsed into the correct type.
 
   ```ruby
-  ENV['API_KEY']  ## => 'unbreakable p4$$w0rd'
+  ENV['API_KEY']  # => 'unbreakable p4$$w0rd'
 
   EnvParser.register :API_KEY, as: :string
-  API_KEY  ## => 'unbreakable p4$$w0rd'
+  API_KEY  # => 'unbreakable p4$$w0rd'
   ```
 
   By default, `EnvParser.register` will create the requested constant within the Kernel module (making it available everywhere), but you can specify any class or module you like.
 
   ```ruby
-  ENV['BEST_VIDEO']  ## => 'https://youtu.be/L_jWHffIx5E'
+  ENV['BEST_VIDEO']  # => 'https://youtu.be/L_jWHffIx5E'
 
   EnvParser.register :BEST_VIDEO, as: :string, within: URI
-  URI::BEST_VIDEO  ## => 'https://youtu.be/L_jWHffIx5E'
-  BEST_VIDEO  ## => raises NameError
+  URI::BEST_VIDEO  # => 'https://youtu.be/L_jWHffIx5E'
+  BEST_VIDEO  # => raises NameError
   ```
 
   You can also register multiple constants with a single call, which is a bit cleaner.
@@ -126,7 +126,7 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   EnvParser.register :PASSWORD, as: :string
   EnvParser.register :MOCK_API, as: :boolean, within: MyClassOrModule }
 
-  ## ... is equivalent to ... ##
+  # ... is equivalent to ... #
 
   EnvParser.register USERNAME: { as: :string                           },
                      PASSWORD: { as: :string                           },
@@ -138,31 +138,31 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   Calling `EnvParser.add_env_bindings` binds proxy `parse` and `register` methods onto `ENV`. With these bindings in place, you can call `parse` or `register` on `ENV` itself, which is more legible and feels more straight-forward.
 
   ```ruby
-  ENV['SHORT_PI']  ## => '3.1415926'
-  ENV['BETTER_PI']  ## => '["flaky crust", "strawberry filling"]'
+  ENV['SHORT_PI']  # => '3.1415926'
+  ENV['BETTER_PI']  # => '["flaky crust", "strawberry filling"]'
 
-  ## Bind the proxy methods.
-  ##
+  # Bind the proxy methods.
+  #
   EnvParser.add_env_bindings
 
-  ENV.parse :SHORT_PI, as: :float  ## => 3.1415926
-  ENV.register :BETTER_PI, as: :array  ## Your constant is set!
+  ENV.parse :SHORT_PI, as: :float  # => 3.1415926
+  ENV.register :BETTER_PI, as: :array  # Your constant is set!
   ```
 
   Note that the proxy `ENV.parse` method will (naturally) *always* interpret the value given as an `ENV` key (converting it to a string, if necessary), which is slightly different from the original `EnvParser.parse` method.
 
   ```ruby
-  ENV['SHORT_PI']  ## => '3.1415926'
+  ENV['SHORT_PI']  # => '3.1415926'
 
-  EnvParser.parse 'SHORT_PI', as: :float  ## => 'SHORT_PI' as a float: 0.0
-  EnvParser.parse :SHORT_PI , as: :float  ## => ENV['SHORT_PI'] as a float: 3.1415926
+  EnvParser.parse 'SHORT_PI', as: :float  # => 'SHORT_PI' as a float: 0.0
+  EnvParser.parse :SHORT_PI , as: :float  # => ENV['SHORT_PI'] as a float: 3.1415926
 
-  ## Bind the proxy methods.
-  ##
+  # Bind the proxy methods.
+  #
   EnvParser.add_env_bindings
 
-  ENV.parse 'SHORT_PI', as: :float  ## => ENV['SHORT_PI'] as a float: 3.1415926
-  ENV.parse :SHORT_PI , as: :float  ## => ENV['SHORT_PI'] as a float: 3.1415926
+  ENV.parse 'SHORT_PI', as: :float  # => ENV['SHORT_PI'] as a float: 3.1415926
+  ENV.parse :SHORT_PI , as: :float  # => ENV['SHORT_PI'] as a float: 3.1415926
   ```
 
   Note also that the `ENV.parse` and `ENV.register` binding is done safely and without polluting the method space for other objects.
@@ -177,14 +177,14 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   If the `ENV` variable you want is unset (`nil`) or blank (`''`), the return value is a sensible default for the given **_as_** type: 0 or 0.0 for numbers, an empty string/array/hash, etc. Sometimes you want a non-trivial default, however. The **_if_unset_** option lets you specify a default that better meets your needs.
 
   ```ruby
-  ENV.parse :MISSING_VAR, as: :integer  ## => 0
-  ENV.parse :MISSING_VAR, as: :integer, if_unset: 250  ## => 250
+  ENV.parse :MISSING_VAR, as: :integer  # => 0
+  ENV.parse :MISSING_VAR, as: :integer, if_unset: 250  # => 250
   ```
 
   Note these default values are used as-is with no type conversion, so exercise caution.
 
   ```ruby
-  ENV.parse :MISSING_VAR, as: :integer, if_unset: 'Careful!'  ## => 'Careful!' (NOT AN INTEGER)
+  ENV.parse :MISSING_VAR, as: :integer, if_unset: 'Careful!'  # => 'Careful!' (NOT AN INTEGER)
   ```
 
 - **Selecting From A Set**
@@ -195,9 +195,9 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   ENV.parse :API_TO_USE, as: :symbol, from_set: %i[internal external]
   ENV.parse :NETWORK_PORT, as: :integer, from_set: (1..65535), if_unset: 80
 
-  ## And if the value is not in the allowed set ...
-  ##
-  ENV.parse :TWELVE, as: :integer, from_set: (1..5)  ## => raises EnvParser::ValueNotAllowedError
+  # And if the value is not in the allowed set ...
+  #
+  ENV.parse :TWELVE, as: :integer, from_set: (1..5)  # => raises EnvParser::ValueNotAllowedError
   ```
 
 - **Custom Validation Of Parsed Values**
@@ -205,12 +205,12 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   You can write your own, more complex validations by passing in a **_validated_by_** lambda or an equivalent block. The lambda/block should take one value and return true if the given value passes the custom validation.
 
   ```ruby
-  ## Via a "validated_by" lambda ...
-  ##
+  # Via a "validated_by" lambda ...
+  #
   ENV.parse :MUST_BE_LOWERCASE, as: :string, validated_by: ->(value) { value == value.downcase }
 
-  ## ... or with a block!
-  ##
+  # ... or with a block!
+  #
   ENV.parse(:MUST_BE_LOWERCASE, as: :string) { |value| value == value.downcase }
   ENV.parse(:CONNECTION_RETRIES, as: :integer, &:positive?)
   ```
@@ -269,7 +269,7 @@ EnvParser.add_env_bindings  ## ENV.parse will now be a proxy for EnvParser.parse
   EnvParser.register :PASSWORD, as: :string
   EnvParser.register :MOCK_API, as: :boolean, within: MyClassOrModule }
 
-  ## ... is equivalent to ... ##
+  # ... is equivalent to ... #
 
   EnvParser.register USERNAME: { as: :string                           },
                      PASSWORD: { as: :string                           },

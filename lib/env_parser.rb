@@ -132,12 +132,12 @@ class EnvParser
     # variable names and whose values are the options set for each variable's {.register} call.
     #
     # <pre>
-    #   ## Example shortcut usage:
+    #   # Example shortcut usage:
     #
     #   EnvParser.register :A, from: one_hash, as: :integer
     #   EnvParser.register :B, from: another_hash, as: :string, if_unset: 'none'
     #
-    #   ## ... is equivalent to ...
+    #   # ... is equivalent to ...
     #
     #   EnvParser.register(
     #     A: { from: one_hash, as: :integer }
