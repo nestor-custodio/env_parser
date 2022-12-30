@@ -129,6 +129,18 @@
         Note this does not guarantee RFC5322-conformity.
       </td>
     </tr>
+    <tr>
+      <td>:version / :semver</td>
+      <td>MatchData</td>
+      <td><code>nil</code></td>
+      <td>
+        The resulting MatchData has named captures for "major", "minor", "patch", "prerelease", and "buildmetadata".
+        <br />
+        The Regex used for generating this MatchData is available at: https://regex101.com/r/Ly7O1x/3/
+        <br />
+        See https://semver.org for additional info.
+      </td>
+    </tr>
   </tbody>
 </table>
 
@@ -150,7 +162,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sun Dec 25 21:11:48 2022 by
+  Generated on Fri Dec 30 17:49:58 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.0.4).
 </div>

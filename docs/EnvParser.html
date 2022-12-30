@@ -150,7 +150,7 @@
         <dt id="VERSION-constant" class="">VERSION =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1.3.3</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1.6.0</span><span class='tstring_end'>&#39;</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -339,22 +339,22 @@ itself.  i.e. ENV.parse(‘XYZ’, …) is equivalent to EnvParser.parse(ENV[‘
       <pre class="lines">
 
 
-216
-217
-218
-219
-220
-221
-222
-223
-224
-225
-226
-227
-228</pre>
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 216</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 232</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_env_bindings'>add_env_bindings</span>
   <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_instance_eval'>instance_eval</span> <span class='kw'>do</span>
@@ -455,22 +455,6 @@ itself.  i.e. ENV.parse(‘XYZ’, …) is equivalent to EnvParser.parse(ENV[‘
       <pre class="lines">
 
 
-245
-246
-247
-248
-249
-250
-251
-252
-253
-254
-255
-256
-257
-258
-259
-260
 261
 262
 263
@@ -479,10 +463,26 @@ itself.  i.e. ENV.parse(‘XYZ’, …) is equivalent to EnvParser.parse(ENV[‘
 266
 267
 268
-269</pre>
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 245</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 261</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_autoregister'>autoregister</span><span class='lparen'>(</span><span class='id identifier rubyid_filename'>filename</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_filename'>filename</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="#AUTOREGISTER_FILE-constant" title="EnvParser::AUTOREGISTER_FILE (constant)">AUTOREGISTER_FILE</a></span></span>
@@ -490,7 +490,7 @@ itself.  i.e. ENV.parse(‘XYZ’, …) is equivalent to EnvParser.parse(ENV[‘
 
   <span class='id identifier rubyid_autoregister_spec'>autoregister_spec</span><span class='period'>.</span><span class='id identifier rubyid_deep_symbolize_keys!'>deep_symbolize_keys!</span>
   <span class='id identifier rubyid_autoregister_spec'>autoregister_spec</span><span class='period'>.</span><span class='id identifier rubyid_transform_values!'>transform_values!</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_spec'>spec</span><span class='op'>|</span>
-    <span class='id identifier rubyid_sanitized'>sanitized</span> <span class='op'>=</span> <span class='id identifier rubyid_spec'>spec</span><span class='period'>.</span><span class='id identifier rubyid_slice'>slice</span><span class='lparen'>(</span><span class='symbol'>:as</span><span class='comma'>,</span> <span class='symbol'>:within</span><span class='comma'>,</span> <span class='symbol'>:if_unset</span><span class='comma'>,</span> <span class='symbol'>:from_set</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_sanitized'>sanitized</span> <span class='op'>=</span> <span class='id identifier rubyid_spec'>spec</span><span class='period'>.</span><span class='id identifier rubyid_slice'>slice</span><span class='lparen'>(</span><span class='symbol'>:as</span><span class='comma'>,</span> <span class='symbol'>:named</span><span class='comma'>,</span> <span class='symbol'>:within</span><span class='comma'>,</span> <span class='symbol'>:if_unset</span><span class='comma'>,</span> <span class='symbol'>:from_set</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_sanitized'>sanitized</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_sanitized'>sanitized</span><span class='lbracket'>[</span><span class='symbol'>:as</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='kw'>if</span> <span class='id identifier rubyid_sanitized'>sanitized</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='symbol'>:as</span>
     <span class='id identifier rubyid_sanitized'>sanitized</span><span class='lbracket'>[</span><span class='symbol'>:within</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_sanitized'>sanitized</span><span class='lbracket'>[</span><span class='symbol'>:within</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_constantize'>constantize</span> <span class='kw'>if</span> <span class='id identifier rubyid_sanitized'>sanitized</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='symbol'>:within</span>
 
@@ -948,12 +948,12 @@ both validation checks must pass.</strong></p>
 variable names and whose values are the options set for each variable’s <span class='object_link'><a href="#register-class_method" title="EnvParser.register (method)">register</a></span> call.</p>
 
 <pre class="code ruby"><code class="ruby">
-  ## Example shortcut usage:
+  # Example shortcut usage:
 
   EnvParser.register :A, from: one_hash, as: :integer
   EnvParser.register :B, from: another_hash, as: :string, if_unset: &#39;none&#39;
 
-  ## ... is equivalent to ...
+  # ... is equivalent to ...
 
   EnvParser.register(
     A: { from: one_hash, as: :integer }
@@ -1022,6 +1022,28 @@ variable names and whose values are the options set for each variable’s <span 
           </span>
           
             &mdash; <div class='inline'><p>The source Hash from which to pull the value referenced by the “name” key.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">named</span>
+          <span class="type">(<tt>Symbol</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>The name the constant should be given. Valid only when a “within” value is <em>explicitly</em>
+given. This allows for decoupling ENV variable names from the constant name defined
+within its target class or module, allowing for the ENV variables to be namespaced in
+some way.</p>
+
+<pre class="code ruby"><code class="ruby">
+  <span class='const'><span class='object_link'><a href="" title="EnvParser (class)">EnvParser</a></span></span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span>
+    <span class='label'>CUSTOM_CLIENT_DEFAULT_HOSTNAME:</span> <span class='lbrace'>{</span> <span class='label'>as:</span> <span class='symbol'>:string</span><span class='comma'>,</span> <span class='label'>named:</span> <span class='symbol'>:DEFAULT_HOSTNAME</span><span class='comma'>,</span> <span class='label'>within:</span> <span class='const'>CustomClient</span> <span class='rbrace'>}</span><span class='comma'>,</span>
+    <span class='label'>CUSTOM_CLIENT_DEFAULT_PORT:</span> <span class='lbrace'>{</span> <span class='label'>as:</span> <span class='symbol'>:integer</span><span class='comma'>,</span> <span class='label'>named:</span> <span class='symbol'>:DEFAULT_PORT</span><span class='comma'>,</span> <span class='label'>within:</span> <span class='const'>CustomClient</span> <span class='rbrace'>}</span>
+  <span class='rparen'>)</span>
+</code></pre>
 </div>
           
         </li>
@@ -1132,19 +1154,6 @@ validation must give its own “validated_by” Proc.</p>
       <pre class="lines">
 
 
-178
-179
-180
-181
-182
-183
-184
-185
-186
-187
-188
-189
-190
 191
 192
 193
@@ -1159,10 +1168,26 @@ validation must give its own “validated_by” Proc.</p>
 202
 203
 204
-205</pre>
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'lib/env_parser.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
   <span class='comment'># Allow for registering multiple variables simultaneously via a single call.
@@ -1173,6 +1198,9 @@ validation must give its own “validated_by” Proc.</p>
 
   <span class='id identifier rubyid_from'>from</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:from</span><span class='comma'>,</span> <span class='const'>ENV</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_within'>within</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:within</span><span class='comma'>,</span> <span class='const'>Kernel</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_named'>named</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span>
+  <span class='id identifier rubyid_named'>named</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:named</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span> <span class='symbol'>:within</span>
 
   <span class='comment'># ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
 </span>  <span class='comment'># bite you in some cases. Making sure we&#39;re working with a straight-up Hash saves a lot of
@@ -1188,7 +1216,7 @@ validation must give its own “validated_by” Proc.</p>
 
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_from'>from</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_validation_block'>validation_block</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_const_set'>const_set</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_within'>within</span><span class='period'>.</span><span class='id identifier rubyid_const_set'>const_set</span><span class='lparen'>(</span><span class='id identifier rubyid_named'>named</span><span class='period'>.</span><span class='id identifier rubyid_upcase'>upcase</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_value'>value</span>
 <span class='kw'>end</span></pre>
@@ -1202,7 +1230,7 @@ validation must give its own “validated_by” Proc.</p>
 </div>
 
       <div id="footer">
-  Generated on Sun Dec 25 21:11:48 2022 by
+  Generated on Fri Dec 30 17:49:58 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.0.4).
 </div>

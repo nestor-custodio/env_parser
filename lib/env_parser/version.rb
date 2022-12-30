@@ -1,3 +1,3 @@
 class EnvParser
-  VERSION = '1.3.3'.freeze
+  VERSION = '1.6.0'.freeze
 end
