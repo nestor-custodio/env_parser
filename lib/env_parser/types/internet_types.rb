@@ -48,6 +48,18 @@ module EnvParser::Types
   #         Note this does not guarantee RFC5322-conformity.
   #       </td>
   #     </tr>
+  #     <tr>
+  #       <td>:version / :semver</td>
+  #       <td>MatchData</td>
+  #       <td><code>nil</code></td>
+  #       <td>
+  #         The resulting MatchData has named captures for "major", "minor", "patch", "prerelease", and "buildmetadata".
+  #         <br />
+  #         The Regex used for generating this MatchData is available at: https://regex101.com/r/Ly7O1x/3/
+  #         <br />
+  #         See https://semver.org for additional info.
+  #       </td>
+  #     </tr>
   #   </tbody>
   # </table>
   #
@@ -94,6 +106,16 @@ module EnvParser::Types
       raise(EnvParser::ValueNotConvertibleError, 'not an email') unless value.match?(simple_email)
 
       value
+    end
+
+    EnvParser.define_type(:version, aliases: :semver, if_unset: nil) do |value|
+      # We're using the official semver.org-provided regex.
+      semver = %r{^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$} ## rubocop:disable Layout/LineLength
+
+      match_data = value.match(semver)
+      raise(EnvParser::ValueNotConvertibleError, 'not a semver-compliant value') unless match_data
+
+      match_data
     end
   end
 end
