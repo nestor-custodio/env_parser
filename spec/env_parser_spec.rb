@@ -60,9 +60,16 @@ RSpec.describe EnvParser do
     end
 
     it 'creates module constants' do
-      source_hash = { XYZ: '456' }
-      EnvParser.register(:XYZ, from: source_hash, as: :integer, within: Sample)
-      expect(Sample::XYZ).to eq(456)
+      source_hash = { DEF: '456' }
+      EnvParser.register(:DEF, from: source_hash, as: :integer, within: Sample)
+      expect(Sample::DEF).to eq(456)
+    end
+
+    it 'creates named module constants' do
+      source_hash = { GHI: '789' }
+      EnvParser.register(:GHI, from: source_hash, as: :integer, named: :JKL, within: Sample)
+      expect { Sample::GHI }.to raise_error(NameError)
+      expect(Sample::JKL).to eq(789)
     end
 
     it 'will accept a hash keyed by variable names' do
@@ -117,6 +124,13 @@ RSpec.describe EnvParser do
         expect(Sample::WXYZ).to eq(5678)
       end
 
+      it 'creates module constants' do
+        ENV['ORIGINAL_NAME'] = '9999'
+        ENV.register(:ORIGINAL_NAME, as: :integer, named: :DIFFERENT_NAME, within: Sample)
+        expect { Sample::ORIGINAL_NAME }.to raise_error(NameError)
+        expect(Sample::DIFFERENT_NAME).to eq(9999)
+      end
+
       it 'will accept a hash keyed by variable names' do
         ENV['FIFTH'] = 'fifth'
         ENV['SIXTH'] = '99'
@@ -156,6 +170,11 @@ RSpec.describe EnvParser do
           CLASS_CONSTANT:
             as: :string
             within: String
+
+          NAMED_CLASS_CONSTANT:
+            as: :string
+            named: :OTHER_CLASS_CONSTANT
+            within: String
         YAML
 
         file.path
@@ -164,11 +183,14 @@ RSpec.describe EnvParser do
       ENV['SOME_INT'] = '99'
       ENV['SOME_STRING'] = 'twelve'
       ENV['CLASS_CONSTANT'] = 'tricky'
+      ENV['NAMED_CLASS_CONSTANT'] = 'quizzical'
       EnvParser.autoregister filename
 
       expect(SOME_INT).to eq(99)
       expect(SOME_STRING).to eq('twelve')
       expect(String::CLASS_CONSTANT).to eq('tricky')
+      expect { String::NAMED_CLASS_CONSTANT }.to raise_error(NameError)
+      expect(String::OTHER_CLASS_CONSTANT).to eq('quizzical')
     end
 
     it 'properly handles file-not-found' do

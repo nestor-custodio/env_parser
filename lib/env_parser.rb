@@ -132,12 +132,12 @@ class EnvParser
     # variable names and whose values are the options set for each variable's {.register} call.
     #
     # <pre>
-    #   ## Example shortcut usage:
+    #   # Example shortcut usage:
     #
     #   EnvParser.register :A, from: one_hash, as: :integer
     #   EnvParser.register :B, from: another_hash, as: :string, if_unset: 'none'
     #
-    #   ## ... is equivalent to ...
+    #   # ... is equivalent to ...
     #
     #   EnvParser.register(
     #     A: { from: one_hash, as: :integer }
@@ -151,6 +151,19 @@ class EnvParser
     #
     # @option options [Hash] from (ENV)
     #   The source Hash from which to pull the value referenced by the "name" key.
+    #
+    # @option options [Symbol] named
+    #   The name the constant should be given. Valid only when a "within" value is *explicitly*
+    #   given. This allows for decoupling ENV variable names from the constant name defined
+    #   within its target class or module, allowing for the ENV variables to be namespaced in
+    #   some way.
+    #
+    #   <pre>
+    #     EnvParser.register(
+    #       CUSTOM_CLIENT_DEFAULT_HOSTNAME: { as: :string, named: :DEFAULT_HOSTNAME, within: CustomClient },
+    #       CUSTOM_CLIENT_DEFAULT_PORT: { as: :integer, named: :DEFAULT_PORT, within: CustomClient }
+    #     )
+    #   </pre>
     #
     # @option options [Module, Class] within (Kernel)
     #   The module or class in which the constant should be created. Creates global constants by
@@ -185,6 +198,9 @@ class EnvParser
       from = options.fetch(:from, ENV)
       within = options.fetch(:within, Kernel)
 
+      named = name
+      named = options.fetch(:named, name) if options.key? :within
+
       # ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
       # bite you in some cases. Making sure we're working with a straight-up Hash saves a lot of
       # sanity checks later on. This is also a good place to make sure we're working with a String
@@ -199,7 +215,7 @@ class EnvParser
 
       value = from[name]
       value = parse(value, options, &validation_block)
-      within.const_set(name.upcase.to_sym, value.dup.freeze)
+      within.const_set(named.upcase.to_sym, value.dup.freeze)
 
       value
     end
@@ -248,7 +264,7 @@ class EnvParser
 
       autoregister_spec.deep_symbolize_keys!
       autoregister_spec.transform_values! do |spec|
-        sanitized = spec.slice(:as, :within, :if_unset, :from_set)
+        sanitized = spec.slice(:as, :named, :within, :if_unset, :from_set)
         sanitized[:as] = sanitized[:as].to_sym if sanitized.key? :as
         sanitized[:within] = sanitized[:within].constantize if sanitized.key? :within
 
