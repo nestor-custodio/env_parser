@@ -60,9 +60,9 @@ RSpec.describe EnvParser do
     end
 
     it 'creates module constants' do
-      source_hash = { XYZ: '456' }
-      EnvParser.register(:XYZ, from: source_hash, as: :integer, within: Sample)
-      expect(Sample::XYZ).to eq(456)
+      source_hash = { DEF: '456' }
+      EnvParser.register(:DEF, from: source_hash, as: :integer, within: Sample)
+      expect(Sample::DEF).to eq(456)
     end
 
     it 'will accept a hash keyed by variable names' do
