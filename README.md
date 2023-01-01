@@ -1,5 +1,5 @@
 [![Gem Version](https://img.shields.io/github/v/release/nestor-custodio/env_parser?color=green&label=gem%20version)](https://rubygems.org/gems/env_parser)
-[![MIT License](https://img.shields.io/github/license/nestor-custodio/env_parser)](https://github.com/nestor-custodio/env_parser/blob/main/LICENSE.txt)
+[![MIT License](https://img.shields.io/github/license/nestor-custodio/env_parser)](https://tldrlegal.com/license/mit-license)
 
 
 # EnvParser
