@@ -21,11 +21,10 @@ Gem::Specification.new do |spec|
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   spec.add_dependency 'activesupport', ['>= 6.1.0', '< 7.1']
-  spec.add_dependency 'chronic'
-  spec.add_dependency 'chronic_duration'
+  spec.add_dependency 'chronic', '~> 0'
+  spec.add_dependency 'chronic_duration', '~> 0'
 
   spec.add_development_dependency 'bundler', '~> 2'
-  spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3'
   spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'rubocop'
