@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata['rubygems_mfa_required'] = 'true'
 
-  spec.add_dependency 'activesupport', ['>= 6.1.0', '< 7.1']
+  spec.add_dependency 'activesupport', ['>= 6.1.0', '< 9']
   spec.add_dependency 'chronic', '~> 0'
   spec.add_dependency 'chronic_duration', '~> 0'
 
