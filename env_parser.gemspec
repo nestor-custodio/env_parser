@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'env_parser'
   spec.version       = EnvParser::VERSION
   spec.authors       = ['Nestor Custodio']
-  spec.email         = ['sakimorix@gmail.com']
+  spec.email         = ['nestor@custodio.org']
 
   spec.summary       = 'A tool for painless parsing and validation of environment variables.'
   spec.homepage      = 'https://github.com/nestor-custodio/env_parser'
