@@ -6,7 +6,7 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.28
+    &mdash; Documentation by YARD 0.9.37
   
 </title>
 
@@ -105,19 +105,20 @@ $ gem install env_parser
 <p>```ruby
 # Returns an ENV value parsed “as” a specific type:
 #
-EnvParser.parse env_key_as_a_symbol
-                as: …                          # ➜ required
-                if_unset: …                    # ➜ optional; default value
-                from_set: …                    # ➜ optional; an Array or Range
+EnvParser.parse env_key_as_a_symbol,
+                as: …,                         # ➜ required; Symbol
+                if_unset: …,                   # ➜ optional; default value (of any type)
+                from_set: …,                   # ➜ optional; Array or Range
                 validated_by: -&gt;(value) { … }  # ➜ optional; may also be given as a block</p>
 
 <h1 id="parse-an-env-value-and-register-it-as-a-constant">Parse an ENV value and register it as a constant:</h1>
 <p>#
-EnvParser.register env_key_as_a_symbol
-                   as: …                          # ➜ required
-                   within: …                      # ➜ optional; Class or Module
-                   if_unset: …                    # ➜ optional; default value
-                   from_set: …                    # ➜ optional; an Array or Range
+EnvParser.register env_key_as_a_symbol,
+                   as: …,                         # ➜ required; Symbol
+                   named: …,                      # ➜ optional; String or Symbol; available only if <code>within</code> is also given
+                   within: …,                     # ➜ optional; Class or Module
+                   if_unset: …,                   # ➜ optional; default value (of any type)
+                   from_set: …,                   # ➜ optional; Array or Range
                    validated_by: -&gt;(value) { … }  # ➜ optional; may also be given as a block</p>
 
 <h1 id="registers-all-env-variables-as-speced-in-envparseryml">Registers all ENV variables as spec’ed in “.env_parser.yml”:</h1>
@@ -186,6 +187,18 @@ URI::BEST_VIDEO  # =&gt; ‘https://youtu.be/L_jWHffIx5E’
 BEST_VIDEO  # =&gt; raises NameError
 ```</p>
 
+    <p><code>EnvParser.register</code>’s <strong><em>within</em></strong> option also allows for specifying what you would like the registered constant to be <strong><em>named</em></strong>, since related ENV variables will tend to have redundant names once namespaced within a single class or module. Note that <code>named</code> is only available when used alongside <code>within</code>, as it exists solely as a namespacing aid; registering ENV variables as <em>global</em> constants with different names would be a debugging nightmare.</p>
+
+    <p>```ruby
+ENV[‘CUSTOM_CLIENT_DEFAULT_HOSTNAME’]  # =&gt; ‘localhost’
+ENV[‘CUSTOM_CLIENT_DEFAULT_PORT’    ]  # =&gt; ‘3000’</p>
+
+    <p>EnvParser.register :CUSTOM_CLIENT_DEFAULT_HOSTNAME, as: :string , named: :DEFAULT_HOSTNAME, within: CustomClient
+EnvParser.register :CUSTOM_CLIENT_DEFAULT_PORT    , as: :integer, named: :DEFAULT_PORT    , within: CustomClient
+CustomClient::DEFAULT_HOSTNAME  # =&gt; ‘localhost’
+CustomClient::DEFAULT_PORT      # =&gt; 3000
+```</p>
+
     <p>You can also register multiple constants with a single call, which is a bit cleaner.</p>
 
     <p>```ruby
@@ -252,7 +265,7 @@ ENV.parse :MISSING_VAR, as: :integer  # =&gt; 0
 ENV.parse :MISSING_VAR, as: :integer, if_unset: 250  # =&gt; 250
 </code></p>
 
-    <p>Note these default values are used as-is with no type conversion, so exercise caution.</p>
+    <p>Note these default values are used as-is, with no type conversion (because sometimes you just want <code>nil</code> 🤷), so exercise caution.</p>
 
     <p><code>ruby
 ENV.parse :MISSING_VAR, as: :integer, if_unset: 'Careful!'  # =&gt; 'Careful!' (NOT AN INTEGER)
@@ -275,7 +288,7 @@ ENV.parse :TWELVE, as: :integer, from_set: (1..5)  # =&gt; raises EnvParser::Val
   <li>
     <p><strong>Custom Validation Of Parsed Values</strong></p>
 
-    <p>You can write your own, more complex validations by passing in a <strong><em>validated_by</em></strong> lambda or an equivalent block. The lambda/block should take one value and return true if the given value passes the custom validation.</p>
+    <p>You can write your own, more complex validations by passing in a <strong><em>validated_by</em></strong> lambda or an equivalent block. The lambda/block should expect one value (of the requested <strong><em>as</em></strong> type) and return true if the given value passes the custom validation.</p>
 
     <p>```ruby
 # Via a “validated_by” lambda …
@@ -327,7 +340,7 @@ b = ENV.parse :B, as: :my_special_type_of_number
   <li>
     <p><strong>The <code>autoregister</code> Call</strong></p>
 
-    <p>Consolidating all of your <code>EnvParser.register</code> calls into a single place only makes sense. A single <code>EnvParser.autoregister</code> call take a filename to read and process as a series of constant registration requests. If no filename is given, the default <code>".env_parser.yml"</code> is assumed.</p>
+    <p>Consolidating all of your <code>EnvParser.register</code> calls into a single place only makes sense. A single <code>EnvParser.autoregister</code> call takes a filename to read and process as a series of constant registration requests. If no filename is given, the default <code>".env_parser.yml"</code> is assumed.</p>
 
     <p>You’ll normally want to call <code>EnvParser.autoregister</code> as early in your application as possible. For Rails applications (and other frameworks that call <code>require 'bundler/setup'</code>), requiring the EnvParser gem via …</p>
 
@@ -370,7 +383,7 @@ USERNAME:
   within: MyClassOrModule
 ```</p>
 
-    <p>Because no Ruby <em>statements</em> can be safely represented via YAML, the set of <code>EnvParser.register</code> options available via autoregistration is limited to <strong><em>as</em></strong>, <strong><em>within</em></strong>, <strong><em>if_unset</em></strong>, and <strong><em>from_set</em></strong>. As an additional restriction, <strong><em>from_set</em></strong> (if given) must be an array, as ranges cannot be represented in YAML.</p>
+    <p>Because no Ruby <em>statements</em> can be safely represented via YAML, the set of <code>EnvParser.register</code> options available via autoregistration is limited to <strong><em>as</em></strong>, <strong><em>named</em></strong>, <strong><em>within</em></strong>, <strong><em>if_unset</em></strong>, and <strong><em>from_set</em></strong>. As an additional restriction, <strong><em>from_set</em></strong> (if given) must be an array, as ranges cannot be represented in YAML.</p>
   </li>
 </ul>
 
@@ -396,9 +409,9 @@ USERNAME:
 </div></div>
 
       <div id="footer">
-  Generated on Sat Dec 31 18:51:38 2022 by
+  Generated on Mon Jun  9 14:00:25 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-3.0.4).
+  0.9.37 (ruby-3.4.2).
 </div>
 
     </div>
