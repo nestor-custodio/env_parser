@@ -51,6 +51,7 @@ EnvParser.parse env_key_as_a_symbol,
 #
 EnvParser.register env_key_as_a_symbol,
                    as: …,                         # ➜ required; Symbol
+                   named: …,                      # ➜ optional; String or Symbol; available only if `within` is also given
                    within: …,                     # ➜ optional; Class or Module
                    if_unset: …,                   # ➜ optional; default value (of any type)
                    from_set: …,                   # ➜ optional; Array or Range
@@ -117,6 +118,18 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
   EnvParser.register :BEST_VIDEO, as: :string, within: URI
   URI::BEST_VIDEO  # => 'https://youtu.be/L_jWHffIx5E'
   BEST_VIDEO  # => raises NameError
+  ```
+
+  `EnvParser.register`'s **_within_** option also allows for specifying what you would like the registered constant to be **_named_**, since related ENV variables will tend to have redundant names once namespaced within a single class or module. Note that `named` is only available when used alongside `within`, as it exists solely as a namespacing aid; registering ENV variables as *global* constants with different names would be a debugging nightmare.
+
+  ```ruby
+  ENV['CUSTOM_CLIENT_DEFAULT_HOSTNAME']  # => 'localhost'
+  ENV['CUSTOM_CLIENT_DEFAULT_PORT'    ]  # => '3000'
+
+  EnvParser.register :CUSTOM_CLIENT_DEFAULT_HOSTNAME, as: :string , named: :DEFAULT_HOSTNAME, within: CustomClient
+  EnvParser.register :CUSTOM_CLIENT_DEFAULT_PORT    , as: :integer, named: :DEFAULT_PORT    , within: CustomClient
+  CustomClient::DEFAULT_HOSTNAME  # => 'localhost'
+  CustomClient::DEFAULT_PORT      # => 3000
   ```
 
   You can also register multiple constants with a single call, which is a bit cleaner.
@@ -292,7 +305,7 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
     within: MyClassOrModule
   ```
 
-  Because no Ruby *statements* can be safely represented via YAML, the set of `EnvParser.register` options available via autoregistration is limited to **_as_**, **_within_**, **_if_unset_**, and **_from_set_**. As an additional restriction, **_from_set_** (if given) must be an array, as ranges cannot be represented in YAML.
+  Because no Ruby *statements* can be safely represented via YAML, the set of `EnvParser.register` options available via autoregistration is limited to **_as_**, **_named_**, **_within_**, **_if_unset_**, and **_from_set_**. As an additional restriction, **_from_set_** (if given) must be an array, as ranges cannot be represented in YAML.
 
 
 ## Feature Roadmap / Future Development
