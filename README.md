@@ -8,7 +8,7 @@ If your code uses environment variables, you know that `ENV` will always surface
 
 Things can get out of control pretty fast, especially as the number of environment variables in play grows. Tools like [dotenv](https://github.com/bkeepers/dotenv) help to make sure you're loading the correct **set** of variables, but [EnvParser](https://github.com/nestor-custodio/env_parser) makes **the values themselves** usable with a minimum of effort.
 
-[Full documentation is available here](http://nestor-custodio.github.io/env_parser/EnvParser.html), but do read below for a crash course on availble featues!
+[Full documentation is available here](https://nestor-custodio.github.io/env_parser/EnvParser.html), but do read below for a crash course on availble featues!
 
 
 ## Installation
@@ -85,7 +85,7 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
   timeout_ms = EnvParser.parse ENV['TIMEOUT_MS'], as: :integer
   ```
 
-  You can check the full documentation for [a list of all **_as_** types available right out of the box](http://nestor-custodio.github.io/env_parser/EnvParser/Types.html).
+  You can check the full documentation for [a list of all **_as_** types available right out of the box](https://nestor-custodio.github.io/env_parser/EnvParser/Types.html).
 
 - **How About Less Typing?**
 
