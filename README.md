@@ -41,19 +41,20 @@ Things can get out of control pretty fast, especially as the number of environme
 ```ruby
 # Returns an ENV value parsed "as" a specific type:
 #
-EnvParser.parse env_key_as_a_symbol
-                as: …                          # ➜ required
-                if_unset: …                    # ➜ optional; default value
-                from_set: …                    # ➜ optional; an Array or Range
+EnvParser.parse env_key_as_a_symbol,
+                as: …,                         # ➜ required; Symbol
+                if_unset: …,                   # ➜ optional; default value (of any type)
+                from_set: …,                   # ➜ optional; Array or Range
                 validated_by: ->(value) { … }  # ➜ optional; may also be given as a block
 
 # Parse an ENV value and register it as a constant:
 #
-EnvParser.register env_key_as_a_symbol
-                   as: …                          # ➜ required
-                   within: …                      # ➜ optional; Class or Module
-                   if_unset: …                    # ➜ optional; default value
-                   from_set: …                    # ➜ optional; an Array or Range
+EnvParser.register env_key_as_a_symbol,
+                   as: …,                         # ➜ required; Symbol
+                   named: …,                      # ➜ optional; String or Symbol; available only if `within` is also given
+                   within: …,                     # ➜ optional; Class or Module
+                   if_unset: …,                   # ➜ optional; default value (of any type)
+                   from_set: …,                   # ➜ optional; Array or Range
                    validated_by: ->(value) { … }  # ➜ optional; may also be given as a block
 
 # Registers all ENV variables as spec'ed in ".env_parser.yml":
@@ -119,6 +120,18 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
   BEST_VIDEO  # => raises NameError
   ```
 
+  `EnvParser.register`'s **_within_** option also allows for specifying what you would like the registered constant to be **_named_**, since related ENV variables will tend to have redundant names once namespaced within a single class or module. Note that `named` is only available when used alongside `within`, as it exists solely as a namespacing aid; registering ENV variables as *global* constants with different names would be a debugging nightmare.
+
+  ```ruby
+  ENV['CUSTOM_CLIENT_DEFAULT_HOSTNAME']  # => 'localhost'
+  ENV['CUSTOM_CLIENT_DEFAULT_PORT'    ]  # => '3000'
+
+  EnvParser.register :CUSTOM_CLIENT_DEFAULT_HOSTNAME, as: :string , named: :DEFAULT_HOSTNAME, within: CustomClient
+  EnvParser.register :CUSTOM_CLIENT_DEFAULT_PORT    , as: :integer, named: :DEFAULT_PORT    , within: CustomClient
+  CustomClient::DEFAULT_HOSTNAME  # => 'localhost'
+  CustomClient::DEFAULT_PORT      # => 3000
+  ```
+
   You can also register multiple constants with a single call, which is a bit cleaner.
 
   ```ruby
@@ -181,7 +194,7 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
   ENV.parse :MISSING_VAR, as: :integer, if_unset: 250  # => 250
   ```
 
-  Note these default values are used as-is with no type conversion, so exercise caution.
+  Note these default values are used as-is, with no type conversion (because sometimes you just want `nil` 🤷), so exercise caution.
 
   ```ruby
   ENV.parse :MISSING_VAR, as: :integer, if_unset: 'Careful!'  # => 'Careful!' (NOT AN INTEGER)
@@ -202,7 +215,7 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
 
 - **Custom Validation Of Parsed Values**
 
-  You can write your own, more complex validations by passing in a **_validated_by_** lambda or an equivalent block. The lambda/block should take one value and return true if the given value passes the custom validation.
+  You can write your own, more complex validations by passing in a **_validated_by_** lambda or an equivalent block. The lambda/block should expect one value (of the requested **_as_** type) and return true if the given value passes the custom validation.
 
   ```ruby
   # Via a "validated_by" lambda ...
@@ -250,7 +263,7 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
 
 - **The `autoregister` Call**
 
-  Consolidating all of your `EnvParser.register` calls into a single place only makes sense. A single `EnvParser.autoregister` call take a filename to read and process as a series of constant registration requests. If no filename is given, the default `".env_parser.yml"` is assumed.
+  Consolidating all of your `EnvParser.register` calls into a single place only makes sense. A single `EnvParser.autoregister` call takes a filename to read and process as a series of constant registration requests. If no filename is given, the default `".env_parser.yml"` is assumed.
 
   You'll normally want to call `EnvParser.autoregister` as early in your application as possible. For Rails applications (and other frameworks that call `require 'bundler/setup'`), requiring the EnvParser gem via ...
 
@@ -292,7 +305,7 @@ EnvParser.add_env_bindings  # ENV.parse will now be a proxy for EnvParser.parse
     within: MyClassOrModule
   ```
 
-  Because no Ruby *statements* can be safely represented via YAML, the set of `EnvParser.register` options available via autoregistration is limited to **_as_**, **_within_**, **_if_unset_**, and **_from_set_**. As an additional restriction, **_from_set_** (if given) must be an array, as ranges cannot be represented in YAML.
+  Because no Ruby *statements* can be safely represented via YAML, the set of `EnvParser.register` options available via autoregistration is limited to **_as_**, **_named_**, **_within_**, **_if_unset_**, and **_from_set_**. As an additional restriction, **_from_set_** (if given) must be an array, as ranges cannot be represented in YAML.
 
 
 ## Feature Roadmap / Future Development
