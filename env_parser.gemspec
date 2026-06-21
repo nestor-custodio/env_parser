@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'chronic', '~> 0'
   spec.add_dependency 'chronic_duration', '~> 0'
 
-  spec.add_development_dependency 'bundler', '~> 2'
+  spec.add_development_dependency 'bundler', '~> 4'
   spec.add_development_dependency 'rspec', '~> 3'
   spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'rubocop'
