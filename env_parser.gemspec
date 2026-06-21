@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'env_parser/version'
 
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = ['~> 3']
+  spec.required_ruby_version = ['>= 3']
 
   spec.name          = 'env_parser'
   spec.version       = EnvParser::VERSION
@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/nestor-custodio/env_parser'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |filename| filename.start_with? 'test/' }
+  spec.files         = `git ls-files -z`.split("\x0").reject { |filename| filename.start_with? 'spec/' }
   spec.executables   = []
   spec.require_paths = ['lib']
 
@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'chronic', '~> 0'
   spec.add_dependency 'chronic_duration', '~> 0'
 
-  spec.add_development_dependency 'bundler', '~> 2'
+  spec.add_development_dependency 'bundler', '~> 4'
   spec.add_development_dependency 'rspec', '~> 3'
   spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'rubocop'

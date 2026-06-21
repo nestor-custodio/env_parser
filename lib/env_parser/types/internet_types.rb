@@ -102,7 +102,7 @@ module EnvParser::Types
     end
 
     EnvParser.define_type(:email_address, if_unset: nil) do |value|
-      simple_email = %r[^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$]i ## rubocop:disable Layout/LineLength
+      simple_email = %r[^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$]i # rubocop:disable Layout/LineLength
       raise(EnvParser::ValueNotConvertibleError, 'not an email') unless value.match?(simple_email)
 
       value
@@ -110,7 +110,7 @@ module EnvParser::Types
 
     EnvParser.define_type(:version, aliases: :semver, if_unset: nil) do |value|
       # We're using the official semver.org-provided regex.
-      semver = %r{^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$} ## rubocop:disable Layout/LineLength
+      semver = %r{^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$} # rubocop:disable Layout/LineLength
 
       match_data = value.match(semver)
       raise(EnvParser::ValueNotConvertibleError, 'not a semver-compliant value') unless match_data

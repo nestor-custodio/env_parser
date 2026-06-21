@@ -23,7 +23,7 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
-          # fallback to using the latest cache if no exact match is found
+          # fall back to using the latest cache if no exact match is found
           - v1-dependencies
 
       - run:
@@ -34,7 +34,8 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            bundle install --jobs=$(nproc) --retry=3 --path vendor/bundle
+            bundle config set path vendor/bundle
+            bundle install --jobs=$(nproc) --retry=3
 
       - save_cache:
           paths:

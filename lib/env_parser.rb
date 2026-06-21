@@ -339,9 +339,7 @@ class EnvParser
     def register_all(list)
       raise(ArgumentError, "invalid 'list' parameter type: #{list.class}") unless list.is_a? Hash
 
-      list.to_a.each_with_object({}) do |tuple, output|
-        output[tuple.first] = register(tuple.first, tuple.second)
-      end
+      list.to_h { |name, options| [name, register(name, options)] }
     end
   end
 end
