@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/nestor-custodio/env_parser'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |filename| filename.start_with? 'test/' }
+  spec.files         = `git ls-files -z`.split("\x0").reject { |filename| filename.start_with? 'spec/' }
   spec.executables   = []
   spec.require_paths = ['lib']
 
