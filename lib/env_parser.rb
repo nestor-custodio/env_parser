@@ -46,10 +46,10 @@ class EnvParser
 
       given_types = (Array(name) + Array(options[:aliases])).map(&:to_s).map(&:to_sym)
       given_types.each do |type|
-        raise(TypeAlreadyDefinedError, "cannot redefine #{type.inspect}") if known_types.key?(type)
+        raise(TypeAlreadyDefinedError, "cannot redefine #{type.inspect}") if known_types.has_key?(type)
 
         known_types[type] = {
-          parser: parser,
+          parser:   parser,
           if_unset: options[:if_unset]
         }
       end
@@ -114,13 +114,13 @@ class EnvParser
       value = value.to_s
 
       type = known_types[options[:as]]
-      raise(ArgumentError, 'missing `as` parameter') unless options.key?(:as)
+      raise(ArgumentError, 'missing `as` parameter') unless options.has_key?(:as)
       raise(UnknownTypeError, "invalid `as` parameter: #{options[:as].inspect}") unless type
 
-      return (options.key?(:if_unset) ? options[:if_unset] : type[:if_unset]) if value.blank?
+      return (options.has_key?(:if_unset) ? options[:if_unset] : type[:if_unset]) if value.blank?
 
       value = type[:parser].call(value)
-      check_for_set_inclusion(value, set: options[:from_set]) if options.key?(:from_set)
+      check_for_set_inclusion(value, set: options[:from_set]) if options.has_key?(:from_set)
       check_user_defined_validations(value, proc: options[:validated_by], block: validation_block)
 
       value
@@ -188,10 +188,11 @@ class EnvParser
     #
     # @raise [ArgumentError]
     #
-    def register(name, options = {}, &validation_block)
+    def register(name, options = {}, &)
       # Allow for registering multiple variables simultaneously via a single call.
       if name.is_a? Hash
         raise(ArgumentError, 'cannot register multiple values with one block') if block_given?
+
         return register_all(name)
       end
 
@@ -199,22 +200,23 @@ class EnvParser
       within = options.fetch(:within, Kernel)
 
       named = name
-      named = options.fetch(:named, name) if options.key? :within
+      named = options.fetch(:named, name) if options.has_key? :within
 
       # ENV *seems* like a Hash and it does *some* Hash-y things, but it is NOT a Hash and that can
       # bite you in some cases. Making sure we're working with a straight-up Hash saves a lot of
       # sanity checks later on. This is also a good place to make sure we're working with a String
       # key.
+      #
       if from == ENV
         from = from.to_h
         name = name.to_s
       end
 
       raise ArgumentError, "invalid `from` parameter: #{from.class}" unless from.is_a? Hash
-      raise ArgumentError, "invalid `within` parameter: #{within.inspect}" unless within.is_a?(Module) || within.is_a?(Class)
+      raise ArgumentError, "invalid `within` parameter: #{within.inspect}" unless within.is_a? Module
 
       value = from[name]
-      value = parse(value, options, &validation_block)
+      value = parse(value, options, &)
       within.const_set(named.upcase.to_sym, value.dup.freeze)
 
       value
@@ -231,12 +233,12 @@ class EnvParser
     #
     def add_env_bindings
       ENV.instance_eval do
-        def parse(name, options = {}, &validation_block)
-          EnvParser.parse(self[name.to_s], options, &validation_block)
+        def parse(name, options = {}, &)
+          EnvParser.parse(self[name.to_s], options, &)
         end
 
-        def register(*args)
-          EnvParser.register(*args)
+        def register(*)
+          EnvParser.register(*)
         end
       end
 
@@ -265,8 +267,8 @@ class EnvParser
       autoregister_spec.deep_symbolize_keys!
       autoregister_spec.transform_values! do |spec|
         sanitized = spec.slice(:as, :named, :within, :if_unset, :from_set)
-        sanitized[:as] = sanitized[:as].to_sym if sanitized.key? :as
-        sanitized[:within] = sanitized[:within].constantize if sanitized.key? :within
+        sanitized[:as] = sanitized[:as].to_sym if sanitized.has_key? :as
+        sanitized[:within] = sanitized[:within].constantize if sanitized.has_key? :within
 
         sanitized
       end

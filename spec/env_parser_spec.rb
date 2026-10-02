@@ -75,9 +75,9 @@ RSpec.describe EnvParser do
     it 'will accept a hash keyed by variable names' do
       source_hash = { FIRST: 'first', SECOND: '99', THIRD: 'third' }
       EnvParser.register(
-        FIRST: { from: source_hash, as: :string, if_unset: 'no first' },
+        FIRST:  { from: source_hash, as: :string,  if_unset: 'no first'  },
         SECOND: { from: source_hash, as: :integer, if_unset: 'no second' },
-        THIRD: { from: source_hash, as: :string, if_unset: 'no third' },
+        THIRD:  { from: source_hash, as: :string,  if_unset: 'no third'  },
         FOURTH: { from: source_hash, as: :boolean, if_unset: 'no fourth' }
       )
 
@@ -137,10 +137,10 @@ RSpec.describe EnvParser do
         ENV['SEVENTH'] = 'seventh'
 
         ENV.register(
-          FIFTH: { as: :string, if_unset: 'no fifth' },
-          SIXTH: { as: :integer, if_unset: 'no sixth' },
-          SEVENTH: { as: :string, if_unset: 'no seventh' },
-          EIGHTH: { as: :boolean, if_unset: 'no eighth' }
+          FIFTH:   { as: :string,  if_unset: 'no fifth'   },
+          SIXTH:   { as: :integer, if_unset: 'no sixth'   },
+          SEVENTH: { as: :string,  if_unset: 'no seventh' },
+          EIGHTH:  { as: :boolean, if_unset: 'no eighth'  }
         )
 
         expect(FIFTH).to eq('fifth')

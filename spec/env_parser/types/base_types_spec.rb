@@ -73,15 +73,20 @@ RSpec.describe EnvParser::Types::BaseTypes do
     expect(EnvParser.parse('1.1', as: :json)).to eq(1.1)
     expect(EnvParser.parse('"some string"', as: :json)).to eq('some string')
     expect(EnvParser.parse('["one", 2, "three"]', as: :json)).to eq(['one', 2, 'three'])
-    expect(EnvParser.parse('{ "one": 1, "two": 2, "three": "three" }', as: :json)).to eq('one' => 1, 'two' => 2, 'three' => 'three')
+    expect(EnvParser.parse('{ "one": 1, "two": "two" }', as: :json)).to eq('one' => 1, 'two' => 'two')
   end
 
   it 'can parse arrays' do
     expect(EnvParser.parse(nil, as: :array)).to eq([])
     expect(EnvParser.parse('', as: :array)).to eq([])
 
-    expect { EnvParser.parse('non-json-parseable string', as: :array) }.to raise_error(JSON::ParserError)
-    expect { EnvParser.parse('"parseable json, but not an array"', as: :array) }.to raise_error(EnvParser::ValueNotConvertibleError)
+    expect do
+      EnvParser.parse('non-json-parseable string', as: :array)
+    end.to raise_error(JSON::ParserError)
+
+    expect do
+      EnvParser.parse('"parseable json, but not an array"', as: :array)
+    end.to raise_error(EnvParser::ValueNotConvertibleError)
 
     expect(EnvParser.parse('["one", 2, "three"]', as: :array)).to eq(['one', 2, 'three'])
   end
@@ -90,9 +95,14 @@ RSpec.describe EnvParser::Types::BaseTypes do
     expect(EnvParser.parse(nil, as: :hash)).to eq({})
     expect(EnvParser.parse('', as: :hash)).to eq({})
 
-    expect { EnvParser.parse('non-json-parseable string', as: :hash) }.to raise_error(JSON::ParserError)
-    expect { EnvParser.parse('"parseable json, but not a hash"', as: :hash) }.to raise_error(EnvParser::ValueNotConvertibleError)
+    expect do
+      EnvParser.parse('non-json-parseable string', as: :hash)
+    end.to raise_error(JSON::ParserError)
 
-    expect(EnvParser.parse('{ "one": 1, "two": 2, "three": "three" }', as: :hash)).to eq('one' => 1, 'two' => 2, 'three' => 'three')
+    expect do
+      EnvParser.parse('"parseable json, but not a hash"', as: :hash)
+    end.to raise_error(EnvParser::ValueNotConvertibleError)
+
+    expect(EnvParser.parse('{ "one": 1, "two": "two" }', as: :hash)).to eq('one' => 1, 'two' => 'two')
   end
 end

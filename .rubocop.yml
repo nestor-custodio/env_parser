@@ -1,16 +1,22 @@
 AllCops:
-  TargetRubyVersion: 3.0
-  SuggestExtensions: false
+  TargetRubyVersion: 3.4
   NewCops: enable
+  SuggestExtensions: false
 
 
-Layout/EmptyLineAfterGuardClause:
-  # Add empty line after guard clause.
+Layout/HashAlignment:
+  # Align the elements of a hash literal if they span more than one line.
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+# Layout/LineLength:
+#   # Checks that line length does not exceed the configured limit.
+#   Max: 150
+
+
+Lint/DuplicateBranch:
+  # Checks that there are no repeated bodies within `if/unless`, `case-when` and `rescue` constructs.
   Enabled: false
-
-Layout/LineLength:
-  # Checks that line length does not exceed the configured limit.
-  Max: 150
 
 
 Metrics/AbcSize:
@@ -20,7 +26,7 @@ Metrics/AbcSize:
 Metrics/BlockLength:
   # Avoid long blocks with many lines.
   Exclude:
-    - 'spec/**/*.rb'
+    - 'spec/**/*'
 
 Metrics/CyclomaticComplexity:
   # A complexity metric that is strongly correlated to the number of test cases needed to validate a method.
@@ -31,14 +37,6 @@ Metrics/MethodLength:
   Max: 25
 
 
-Style/AsciiComments:
-  # Use only ASCII symbols in comments.
-  #
-  # NLC: We're allowing non-breaking spaces (' '), as they're needed to prevent
-  #      browsers from collapsing multiple spaces in documentation code blocks.
-  AllowedChars:
-    - ' '
-
 Style/ClassAndModuleChildren:
   # Checks style of children classes and modules.
   Enabled: false
@@ -47,17 +45,29 @@ Style/FetchEnvVar:
   # Suggests `ENV.fetch` for the replacement of `ENV[]`.
   Enabled: false
 
+Style/FormatString:
+  # Enforce the use of Kernel#sprintf, Kernel#format or String#%.
+  EnforcedStyle: percent
+
 Style/FrozenStringLiteralComment:
-  # Add the frozen_string_literal comment to the top of files to help transition to frozen string literals by default.
+  # Enforces use of the frozen_string_literal comment in every file.
   EnforcedStyle: never
 
 Style/NumericLiterals:
   # Add underscores to large numeric literals to improve their readability.
   Enabled: false
 
+Style/PreferredHashMethods:
+  # Checks use of `has_key?` and `has_value?` Hash methods.
+  EnforcedStyle: verbose
+
 Style/RegexpLiteral:
   # Use / or %r around regular expressions.
   EnforcedStyle: percent_r
+
+Style/RescueModifier:
+  # Avoid using rescue in its modifier form.
+  Enabled: false
 
 Style/StringLiterals:
   # Check for use of ' vs ".
