@@ -1,9 +1,7 @@
-lib = File.expand_path('lib', __dir__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'env_parser/version'
+require_relative 'lib/env_parser/version'
 
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = ['>= 3']
+  spec.required_ruby_version = '>= 3.4'
 
   spec.name          = 'env_parser'
   spec.version       = EnvParser::VERSION
@@ -14,19 +12,28 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/nestor-custodio/env_parser'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |filename| filename.start_with? 'spec/' }
+  spec.files         = `git ls-files -z`.split("\x0") & Dir['*', 'lib/**/*']
   spec.executables   = []
   spec.require_paths = ['lib']
 
-  spec.metadata['rubygems_mfa_required'] = 'true'
+  # ---
+
+  spec.metadata = {
+    # See: https://guides.rubygems.org/specification-reference/#metadata
+
+    # RubyGems.org Security
+    #
+    'allowed_push_host'     => 'https://rubygems.org',
+    'rubygems_mfa_required' => 'true',
+
+    # Metadata-Provided URIs
+    #
+    'homepage_uri'          => spec.homepage
+  }
+
+  # ---
 
   spec.add_dependency 'activesupport', ['>= 6.1.0', '< 9']
   spec.add_dependency 'chronic', '~> 0'
   spec.add_dependency 'chronic_duration', '~> 0'
-
-  spec.add_development_dependency 'bundler', '~> 4'
-  spec.add_development_dependency 'rspec', '~> 3'
-  spec.add_development_dependency 'rspec_junit_formatter'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'yard'
 end
