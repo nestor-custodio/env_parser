@@ -67,9 +67,6 @@ module EnvParser::Types
   #   </tbody>
   # </table>
   #
-  # Note JSON is parsed using *quirks-mode* (meaning 'true', '25', and 'null' are all considered
-  # valid, parseable JSON).
-  #
   module BaseTypes
     EnvParser.define_type(:string, if_unset: '') do |value|
       value
@@ -91,8 +88,7 @@ module EnvParser::Types
     EnvParser.define_type(:json, if_unset: nil) do |value|
       require 'json'
 
-      decoded_json = JSON.parse(value, quirks_mode: true)
-      { decoded_json: decoded_json }.with_indifferent_access[:decoded_json]
+      { decoded_json: JSON.parse(value) }.with_indifferent_access[:decoded_json]
     end
 
     EnvParser.define_type(:array, if_unset: []) do |value|
